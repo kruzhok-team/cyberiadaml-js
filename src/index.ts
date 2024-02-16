@@ -6,14 +6,10 @@ import {
   Action,
   Event,
   EventData,
-  ArgList,
   Elements,
   Condition,
   Variable,
 } from "./types";
-import { ArgumentProto, Platform } from "@renderer/types/platform";
-
-import { getPlatform, isPlatformAvailable } from "./PlatformLoader";
 
 type Node = {
   id: string;
@@ -50,6 +46,7 @@ type KeyProperties = {
   attrType?: string;
 };
 
+// TODO: сделать типо ArgList
 type Meta = {
   format: string;
   platform: string;
@@ -63,6 +60,10 @@ type Meta = {
 type DataNode = {
   key: string;
   content: string;
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
 };
 
 type KeyNode = {
@@ -158,11 +159,11 @@ const dataNodeProcess: DataNodeProcess = {
     }
   },
   dGeometry(data: DataNodeProcessArgs) {
-    const x = +data.node["x"];
-    const y = +data.node["y"];
-    if (x === undefined || y === undefined) {
+    if (data.node["x"] === undefined || data.node["y"] === undefined) {
       throw new Error("Не указаны x или y для узла data с ключом dGeometry");
     }
+    const x = +data.node["x"];
+    const y = +data.node["y"];
     if (data.parentNode !== undefined && data.parentNode.id == initialId) {
       if (data.elements.initialState !== null) {
         data.elements.initialState.position = {
@@ -271,20 +272,6 @@ function parseNodeData(elements: Elements, content: string, state: State) {
 
 function parseComponentNode(content: string, component: OuterComponent) {
   const unprocessedParameters = content.split("\n");
-  const checkType = (componentType): boolean => {
-    if (platform !== undefined) {
-      return platform.components[componentType] !== undefined;
-    } else {
-      throw new Error(`Платформа не определена!`);
-    }
-  };
-
-  const checkParameter = (parameterName, componentType): boolean => {
-    return (
-      platform?.components[componentType].parameters[parameterName] !==
-      undefined
-    );
-  };
 
   for (const parameter of unprocessedParameters) {
     let [parameterName, value] = parameter.split("/");
@@ -293,12 +280,7 @@ function parseComponentNode(content: string, component: OuterComponent) {
     switch (parameterName) {
       case "type": {
         if (component.type === "") {
-          if (checkType(value)) component.type = value;
-          else {
-            throw new Error(
-              `Неизвестный тип компонента ${value} в платформе ${platform?.name}`
-            );
-          }
+          component.type = value;
         } else {
           throw new Error(
             `Тип компонента ${component.name} уже указан! Предыдущий тип ${component.type}, новый - ${value}`
@@ -332,13 +314,7 @@ function parseComponentNode(content: string, component: OuterComponent) {
         break;
       }
       default:
-        if (checkParameter(parameterName, component.type)) {
-          component.parameters[parameterName] = value;
-        } else {
-          throw new Error(
-            `Неизвестный параметр ${parameterName} для компонента типа ${component.type}`
-          );
-        }
+        component.parameters[parameterName] = value;
     }
   }
 }
@@ -358,15 +334,15 @@ function parseEvent(
         trigger = event[0];
         condition = parseCondition(event[1].replace("]", ""));
       }
-      let ev = systemComponentAlias.get(trigger); // Подстановка exit/entry на System.onExit/System.onEnter
-
-      if (ev === undefined) {
-        const [component, method] = trigger.split(".");
-        ev = {
-          component: component,
-          method: method,
-        };
-      }
+      const ev: Event = {
+        component: '',
+        method: ''
+      };
+      if (trigger != 'entry' && trigger != 'exit') {
+          const [component, method] = trigger.split(".");
+          ev.component = component;
+          ev.method = method;
+      };
       return [
         {
           trigger: ev,
@@ -406,21 +382,10 @@ function parseTransitionData(
   }
 }
 
-function getAllComponents(elements: Elements, meta: Meta) {
-  if (platform !== undefined && meta.platform.startsWith("BearlogaDefend")) {
-    for (const componentName of Object.keys(platform.components)) {
-      elements.components[componentName] = {
-        type: componentName,
-        parameters: {},
-      };
-    }
-  }
-}
-
 function parseAction(
   elements: Elements,
   unproccessedAction: string
-): Action | undefined {
+): GraphmlAction | undefined {
   const [component_name, action] = unproccessedAction.trim().split(".");
   if (action !== undefined) {
     // На случай, если действий у события нет
@@ -430,61 +395,22 @@ function parseAction(
       .split(",")
       .filter((value) => value !== ""); // Фильтр нужен, чтобы отсеять пустое значение в случае отсутствия аргументов.
     const method = action.slice(0, bracketPos);
-    const resultAction: Action = {
+    const resultAction: GraphmlAction = {
       component: component_name,
       method: method,
     };
 
     const component = elements.components[component_name];
-    const argList: ArgList = {};
-    // Если параметров у метода нет, то methodParameters будет равен undefined
+    const argList = [];
     if (component !== undefined) {
-      const methodParameters =
-        platform?.components[component.type]?.methods[method]?.parameters;
-      if (
-        platform?.components[component.type] !== undefined &&
-        platform?.components[component.type].methods[method] !== undefined
-      ) {
-        for (const index in methodParameters) {
-          const parameter: ArgumentProto = methodParameters[index];
-          if (args[index] !== undefined && args[index] !== "") {
-            argList[parameter.name] = args[index];
-          } else {
-            throw new Error(
-              `У ${component_name}.${method} отсутствует параметр ${parameter.name}`
-            ); // TODO Модалка
+        for (const index in args) {
+          if (args[index] !== "") {
+            argList.push(args[index]);
           }
         }
-        if (methodParameters === undefined) {
-          if (args.length === 0) {
-            resultAction.args = argList;
-          } else {
-            throw new Error(
-              `Неправильное количество аргументов у функции ${method} компонента ${component_name}.\n Нужно: 0, получено: ${args.length}`
-            );
-          }
-        } else {
-          if (
-            Object.keys(argList).length === Object.keys(methodParameters).length
-          ) {
-            resultAction.args = argList;
-          } else {
-            throw new Error(
-              `Неправильное количество аргументов у функции ${method} компонента ${component_name}.\n Нужно: ${
-                Object.keys(methodParameters).length
-              }, получено: ${args.length}`
-            );
-          }
+          resultAction.args = argList;
         }
-        return resultAction;
-      } else {
-        throw new Error(
-          `Неизвестный метод ${method} у компонента ${component_name}`
-        );
-      }
-    } else {
-      throw new Error(`Неизвестный компонент ${component_name}`);
-    }
+    return resultAction;
   } else {
     return;
   }
@@ -493,11 +419,11 @@ function parseAction(
 function parseActions(
   elements: Elements,
   unsplitedActions: string
-): Action[] | undefined {
-  if (platform !== undefined && unsplitedActions != "") {
+): GraphmlAction[] | undefined {
+  if (unsplitedActions != "") {
     // Считаем, что действия находятся на разных строках
     const actions = unsplitedActions.split("\n");
-    const resultActions = new Array<Action>();
+    const resultActions = new Array<GraphmlAction>();
     for (const unproccessedAction of actions) {
       const resultAction = parseAction(elements, unproccessedAction);
       if (resultAction !== undefined) {
@@ -505,10 +431,8 @@ function parseActions(
       }
     }
     return resultActions;
-  } else {
-    console.log("Отсутствуют действия на событие");
-    return;
   }
+  return;
 }
 
 function processTransitions(elements: Elements, meta: Meta, edges: Edge[]) {
@@ -585,15 +509,6 @@ function parseMeta(meta: Meta, unproccessedMeta: string) {
       }
     }
   }
-
-  if (meta.platform === "BearlogaDefend") {
-    meta.platform = `${meta.platform}-${meta.unit}`;
-  }
-  if (isPlatformAvailable(meta.platform)) {
-    platform = getPlatform(meta.platform);
-  } else {
-    throw new Error(`Неизвестная платформа ${meta.platform}`);
-  }
 }
 
 function createEmptyState(): State {
@@ -664,7 +579,7 @@ function processGraph(
 ) {
   const nodes: Node[] = graph.node;
   const edges: Edge[] = graph.edge;
-  if (meta.platform === "ArduinoUno" && parent === undefined) {
+  if (parent === undefined) {
     if (graph.edge) {
       for (const idx in edges) {
         const edge = graph.edge[idx];
@@ -758,20 +673,13 @@ function addPropertiesFromKeyNode(
 }
 
 let initialId = "";
-let platform: Platform | undefined;
 const components_id = new Array<string>();
-
-const systemComponentAlias = new Map<string, Event>([
-  ["entry", { component: "System", method: "onEnter" }],
-  ["exit", { component: "System", method: "onExit" }],
-]);
 
 export function importGraphml(
   expression: string,
   openImportError: (error: string) => void
 ): Elements {
   try {
-    platform = undefined;
     initialId = "";
     components_id.splice(0);
     const parser = new XMLParser({
@@ -820,7 +728,6 @@ export function importGraphml(
           xml.graphml.graph.node = (
             xml.graphml.graph.node as Array<Node>
           ).filter((value) => value.id !== "");
-          getAllComponents(elements, meta);
           processGraph(
             elements,
             xml.graphml.graph,
@@ -830,7 +737,6 @@ export function importGraphml(
         } else {
           throw new Error("Отсутствует мета-узел!");
         }
-
         break;
       }
       default: {
