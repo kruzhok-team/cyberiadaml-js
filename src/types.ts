@@ -75,7 +75,8 @@ export type CGMLDataNode = {
 export type CGMLKeyNode = {
   id: string;
   for: string;
-  properties: CGMLKeyProperties;
+  'attr.name'?: string;
+  'attr.type': string;
 };
 
 export type CGMLDataNodeProcess = {

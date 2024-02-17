@@ -9,6 +9,7 @@
 <key id="dInitial" for="node" attr.name="initial" attr.type="string"/>
 <key id="dGeometry" for="edge"/>
 <key id="dGeometry" for="node"/>
+<key id="dMyExtension" for="node"/>
 
 <graph id="G" edgedefault="directed">
 
@@ -26,9 +27,9 @@ unit/ Autoborder
   <node id="n0">
     <data key="dName">Бой</data>
     <data key="dData">entry/
-
 exit/
 </data>
+<data key="dmyExtension"> really important information</data>
     <data key="dGeometry" x="-578.005" y="438.187256"
           width="672.532166" height="802.962646" />
     <graph>
