@@ -1,3 +1,6 @@
+import { CGML, CGMLDataKey, CGMLElements } from "./types";
+import { XMLBuilder } from "fast-xml-parser";
+
 type ExportKeyNode = {
   "@id": string;
   "@for": string;
@@ -6,7 +9,7 @@ type ExportKeyNode = {
 };
 
 type ExportDataNode = {
-  "@key": DataKey;
+  "@key": CGMLDataKey;
   "@x"?: number;
   "@y"?: number;
   "@width"?: number;
@@ -32,124 +35,21 @@ type ExportNode = {
   graph?: ExportGraph;
 };
 
-function getArgsString(args: ArgList | undefined): string {
-  if (args !== undefined) {
-    return Object.values(args).join(", ");
-  }
-
-  return "";
-}
-
-function isVariable(object: any) {
-  return object.component !== undefined;
-}
-
-function getOperandString(operand: Variable | string | Condition[] | number) {
-  if (isVariable(operand)) {
-    return `${(operand as Variable).component}.${(operand as Variable).method}`;
-  } else {
-    return operand;
-  }
-}
-
-type Platforms = "ArduinoUno" | "BearlogaDefend";
-type PlatformDataKeys = { [key in Platforms]: ExportKeyNode[] };
-type ProcessDependPlatform = {
-  [key in Platforms]: (
-    elements: Elements,
-    subplatform?: string
-  ) => CyberiadaXML;
-};
-const PlatformKeys: PlatformDataKeys = {
-  ArduinoUno: [
-    {
-      "@id": "dName",
-      "@for": "node",
-      "@attr.name": "name",
-      "@attr.type": "string",
-    },
-    {
-      "@id": "dData",
-      "@for": "node",
-      "@attr.name": "data",
-      "@attr.type": "string",
-    },
-    {
-      "@id": "dData",
-      "@for": "edge",
-      "@attr.name": "data",
-      "@attr.type": "string",
-    },
-    {
-      "@id": "dInitial",
-      "@for": "node",
-      "@attr.name": "initial",
-      "@attr.type": "string",
-    },
-    {
-      "@id": "dGeometry",
-      "@for": "edge",
-    },
-    {
-      "@id": "dGeometry",
-      "@for": "node",
-    },
-    {
-      "@id": "dColor",
-      "@for": "edge",
-    },
-  ],
-  BearlogaDefend: [
-    {
-      "@id": "dName",
-      "@for": "node",
-      "@attr.name": "name",
-      "@attr.type": "string",
-    },
-    {
-      "@id": "dData",
-      "@for": "node",
-      "@attr.name": "data",
-      "@attr.type": "string",
-    },
-    {
-      "@id": "dData",
-      "@for": "edge",
-      "@attr.name": "data",
-      "@attr.type": "string",
-    },
-    {
-      "@id": "dInitial",
-      "@for": "node",
-      "@attr.name": "initial",
-      "@attr.type": "string",
-    },
-    {
-      "@id": "dGeometry",
-      "@for": "edge",
-    },
-    {
-      "@id": "dGeometry",
-      "@for": "node",
-    },
-  ],
-};
-
-type XMLNode = {
+type ExportXMLNode = {
   "@version": string;
   "@encoding": string;
 };
 
-type GraphMLNode = {
+type ExportCGMLGraphmlNode = {
   "@xmlns": string;
   data: ExportDataNode;
   key: ExportKeyNode[];
   graph: ExportGraph;
 };
 
-type CyberiadaXML = {
-  "?xml": XMLNode;
-  graphml: GraphMLNode;
+type ExportCGML = {
+  "?xml": ExportXMLNode;
+  graphml: ExportCGMLGraphmlNode;
 };
 
 // Пока что это копипаст, с небольшими изменениями
@@ -380,7 +280,7 @@ const processDependPlatform: ProcessDependPlatform = {
   },
 
   BearlogaDefend(elements: Elements, subplatform?: string): CyberiadaXML {
-    const keyNodes = PlatformKeys.BearlogaDefend;
+    const keyNodes = PlatformKeys.BearlogaDefend
     let description = "";
     if (subplatform !== undefined) {
       description = `name/ Схема\ndescription/ Схема, сгенерированная с помощью Lapki IDE\nunit/ ${subplatform}`;
@@ -579,21 +479,32 @@ const processDependPlatform: ProcessDependPlatform = {
   },
 };
 
-export function exportGraphml(elements: Elements): string {
+export function exportGraphml(elements: CGMLElements): string {
   const builder = new XMLBuilder({
     textNodeName: "content",
     ignoreAttributes: false,
     attributeNamePrefix: "@",
     format: true,
   });
-  let xml = {};
-  if (elements.platform == "ArduinoUno") {
-    xml = processDependPlatform.ArduinoUno(elements);
-  } else if (elements.platform.startsWith("BearlogaDefend")) {
-    const subplatform = elements.platform.split("-")[1];
-    xml = processDependPlatform.BearlogaDefend(elements, subplatform);
-  } else {
-    console.log("Неизвестная платформа");
-  }
+  let xml: ExportCGML = {
+      "?xml": {
+        "@version": "1.0",
+        "@encoding": "UTF-8",
+      },
+      graphml: {
+        "@xmlns": "http://graphml.graphdrawing.org/xmlns",
+        data: {
+          "@key": "gFormat",
+          content: "Cyberiada-GraphML",
+
+        },
+        key: [],
+        graph: [],
+      }
+  };
+
+
+
+
   return builder.build(xml);
 }
