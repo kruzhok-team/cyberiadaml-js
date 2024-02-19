@@ -15,11 +15,11 @@ export type InitialState = {
 };
 
 export type CGMLTransition = {
-  //id: string;
+  // id: string;
   source: string;
   target: string;
   color?: string;
-  position: Point;
+  position?: Point;
   actions: string;
   unsupportedDataNodes: Array<CGMLDataNode>;
 };
@@ -61,7 +61,7 @@ export type CGMLGraph = {
 
 export type CGMLKeyProperties = {
   'attr.name'?: string;
-  'attr.type': string;
+  'attr.type'?: string;
 };
 
 export type CGMLDataNode = {
@@ -77,7 +77,7 @@ export type CGMLKeyNode = {
   id: string;
   for: string;
   'attr.name'?: string;
-  'attr.type': string;
+  'attr.type'?: string;
 };
 
 export type CGMLDataNodeProcess = {
