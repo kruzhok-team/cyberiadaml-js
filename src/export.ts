@@ -1,5 +1,5 @@
-import { CGML, CGMLComponent, CGMLDataKey, CGMLElements, CGMLKeyNode, CGMLState, CGMLTransition, InitialState } from "./types/import-types";
-import { ExportCGML, ExportDataNode, ExportEdge, ExportGraph, ExportKeyNode, ExportNode } from "./types/export-types";
+import { CGMLComponent, CGMLElements, CGMLKeyNode, CGMLState, CGMLTransition, InitialState } from "./types/import-types";
+import { ExportCGML, ExportEdge, ExportKeyNode, ExportNode } from "./types/export-types";
 import { XMLBuilder } from "fast-xml-parser";
 
 function getMetaNode(platform: string, meta: string): ExportNode {
