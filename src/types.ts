@@ -37,6 +37,7 @@ export type CGMLElements = {
   platform: string;
   meta: string;
   format: string;
+  keys: Array<CGMLKeyNode>;
 }
 
 export type CGMLNode = {

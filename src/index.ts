@@ -303,6 +303,7 @@ function processGraph(
 // Добавляет допустимые свойства у узлов (dData, dInitial и т.д)
 function addPropertiesFromKeyNode(
   xml: CGML,
+  elements: CGMLElements,
   awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>> // Map<Название целевой ноды, Map<id свойства, аттрибуты свойства>>
 ) {
   for (const node of xml.graphml.key) {
@@ -312,7 +313,7 @@ function addPropertiesFromKeyNode(
       'attr.name': node["attr.name"],
       'attr.type': node["attr.type"],
     };
-
+    elements.keys.push(keyNode);
     // Если у нас уже есть список свойств для целевой ноды, то добавляем в уже существующий Map,
     // иначе - создаем новый.
     if (awailableDataProperties.has(keyNode.for)) {
@@ -362,7 +363,8 @@ export function parseCGML(
     components: {},
     platform: '',
     meta: '',
-    format: ''
+    format: '',
+    keys: [],
   };
 
   const awailableDataProperties = new Map<
@@ -374,7 +376,7 @@ export function parseCGML(
   
   setFormatToMeta(elements, xml);
   
-  addPropertiesFromKeyNode(xml, awailableDataProperties);
+  addPropertiesFromKeyNode(xml, elements, awailableDataProperties);
   
   switch (elements.format) {
     case "Cyberiada-GraphML": {
@@ -404,5 +406,6 @@ export function parseCGML(
       throw new Error(`ОШИБКА! НЕИЗВЕСТНЫЙ ФОРМАТ "${elements.format}"!`);
     }
   }
+
   return elements;
 }

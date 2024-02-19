@@ -212,7 +212,45 @@ exit/
       components: {},
       platform: "BearlogaDefend",
       meta: "name/ Автобортник\nauthor/ Матросов В.М.\ncontact/ matrosov@mail.ru\ndescription/ Пример описания схемы, \nкоторый может быть многострочным, потому что так удобнее\nunit/ Autoborder",
-      format: "Cyberiada-GraphML"
+      format: "Cyberiada-GraphML",
+      keys: [
+        {
+          id: "dName",
+          for: "node",
+          'attr.name': "name",
+          'attr.type': "string",
+        },
+        {
+          id: "dData",
+          for: "edge",
+          "attr.name": "data",
+          "attr.type": "string",
+        },
+        {
+          id: "dData",
+          for: "node",
+          "attr.name": "data",
+          "attr.type": "string",
+        },
+        {
+          id: "dInitial",
+          for: "node",
+          "attr.name": "initial",
+          "attr.type": "string",
+        },
+        {
+          id: "dGeometry",
+          for: "edge",
+          "attr.name": undefined,
+          "attr.type": undefined,
+        },
+        {
+          id: "dGeometry",
+          for: "node",
+          "attr.name": undefined,
+          "attr.type": undefined,
+        }
+      ]
     })
 }
 );
