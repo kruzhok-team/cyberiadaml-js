@@ -397,7 +397,5 @@ export function parseCGML(
     }
   }
 
-  console.log(elements);
-
   return elements;
 }
