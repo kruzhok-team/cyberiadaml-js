@@ -16,7 +16,7 @@ import {
   CGML,
   CGMLGraph,
   CGMLEdge
-} from "./types/import-types";
+} from "./types/import";
 
 function isDataKey(key: string): key is CGMLDataKey {
   return DataKeys.includes(key as CGMLDataKey);
