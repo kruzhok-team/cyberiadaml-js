@@ -1,4 +1,4 @@
-import { parseCGML } from './index';
+import { parseCGML } from './import';
 
 
 test('test parsing Bearloga schema', () => {
