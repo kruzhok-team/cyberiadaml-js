@@ -7,17 +7,20 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
-    "lint": "tsc"
+    "lint": "tsc",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
+    "ts-jest": "^29.1.2",
     "tsup": "^8.0.2",
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@types/jest": "^29.5.12",
     "fast-xml-parser": "^4.3.4"
   }
 }
