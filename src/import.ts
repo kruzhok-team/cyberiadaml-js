@@ -1,4 +1,4 @@
-import { XMLParser } from "fast-xml-parser";
+import { XMLParser } from 'fast-xml-parser';
 
 import {
   CGMLState,
@@ -15,8 +15,8 @@ import {
   CGMLComponent,
   CGML,
   CGMLGraph,
-  CGMLEdge
-} from "./types/import";
+  CGMLEdge,
+} from './types/import';
 
 function isDataKey(key: string): key is CGMLDataKey {
   return DataKeys.includes(key as CGMLDataKey);
@@ -26,20 +26,22 @@ function isDataKey(key: string): key is CGMLDataKey {
 const dataNodeProcess: CGMLDataNodeProcess = {
   gFormat({ elements, node }) {
     if (elements.format != '') {
-      throw new Error(`Повторное указание формата! Старое значение: ${elements.format}. Новое значение: ${node.content}`);
+      throw new Error(
+        `Повторное указание формата! Старое значение: ${elements.format}. Новое значение: ${node.content}`,
+      );
     }
     elements.format = node.content;
   },
   dData({ elements, state, parentNode, node, component, transition }) {
     if (parentNode !== undefined) {
       // Если это мета-компонент, то извлекаем мета-информацию
-      if (parentNode.id === "") {
+      if (parentNode.id === '') {
         elements.meta = node.content;
       } else {
         if (component !== undefined) {
           component.parameters = node.content;
         } else if (state !== undefined) {
-          state.actions = node.content
+          state.actions = node.content;
         }
       }
     } else {
@@ -52,12 +54,12 @@ const dataNodeProcess: CGMLDataNodeProcess = {
   dName(data: CGMLDataNodeProcessArgs) {
     if (data.parentNode !== undefined) {
       // В мета-состоянии dName означает название платформы
-      if (data.parentNode.id === "") {
-        if (data.elements.platform === "") {
+      if (data.parentNode.id === '') {
+        if (data.elements.platform === '') {
           data.elements.platform = data.node.content;
         } else {
           throw new Error(
-            `Повторное указание платформы! Старое значение: ${data.elements.platform}. Новое значение: ${data.node.content}`
+            `Повторное указание платформы! Старое значение: ${data.elements.platform}. Новое значение: ${data.node.content}`,
           );
         }
       } else {
@@ -68,7 +70,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
         }
       }
     } else {
-      throw new Error("Непредвиденный вызов функции dName");
+      throw new Error('Непредвиденный вызов функции dName');
     }
   },
   dInitial(data: CGMLDataNodeProcessArgs) {
@@ -78,22 +80,22 @@ const dataNodeProcess: CGMLDataNodeProcess = {
         data.elements.initialState.id = data.parentNode.id;
       }
     } else {
-      throw new Error("Непредвиденный вызов функции dInitial");
+      throw new Error('Непредвиденный вызов функции dInitial');
     }
   },
   dGeometry(data: CGMLDataNodeProcessArgs) {
-    if (data.node["x"] === undefined || data.node["y"] === undefined) {
-      throw new Error("Не указаны x или y для узла data с ключом dGeometry");
+    if (data.node['x'] === undefined || data.node['y'] === undefined) {
+      throw new Error('Не указаны x или y для узла data с ключом dGeometry');
     }
-    const x = +data.node["x"];
-    const y = +data.node["y"];
+    const x = +data.node['x'];
+    const y = +data.node['y'];
 
     if (data.state !== undefined) {
       data.state.bounds = {
         x: x,
         y: y,
-        width: data.node["width"] ? +data.node["width"] : 0,
-        height: data.node["height"] ? +data.node["height"] : 0,
+        width: data.node['width'] ? +data.node['width'] : 0,
+        height: data.node['height'] ? +data.node['height'] : 0,
       };
     } else if (data.transition !== undefined) {
       data.transition.position = {
@@ -101,7 +103,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
         y: y,
       };
     } else {
-      throw new Error("Непредвиденный вызов функции dGeometry");
+      throw new Error('Непредвиденный вызов функции dGeometry');
     }
   },
   dColor(data: CGMLDataNodeProcessArgs) {
@@ -119,21 +121,17 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
       delete elements.states[edge.source];
       if (elements.initialState !== null) {
         elements.initialState.target = edge.target;
-        elements.transitions.push(
-          {
-            source: edge.source,
-            target: edge.target,
-            unsupportedDataNodes: [],
-          }
-        )
+        elements.transitions.push({
+          source: edge.source,
+          target: edge.target,
+          unsupportedDataNodes: [],
+        });
       } else {
-        throw new Error(
-          "Непредвиденная ошибка. processTransitions: initialState == null"
-        );
+        throw new Error('Непредвиденная ошибка. processTransitions: initialState == null');
       }
       foundInitial = true;
     }
-    
+
     const transition: CGMLTransition = {
       source: edge.source,
       target: edge.target,
@@ -152,8 +150,7 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
           parentNode: undefined,
           transition: transition,
         });
-      }
-      else {
+      } else {
         transition.unsupportedDataNodes.push(dataNode);
       }
     }
@@ -170,7 +167,6 @@ function setFormatToMeta(elements: CGMLElements, xml: any) {
   }
 }
 
-
 function createEmptyState(): CGMLState {
   return {
     name: '',
@@ -186,13 +182,13 @@ function processNode(
   node: CGMLNode,
   awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
   parent?: CGMLNode,
-  component?: CGMLComponent
+  component?: CGMLComponent,
 ): CGMLState {
   const state: CGMLState = createEmptyState();
   if (node.data !== undefined) {
     for (const dataNode of node.data) {
       // Проверяем, что ключ DataNode указан в начале схемы
-      if (awailableDataProperties.get("node")?.has(dataNode.key)) {
+      if (awailableDataProperties.get('node')?.has(dataNode.key)) {
         if (isDataKey(dataNode.key)) {
           const func = dataNodeProcess[dataNode.key];
           func({
@@ -202,8 +198,7 @@ function processNode(
             state: state,
             component: component,
           });
-        }
-        else {
+        } else {
           state.unsupportedDataNodes.push(dataNode);
         }
       } else {
@@ -234,13 +229,13 @@ function processGraph(
   elements: CGMLElements,
   graph: CGMLGraph,
   awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
-  parent?: CGMLNode
+  parent?: CGMLNode,
 ) {
   if (parent === undefined) {
     if (graph.edge) {
       for (const idx in graph.edge) {
         const edge = graph.edge[idx];
-        if (edge.source === "") {
+        if (edge.source === '') {
           components_id.push(edge.target);
           delete graph.edge[idx];
         }
@@ -252,13 +247,7 @@ function processGraph(
       if (components_id.includes(node.id)) {
         const component = emptyCGMLComponent();
         component.id = node.id;
-        processNode(
-          elements,
-          node,
-          awailableDataProperties,
-          parent,
-          component
-        );
+        processNode(elements, node, awailableDataProperties, parent, component);
         delete graph.node[idx];
 
         if (!elements.components[component.id]) {
@@ -267,9 +256,7 @@ function processGraph(
             parameters: component.parameters,
           };
         } else {
-          throw new Error(
-            `Компонент с id ${component.id} уже существует!`
-          );
+          throw new Error(`Компонент с id ${component.id} уже существует!`);
         }
       }
     }
@@ -277,12 +264,7 @@ function processGraph(
 
   for (const idx in graph.node) {
     const node = graph.node[idx];
-    elements.states[node.id] = processNode(
-      elements,
-      node,
-      awailableDataProperties,
-      parent
-    );
+    elements.states[node.id] = processNode(elements, node, awailableDataProperties, parent);
   }
 
   if (graph.edge) {
@@ -294,14 +276,14 @@ function processGraph(
 function addPropertiesFromKeyNode(
   xml: CGML,
   elements: CGMLElements,
-  awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>> // Map<Название целевой ноды, Map<id свойства, аттрибуты свойства>>
+  awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>, // Map<Название целевой ноды, Map<id свойства, аттрибуты свойства>>
 ) {
   for (const node of xml.graphml.key) {
     const keyNode: CGMLKeyNode = {
       id: node.id,
       for: node.for,
-      'attr.name': node["attr.name"],
-      'attr.type': node["attr.type"],
+      'attr.name': node['attr.name'],
+      'attr.type': node['attr.type'],
     };
     elements.keys.push(keyNode);
     // Если у нас уже есть список свойств для целевой ноды, то добавляем в уже существующий Map,
@@ -311,27 +293,28 @@ function addPropertiesFromKeyNode(
 
       // Если есть такое свойство - вывести ошибку, иначе - добавить!
       if (nodeProperties?.has(keyNode.id)) {
-        throw new Error(
-          `Дублирование свойства ${keyNode.id} для узла ${keyNode.for}!`
-        );
+        throw new Error(`Дублирование свойства ${keyNode.id} для узла ${keyNode.for}!`);
       } else {
-        nodeProperties?.set(keyNode.id, { 'attr.name': node["attr.name"], 'attr.type': node["attr.type"], } );
+        nodeProperties?.set(keyNode.id, {
+          'attr.name': node['attr.name'],
+          'attr.type': node['attr.type'],
+        });
       }
     } else {
       awailableDataProperties.set(
         keyNode.for,
-        new Map<string, CGMLKeyProperties>([[keyNode.id, { 'attr.name': node["attr.name"], 'attr.type': node["attr.type"], }]])
+        new Map<string, CGMLKeyProperties>([
+          [keyNode.id, { 'attr.name': node['attr.name'], 'attr.type': node['attr.type'] }],
+        ]),
       );
     }
   }
 }
 
-let initialId = "";
+let initialId = '';
 const components_id = new Array<string>();
 
-export function parseCGML(
-  graphml: string,
-): CGMLElements {
+export function parseCGML(graphml: string): CGMLElements {
   initialId = '';
   components_id.splice(0);
   const parser = new XMLParser({
@@ -357,38 +340,23 @@ export function parseCGML(
     keys: [],
   };
 
-  const awailableDataProperties = new Map<
-    string,
-    Map<string, CGMLKeyProperties>
-  >();
+  const awailableDataProperties = new Map<string, Map<string, CGMLKeyProperties>>();
 
   const xml = parser.parse(graphml) as CGML;
-  
+
   setFormatToMeta(elements, xml);
-  
+
   addPropertiesFromKeyNode(xml, elements, awailableDataProperties);
-  
+
   switch (elements.format) {
-    case "Cyberiada-GraphML": {
-      const indexOfMetaNode = (
-        xml.graphml.graph.node
-      ).findIndex((node) => node.id === "");
+    case 'Cyberiada-GraphML': {
+      const indexOfMetaNode = xml.graphml.graph.node.findIndex((node) => node.id === '');
       if (indexOfMetaNode !== -1) {
-        processNode(
-          elements,
-          xml.graphml.graph.node[indexOfMetaNode],
-          awailableDataProperties
-        );
-        xml.graphml.graph.node = (
-          xml.graphml.graph.node
-        ).filter((value) => value.id !== "");
-        processGraph(
-          elements,
-          xml.graphml.graph,
-          awailableDataProperties
-        );
+        processNode(elements, xml.graphml.graph.node[indexOfMetaNode], awailableDataProperties);
+        xml.graphml.graph.node = xml.graphml.graph.node.filter((value) => value.id !== '');
+        processGraph(elements, xml.graphml.graph, awailableDataProperties);
       } else {
-        throw new Error("Отсутствует мета-узел!");
+        throw new Error('Отсутствует мета-узел!');
       }
       break;
     }

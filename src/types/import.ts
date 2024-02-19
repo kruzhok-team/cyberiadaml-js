@@ -39,7 +39,7 @@ export type CGMLElements = {
   meta: string;
   format: string;
   keys: Array<CGMLKeyNode>;
-}
+};
 
 export type CGMLNode = {
   id: string;
@@ -85,14 +85,7 @@ export type CGMLDataNodeProcess = {
   [key in CGMLDataKey]: (data: CGMLDataNodeProcessArgs) => void;
 };
 
-export const DataKeys = [
-  "gFormat",
-  "dData",
-  "dName",
-  "dInitial",
-  "dGeometry",
-  "dColor",
-] as const;
+export const DataKeys = ['gFormat', 'dData', 'dName', 'dInitial', 'dGeometry', 'dColor'] as const;
 
 export type CGMLDataKey = (typeof DataKeys)[number];
 
@@ -107,18 +100,18 @@ export interface CGMLDataNodeProcessArgs {
 }
 
 export type XMLProperies = {
-  version: string,
-  encoding: string
-}
+  version: string;
+  encoding: string;
+};
 
 export type CGMLGraphmlNode = {
-  xmlns: string,
-  data: Array<CGMLDataNode>,
-  key: Array<CGMLKeyNode>,
-  graph: CGMLGraph,
-}
+  xmlns: string;
+  data: Array<CGMLDataNode>;
+  key: Array<CGMLKeyNode>;
+  graph: CGMLGraph;
+};
 
 export type CGML = {
-  "?xml": XMLProperies,
-  graphml: CGMLGraphmlNode
-}
+  '?xml': XMLProperies;
+  graphml: CGMLGraphmlNode;
+};
