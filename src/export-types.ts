@@ -18,7 +18,7 @@ export type ExportEdge = {
   "@source": string;
   "@target": string;
 //   id: string;
-  data: Array<ExportDataNode>;
+  data?: Array<ExportDataNode>;
 };
 
 export type ExportGraph = {

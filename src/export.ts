@@ -1,4 +1,4 @@
-import { CGML, CGMLComponent, CGMLDataKey, CGMLElements, CGMLKeyNode, CGMLState, CGMLTransition } from "./types";
+import { CGML, CGMLComponent, CGMLDataKey, CGMLElements, CGMLKeyNode, CGMLState, CGMLTransition, InitialState } from "./types";
 import { ExportCGML, ExportDataNode, ExportEdge, ExportGraph, ExportKeyNode, ExportNode } from "./export-types";
 import { XMLBuilder } from "fast-xml-parser";
 
@@ -53,7 +53,7 @@ function stateToExportNode(state: CGMLState, id: string): ExportNode {
   return exportNode;
 }
 
-function getExportNodes(states: { [id: string]: CGMLState }): ExportNode[] {
+function getExportNodes(states: { [id: string]: CGMLState }, initialState: InitialState | null): ExportNode[] {
   const nodes: Map<string, ExportNode> = new Map<string, ExportNode>();
 
   const getExportNode = (stateId: string): ExportNode => {
@@ -87,6 +87,16 @@ function getExportNodes(states: { [id: string]: CGMLState }): ExportNode[] {
     else {
       nodes.set(stateId, node);
     }
+  }
+
+  if (initialState !== null) {
+    nodes.set(initialState.id, {
+      "@id": initialState.id,
+      data: [{
+        "@key": "dInitial",
+        content: '',
+      }]
+    })
   }
 
   return [...nodes.values()];
@@ -154,16 +164,19 @@ function getEdges(transitions: CGMLTransition[]): ExportEdge[] {
     const edge: ExportEdge = {
        "@source": transition.source,
        "@target": transition.target,
-       data: [
-        {
-          "@key": "dData",
-          content: transition.actions
-        }
-       ] 
       }
     
+    if (transition.actions !== undefined) {
+      edge.data = [
+        {
+          "@key": "dData",
+          content: transition.actions !== undefined ? transition.actions : ''
+        }
+       ] 
+    }
+
     if (transition.position !== undefined) {
-      edge.data.push(
+      edge.data?.push(
         {
           "@key": "dGeometry",
           "@x": transition.position.x,
@@ -173,9 +186,8 @@ function getEdges(transitions: CGMLTransition[]): ExportEdge[] {
       )
     }
 
-    if (edge.data)
     for (const dataNode of transition.unsupportedDataNodes) {
-      edge.data.push({
+      edge.data?.push({
         "@key": dataNode.key,
         content: dataNode.content
       })
@@ -209,7 +221,7 @@ export function exportGraphml(elements: CGMLElements): string {
         graph: {
           "@id": "G",
           node: [ getMetaNode(elements.platform, elements.meta),
-                  ...getExportNodes(elements.states), 
+                  ...getExportNodes(elements.states, elements.initialState), 
                   ...getComponentStates(elements.components)],
           edge: [...getEdges(elements.transitions), ...getComponentEdges(elements.components)],
         },
@@ -220,7 +232,7 @@ export function exportGraphml(elements: CGMLElements): string {
 }
 
 console.log(
-  exportGraphml({
+  exportGraphml( {
       states: {
         "n0::n1": {
           name: "Сближение",
@@ -271,9 +283,14 @@ console.log(
       },
       transitions: [
         {
-          source: "n0",
-          target: "n3",
-          actions: "АнализаторЦели.ЦельУничтожена/",
+          "source": "init",
+          "target": "n3",
+          "unsupportedDataNodes": [],
+        },
+        {
+          source: 'n0',
+          target: 'n3',
+          actions: 'АнализаторЦели.ЦельУничтожена/',
           unsupportedDataNodes: []
         },
         {
@@ -302,11 +319,8 @@ console.log(
         }
       ],
       initialState: {
+        id: "init",
         target: "n3",
-        position: {
-          x: -1482.03857,
-          y: 606.497559
-        }
       },
       components: {},
       platform: "BearlogaDefend",

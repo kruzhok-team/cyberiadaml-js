@@ -85,6 +85,7 @@ test(
         }
       ],
       initialState: {
+        id: "init",
         target: "n3",
         position: {
           x: -1482.03857,

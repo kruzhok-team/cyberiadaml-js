@@ -152,62 +152,44 @@ exit/
       },
       transitions: [
         {
-          source: "n0",
-          target: "n3",
-          position: {
-            x: 0,
-            y: 0
-          },
-          actions: "АнализаторЦели.ЦельУничтожена/",
+          "source": "init",
+          "target": "n3",
+          "unsupportedDataNodes": [],
+        },
+        {
+          source: 'n0',
+          target: 'n3',
+          actions: 'АнализаторЦели.ЦельУничтожена/',
           unsupportedDataNodes: []
         },
         {
           source: "n0",
           target: "n3",
-          position: {
-            x: 0,
-            y: 0
-          },
           actions: "АнализаторЦели.ЦельПотеряна/",
           unsupportedDataNodes: []
         },
         {
           source: "n3",
           target: "n0::n1",
-          position: {
-            x: 0,
-            y: 0
-          },
           actions: "Сенсор.ЦельПолучена/",
           unsupportedDataNodes: []
         },
         {
           source: "n0::n1",
           target: "n0::n2",
-          position: {
-            x: 0,
-            y: 0
-          },
           actions: "ОружиеЦелевое.ЦельВошлаВЗонуАтаки/",
           unsupportedDataNodes: []
         },
         {
           source: "n0::n2",
           target: "n0::n1",
-          position: {
-            "x": 0,
-            "y": 0
-          },
           actions: "ОружиеЦелевое.ЦельВышлаИзЗоныАтаки/",
           unsupportedDataNodes: []
         }
       ],
       initialState: {
+        id: "init",
         target: "n3",
-        position: {
-          x: -1482.03857,
-          y: 606.497559
-        }
       },
       components: {},
       platform: "BearlogaDefend",

@@ -20,10 +20,6 @@ import {
 
 function isDataKey(key: string): key is CGMLDataKey {
   return DataKeys.includes(key as CGMLDataKey);
-  // else
-  //   throw new Error(
-  //     `К сожалению, в данный момент не предусмотрена обработка data-узла с ключом ${key}`
-  //   );
 }
 
 // Набор функций, обрабатывающих data-узлы в зависимости от их ключа.
@@ -79,6 +75,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     if (data.parentNode !== undefined) {
       if (data.elements.initialState !== null) {
         initialId = data.parentNode.id;
+        data.elements.initialState.id = data.parentNode.id;
       }
     } else {
       throw new Error("Непредвиденный вызов функции dInitial");
@@ -90,18 +87,8 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     }
     const x = +data.node["x"];
     const y = +data.node["y"];
-    if (data.parentNode !== undefined && data.parentNode.id == initialId) {
-      if (data.elements.initialState !== null) {
-        data.elements.initialState.position = {
-          x: x,
-          y: y,
-        };
-      } else {
-        throw new Error(
-          "Непредвиденная ошибка. dataNodeProcess.dGeometry: initialState == null"
-        );
-      }
-    } else if (data.state !== undefined) {
+
+    if (data.state !== undefined) {
       data.state.bounds = {
         x: x,
         y: y,
@@ -132,6 +119,13 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
       delete elements.states[edge.source];
       if (elements.initialState !== null) {
         elements.initialState.target = edge.target;
+        elements.transitions.push(
+          {
+            source: edge.source,
+            target: edge.target,
+            unsupportedDataNodes: [],
+          }
+        )
       } else {
         throw new Error(
           "Непредвиденная ошибка. processTransitions: initialState == null"
@@ -143,10 +137,6 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
     const transition: CGMLTransition = {
       source: edge.source,
       target: edge.target,
-      position: {
-        x: 0,
-        y: 0,
-      },
       actions: '',
       unsupportedDataNodes: [],
     };
@@ -357,8 +347,8 @@ export function parseCGML(
     states: {},
     transitions: [],
     initialState: {
+      id: '',
       target: '',
-      position: { x: 0, y: 0 },
     },
     components: {},
     platform: '',
@@ -406,6 +396,8 @@ export function parseCGML(
       throw new Error(`ОШИБКА! НЕИЗВЕСТНЫЙ ФОРМАТ "${elements.format}"!`);
     }
   }
+
+  console.log(elements);
 
   return elements;
 }

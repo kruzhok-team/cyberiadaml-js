@@ -10,8 +10,9 @@ export type CGMLState = {
 };
 
 export type InitialState = {
+  id: string;
   target: string;
-  position: Point;
+  position?: Point;
 };
 
 export type CGMLTransition = {
@@ -20,7 +21,7 @@ export type CGMLTransition = {
   target: string;
   color?: string;
   position?: Point;
-  actions: string;
+  actions?: string;
   unsupportedDataNodes: Array<CGMLDataNode>;
 };
 
