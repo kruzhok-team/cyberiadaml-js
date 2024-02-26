@@ -9,7 +9,7 @@
 <key id="dInitial" for="node" attr.name="initial" attr.type="string"/>
 <key id="dGeometry" for="edge"/>
 <key id="dGeometry" for="node"/>
-<key id="dMyExtension" for="node"/>
+<key id="dNote" for="node"/>
 
 <graph id="G" edgedefault="directed">
 
@@ -29,7 +29,6 @@ unit/ Autoborder
     <data key="dData">entry/
 exit/
 </data>
-<data key="dmyExtension"> really important information</data>
     <data key="dGeometry" x="-578.005" y="438.187256"
           width="672.532166" height="802.962646" />
     <graph>
@@ -72,6 +71,11 @@ exit/
           width="20" height="20" />      
   </node>
   
+  <node id="note">
+    <data key="dNote"> This is note!</data>
+    <data key="dGeometry" x="12" y="12"></data>
+  </node>
+
   <edge source="init" target="n3"> </edge>
   <edge source="n0" target="n3">
     <data key="dData">АнализаторЦели.ЦельУничтожена/

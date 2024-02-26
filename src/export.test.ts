@@ -3,6 +3,15 @@ import { exportGraphml } from './export';
 test('test export to CGML', () => {
   expect(
     exportGraphml({
+      notes: [
+        {
+          text: 'This is note!',
+          position: {
+            x: 12,
+            y: 12,
+          },
+        },
+      ],
       states: {
         'n0::n1': {
           name: 'Сближение',
@@ -133,6 +142,6 @@ test('test export to CGML', () => {
           'attr.type': undefined,
         },
       ],
-    }),
+    })
   );
 });

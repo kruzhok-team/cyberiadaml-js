@@ -39,6 +39,12 @@ export type CGMLElements = {
   meta: string;
   format: string;
   keys: Array<CGMLKeyNode>;
+  notes: Note[];
+};
+
+export type Note = {
+  position: Point;
+  text: string;
 };
 
 export type CGMLNode = {
@@ -85,7 +91,7 @@ export type CGMLDataNodeProcess = {
   [key in CGMLDataKey]: (data: CGMLDataNodeProcessArgs) => void;
 };
 
-export const DataKeys = ['gFormat', 'dData', 'dName', 'dInitial', 'dGeometry', 'dColor'] as const;
+export const DataKeys = ['gFormat', 'dData', 'dName', 'dInitial', 'dGeometry', 'dColor', 'dNote'] as const;
 
 export type CGMLDataKey = (typeof DataKeys)[number];
 
@@ -97,6 +103,7 @@ export interface CGMLDataNodeProcessArgs {
   parentNode?: CGMLNode;
   state?: CGMLState;
   transition?: CGMLTransition;
+  note?: Note;
 }
 
 export type XMLProperies = {
