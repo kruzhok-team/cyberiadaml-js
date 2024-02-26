@@ -1,3 +1,5 @@
+import { Point } from './import';
+
 export type ExportKeyNode = {
   '@id': string;
   '@for': string;
@@ -19,6 +21,12 @@ export type ExportEdge = {
   '@target': string;
   //   id: string;
   data?: Array<ExportDataNode>;
+};
+
+export type ExportNote = {
+  '@id': string;
+  position: Point;
+  text: string;
 };
 
 export type ExportGraph = {

@@ -16,6 +16,7 @@ import {
   CGML,
   CGMLGraph,
   CGMLEdge,
+  Note,
 } from './types/import';
 
 function isDataKey(key: string): key is CGMLDataKey {
@@ -27,7 +28,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
   gFormat({ elements, node }) {
     if (elements.format != '') {
       throw new Error(
-        `Повторное указание формата! Старое значение: ${elements.format}. Новое значение: ${node.content}`,
+        `Повторное указание формата! Старое значение: ${elements.format}. Новое значение: ${node.content}`
       );
     }
     elements.format = node.content;
@@ -59,7 +60,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
           data.elements.platform = data.node.content;
         } else {
           throw new Error(
-            `Повторное указание платформы! Старое значение: ${data.elements.platform}. Новое значение: ${data.node.content}`,
+            `Повторное указание платформы! Старое значение: ${data.elements.platform}. Новое значение: ${data.node.content}`
           );
         }
       } else {
@@ -102,6 +103,11 @@ const dataNodeProcess: CGMLDataNodeProcess = {
         x: x,
         y: y,
       };
+    } else if (data.note !== undefined) {
+      data.note.position = {
+        x: x,
+        y: y,
+      };
     } else {
       throw new Error('Непредвиденный вызов функции dGeometry');
     }
@@ -109,6 +115,13 @@ const dataNodeProcess: CGMLDataNodeProcess = {
   dColor(data: CGMLDataNodeProcessArgs) {
     if (data.transition !== undefined) {
       data.transition.color = data.node.content;
+    }
+  },
+  dNote(data: CGMLDataNodeProcessArgs) {
+    if (data.note !== undefined) {
+      data.note.text = data.node.content;
+    } else {
+      throw new Error('Непредвиденный вызов функции dNote');
     }
   },
 };
@@ -176,18 +189,31 @@ function createEmptyState(): CGMLState {
   };
 }
 
+function createEmptyNote(): Note {
+  return {
+    position: {
+      x: 0,
+      y: 0,
+    },
+    text: '',
+  };
+}
+
 // Обработка нод
 function processNode(
   elements: CGMLElements,
   node: CGMLNode,
   awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
   parent?: CGMLNode,
-  component?: CGMLComponent,
-): CGMLState {
-  const state: CGMLState = createEmptyState();
+  component?: CGMLComponent
+): CGMLState | Note {
+  // Если находим dNote среди дата-нод, то создаем пустую заметку, а состояние делаем undefined
+  const note: Note | undefined = node.data?.find((dataNode) => dataNode.key === 'dNote')
+    ? createEmptyNote()
+    : undefined;
+  const state: CGMLState | undefined = note == undefined ? createEmptyState() : undefined;
   if (node.data !== undefined) {
     for (const dataNode of node.data) {
-      // Проверяем, что ключ DataNode указан в начале схемы
       if (awailableDataProperties.get('node')?.has(dataNode.key)) {
         if (isDataKey(dataNode.key)) {
           const func = dataNodeProcess[dataNode.key];
@@ -197,9 +223,8 @@ function processNode(
             parentNode: node,
             state: state,
             component: component,
+            note: note,
           });
-        } else {
-          state.unsupportedDataNodes.push(dataNode);
         }
       } else {
         throw new Error(`Неизвестный key "${dataNode.key}" для узла node!`);
@@ -207,7 +232,7 @@ function processNode(
     }
   }
 
-  if (parent !== undefined) {
+  if (parent !== undefined && state !== undefined) {
     state.parent = parent.id;
   }
 
@@ -215,7 +240,13 @@ function processNode(
     processGraph(elements, node.graph, awailableDataProperties, node);
   }
 
-  return state;
+  if (state !== undefined) {
+    return state;
+  } else if (note !== undefined) {
+    return note;
+  } else {
+    throw new Error('Отсутствует состояние или заметка для данного узла!');
+  }
 }
 
 function emptyCGMLComponent(): CGMLComponent {
@@ -225,11 +256,15 @@ function emptyCGMLComponent(): CGMLComponent {
   };
 }
 
+function isState(value: CGMLState | Note): value is CGMLState {
+  return (value as CGMLState).actions !== undefined;
+}
+
 function processGraph(
   elements: CGMLElements,
   graph: CGMLGraph,
   awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
-  parent?: CGMLNode,
+  parent?: CGMLNode
 ) {
   if (parent === undefined) {
     if (graph.edge) {
@@ -264,7 +299,17 @@ function processGraph(
 
   for (const idx in graph.node) {
     const node = graph.node[idx];
-    elements.states[node.id] = processNode(elements, node, awailableDataProperties, parent);
+    const processResult: CGMLState | Note = processNode(
+      elements,
+      node,
+      awailableDataProperties,
+      parent
+    );
+    if (isState(processResult)) {
+      elements.states[node.id] = processResult;
+    } else {
+      elements.notes[node.id] = processResult;
+    }
   }
 
   if (graph.edge) {
@@ -276,7 +321,7 @@ function processGraph(
 function addPropertiesFromKeyNode(
   xml: CGML,
   elements: CGMLElements,
-  awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>, // Map<Название целевой ноды, Map<id свойства, аттрибуты свойства>>
+  awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>> // Map<Название целевой ноды, Map<id свойства, аттрибуты свойства>>
 ) {
   for (const node of xml.graphml.key) {
     const keyNode: CGMLKeyNode = {
@@ -305,7 +350,7 @@ function addPropertiesFromKeyNode(
         keyNode.for,
         new Map<string, CGMLKeyProperties>([
           [keyNode.id, { 'attr.name': node['attr.name'], 'attr.type': node['attr.type'] }],
-        ]),
+        ])
       );
     }
   }
@@ -338,6 +383,7 @@ export function parseCGML(graphml: string): CGMLElements {
     meta: '',
     format: '',
     keys: [],
+    notes: {},
   };
 
   const awailableDataProperties = new Map<string, Map<string, CGMLKeyProperties>>();
