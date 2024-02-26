@@ -1,5 +1,5 @@
-type Point = { x: number; y: number };
-type Rectangle = Point & { width: number; height: number };
+export type Point = { x: number; y: number };
+export type Rectangle = Point & { width: number; height: number };
 
 export type CGMLState = {
   parent?: string;
@@ -39,7 +39,7 @@ export type CGMLElements = {
   meta: string;
   format: string;
   keys: Array<CGMLKeyNode>;
-  notes: Note[];
+  notes: { [id: string]: Note };
 };
 
 export type Note = {
@@ -91,7 +91,15 @@ export type CGMLDataNodeProcess = {
   [key in CGMLDataKey]: (data: CGMLDataNodeProcessArgs) => void;
 };
 
-export const DataKeys = ['gFormat', 'dData', 'dName', 'dInitial', 'dGeometry', 'dColor', 'dNote'] as const;
+export const DataKeys = [
+  'gFormat',
+  'dData',
+  'dName',
+  'dInitial',
+  'dGeometry',
+  'dColor',
+  'dNote',
+] as const;
 
 export type CGMLDataKey = (typeof DataKeys)[number];
 

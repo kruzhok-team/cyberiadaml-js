@@ -308,7 +308,7 @@ function processGraph(
     if (isState(processResult)) {
       elements.states[node.id] = processResult;
     } else {
-      elements.notes.push(processResult);
+      elements.notes[node.id] = processResult;
     }
   }
 
@@ -383,7 +383,7 @@ export function parseCGML(graphml: string): CGMLElements {
     meta: '',
     format: '',
     keys: [],
-    notes: [],
+    notes: {},
   };
 
   const awailableDataProperties = new Map<string, Map<string, CGMLKeyProperties>>();

@@ -4,15 +4,15 @@ import { readFileSync } from 'fs';
 test('test parsing Bearloga schema', () => {
   const bearlogaDemo: string = readFileSync('demos/CyberiadaFormat-Autoborder.graphml', 'utf-8');
   expect(parseCGML(bearlogaDemo)).toStrictEqual({
-    notes: [
-      {
+    notes: {
+      note: {
         text: 'This is note!',
         position: {
           x: 12,
           y: 12,
         },
       },
-    ],
+    },
     states: {
       'n0::n1': {
         name: 'Сближение',
@@ -156,7 +156,7 @@ test('test parsing Bearloga schema', () => {
 test('test parsing ArduinoUno schema', () => {
   const arduinoDemo: string = readFileSync('demos/CyberiadaFormat-Blinker.graphml', 'utf-8');
   expect(parseCGML(arduinoDemo)).toStrictEqual({
-    notes: [],
+    notes: {},
     components: {
       LED1: {
         id: 'LED1',

@@ -1,6 +1,6 @@
 import { XMLBuilder } from 'fast-xml-parser';
 
-import { ExportCGML, ExportEdge, ExportKeyNode, ExportNode } from './types/export';
+import { ExportCGML, ExportEdge, ExportKeyNode, ExportNode, ExportNote } from './types/export';
 import {
   CGMLComponent,
   CGMLElements,
@@ -8,6 +8,7 @@ import {
   CGMLState,
   CGMLTransition,
   InitialState,
+  Note,
 } from './types/import';
 
 function getMetaNode(platform: string, meta: string): ExportNode {
@@ -61,7 +62,7 @@ function stateToExportNode(state: CGMLState, id: string): ExportNode {
 
 function getExportNodes(
   states: { [id: string]: CGMLState },
-  initialState: InitialState | null,
+  initialState: InitialState | null
 ): ExportNode[] {
   const nodes: Map<string, ExportNode> = new Map<string, ExportNode>();
 
@@ -203,6 +204,30 @@ function getEdges(transitions: CGMLTransition[]): ExportEdge[] {
   return edges;
 }
 
+function getNoteNodes(notes: { [id: string]: Note }): ExportNode[] {
+  const nodes: ExportNode[] = new Array<ExportNode>();
+  for (const noteId in notes) {
+    const note: Note = notes[noteId];
+    const node: ExportNode = {
+      '@id': noteId,
+      data: [],
+    };
+    node.data.push({
+      '@key': 'dGeometry',
+      '@x': note.position.x,
+      '@y': note.position.y,
+      content: '',
+    });
+    node.data.push({
+      '@key': 'dNote',
+      content: note.text,
+    });
+
+    nodes.push(node);
+  }
+  return nodes;
+}
+
 export function exportGraphml(elements: CGMLElements): string {
   const builder = new XMLBuilder({
     textNodeName: 'content',
@@ -228,11 +253,11 @@ export function exportGraphml(elements: CGMLElements): string {
           getMetaNode(elements.platform, elements.meta),
           ...getExportNodes(elements.states, elements.initialState),
           ...getComponentStates(elements.components),
+          ...getNoteNodes(elements.notes),
         ],
         edge: [...getEdges(elements.transitions), ...getComponentEdges(elements.components)],
       },
     },
   };
-
   return builder.build(xml);
 }
