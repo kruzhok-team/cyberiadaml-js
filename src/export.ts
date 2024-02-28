@@ -7,8 +7,8 @@ import {
   CGMLKeyNode,
   CGMLState,
   CGMLTransition,
-  InitialState,
-  Note,
+  CGMLInitialState,
+  CGMLNote,
 } from './types/import';
 
 function getMetaNode(platform: string, meta: string): ExportNode {
@@ -62,7 +62,7 @@ function stateToExportNode(state: CGMLState, id: string): ExportNode {
 
 function getExportNodes(
   states: { [id: string]: CGMLState },
-  initialState: InitialState | null
+  initialState: CGMLInitialState | null
 ): ExportNode[] {
   const nodes: Map<string, ExportNode> = new Map<string, ExportNode>();
 
@@ -204,10 +204,10 @@ function getEdges(transitions: CGMLTransition[]): ExportEdge[] {
   return edges;
 }
 
-function getNoteNodes(notes: { [id: string]: Note }): ExportNode[] {
+function getNoteNodes(notes: { [id: string]: CGMLNote }): ExportNode[] {
   const nodes: ExportNode[] = new Array<ExportNode>();
   for (const noteId in notes) {
-    const note: Note = notes[noteId];
+    const note: CGMLNote = notes[noteId];
     const node: ExportNode = {
       '@id': noteId,
       data: [],

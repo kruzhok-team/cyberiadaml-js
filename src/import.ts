@@ -7,7 +7,7 @@ import {
   CGMLKeyProperties,
   CGMLDataNodeProcess,
   CGMLDataKey,
-  DataKeys,
+  CGMLDataKeys,
   CGMLDataNode,
   CGMLDataNodeProcessArgs,
   CGMLKeyNode,
@@ -16,11 +16,11 @@ import {
   CGML,
   CGMLGraph,
   CGMLEdge,
-  Note,
+  CGMLNote,
 } from './types/import';
 
 function isDataKey(key: string): key is CGMLDataKey {
-  return DataKeys.includes(key as CGMLDataKey);
+  return CGMLDataKeys.includes(key as CGMLDataKey);
 }
 
 // Набор функций, обрабатывающих data-узлы в зависимости от их ключа.
@@ -189,7 +189,7 @@ function createEmptyState(): CGMLState {
   };
 }
 
-function createEmptyNote(): Note {
+function createEmptyNote(): CGMLNote {
   return {
     position: {
       x: 0,
@@ -206,9 +206,9 @@ function processNode(
   awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
   parent?: CGMLNode,
   component?: CGMLComponent
-): CGMLState | Note {
+): CGMLState | CGMLNote {
   // Если находим dNote среди дата-нод, то создаем пустую заметку, а состояние делаем undefined
-  const note: Note | undefined = node.data?.find((dataNode) => dataNode.key === 'dNote')
+  const note: CGMLNote | undefined = node.data?.find((dataNode) => dataNode.key === 'dNote')
     ? createEmptyNote()
     : undefined;
   const state: CGMLState | undefined = note == undefined ? createEmptyState() : undefined;
@@ -256,7 +256,7 @@ function emptyCGMLComponent(): CGMLComponent {
   };
 }
 
-function isState(value: CGMLState | Note): value is CGMLState {
+function isState(value: CGMLState | CGMLNote): value is CGMLState {
   return (value as CGMLState).actions !== undefined;
 }
 
@@ -299,7 +299,7 @@ function processGraph(
 
   for (const idx in graph.node) {
     const node = graph.node[idx];
-    const processResult: CGMLState | Note = processNode(
+    const processResult: CGMLState | CGMLNote = processNode(
       elements,
       node,
       awailableDataProperties,

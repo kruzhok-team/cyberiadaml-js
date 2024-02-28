@@ -1,4 +1,4 @@
-import { Point } from './import';
+import { CGMLPoint } from './import';
 
 export type ExportKeyNode = {
   '@id': string;
@@ -25,7 +25,7 @@ export type ExportEdge = {
 
 export type ExportNote = {
   '@id': string;
-  position: Point;
+  position: CGMLPoint;
   text: string;
 };
 
