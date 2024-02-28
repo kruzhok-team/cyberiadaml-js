@@ -1,18 +1,18 @@
-export type Point = { x: number; y: number };
-export type Rectangle = Point & { width: number; height: number };
+export type CGMLPoint = { x: number; y: number };
+export type CGMLRectangle = CGMLPoint & { width: number; height: number };
 
 export type CGMLState = {
   parent?: string;
   name: string;
-  bounds: Rectangle;
+  bounds: CGMLRectangle;
   actions: string;
   unsupportedDataNodes: Array<CGMLDataNode>;
 };
 
-export type InitialState = {
+export type CGMLInitialState = {
   id: string;
   target: string;
-  position?: Point;
+  position?: CGMLPoint;
 };
 
 export type CGMLTransition = {
@@ -20,7 +20,7 @@ export type CGMLTransition = {
   source: string;
   target: string;
   color?: string;
-  position?: Point;
+  position?: CGMLPoint;
   actions?: string;
   unsupportedDataNodes: Array<CGMLDataNode>;
 };
@@ -34,16 +34,16 @@ export type CGMLElements = {
   states: { [id: string]: CGMLState };
   transitions: CGMLTransition[];
   components: { [id: string]: CGMLComponent };
-  initialState: InitialState | null;
+  initialState: CGMLInitialState | null;
   platform: string;
   meta: string;
   format: string;
   keys: Array<CGMLKeyNode>;
-  notes: { [id: string]: Note };
+  notes: { [id: string]: CGMLNote };
 };
 
-export type Note = {
-  position: Point;
+export type CGMLNote = {
+  position: CGMLPoint;
   text: string;
 };
 
@@ -91,7 +91,7 @@ export type CGMLDataNodeProcess = {
   [key in CGMLDataKey]: (data: CGMLDataNodeProcessArgs) => void;
 };
 
-export const DataKeys = [
+export const CGMLDataKeys = [
   'gFormat',
   'dData',
   'dName',
@@ -101,7 +101,7 @@ export const DataKeys = [
   'dNote',
 ] as const;
 
-export type CGMLDataKey = (typeof DataKeys)[number];
+export type CGMLDataKey = (typeof CGMLDataKeys)[number];
 
 export interface CGMLDataNodeProcessArgs {
   elements: CGMLElements;
@@ -111,7 +111,7 @@ export interface CGMLDataNodeProcessArgs {
   parentNode?: CGMLNode;
   state?: CGMLState;
   transition?: CGMLTransition;
-  note?: Note;
+  note?: CGMLNote;
 }
 
 export type XMLProperies = {
