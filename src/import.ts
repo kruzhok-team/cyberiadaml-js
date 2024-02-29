@@ -131,8 +131,13 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
   for (const idx in edges) {
     const edge = edges[idx];
     if (!foundInitial && edge.source === initialId) {
+      const bounds = elements.states[edge.source].bounds;
       delete elements.states[edge.source];
       if (elements.initialState !== null) {
+        elements.initialState.position = {
+          x: bounds.x,
+          y: bounds.y,
+        };
         elements.initialState.target = edge.target;
         elements.transitions.push({
           source: edge.source,

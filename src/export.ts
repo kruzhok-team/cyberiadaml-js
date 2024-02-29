@@ -97,7 +97,7 @@ function getExportNodes(
   }
 
   if (initialState !== null) {
-    nodes.set(initialState.id, {
+    const initialNode: ExportNode = {
       '@id': initialState.id,
       data: [
         {
@@ -105,7 +105,18 @@ function getExportNodes(
           content: '',
         },
       ],
-    });
+    };
+
+    if (initialState.position !== undefined) {
+      initialNode.data.push({
+        '@key': 'dGeometry',
+        '@x': initialState.position.x,
+        '@y': initialState.position.y,
+        content: '',
+      });
+    }
+
+    nodes.set(initialState.id, initialNode);
   }
 
   return [...nodes.values()];
