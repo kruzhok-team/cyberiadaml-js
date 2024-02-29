@@ -101,6 +101,10 @@ test('test parsing Bearloga schema', () => {
     initialState: {
       id: 'init',
       target: 'n3',
+      position: {
+        x: -1482.03857,
+        y: 606.497559,
+      },
     },
     components: {},
     platform: 'BearlogaDefend',
@@ -176,6 +180,10 @@ description/ Программный таймер.`,
     initialState: {
       id: 'init',
       target: 'diod1',
+      position: {
+        x: 311,
+        y: -94,
+      },
     },
     keys: [
       {
