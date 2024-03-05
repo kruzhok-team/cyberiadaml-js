@@ -14,6 +14,17 @@ test('test parsing Bearloga schema', () => {
       },
     },
     states: {
+      emptyState: {
+        name: 'Состояние',
+        bounds: {
+          x: -1608.5385700000004,
+          y: 318.0811,
+          width: 450,
+          height: 85,
+        },
+        actions: undefined,
+        unsupportedDataNodes: [],
+      },
       'n0::n1': {
         name: 'Сближение',
         bounds: {
