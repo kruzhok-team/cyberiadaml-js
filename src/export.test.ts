@@ -9,5 +9,6 @@ test('test parse-export-parse cycle', () => {
   console.log(parsed)
   const exported: string = exportGraphml(parsed);
   const parsedAgain: CGMLElements = parseCGML(exported);
+  console.log(parsedAgain);
   expect(parsed).toStrictEqual(parsedAgain);
 });

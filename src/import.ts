@@ -419,6 +419,6 @@ export function parseCGML(graphml: string): CGMLElements {
       throw new Error(`ОШИБКА! НЕИЗВЕСТНЫЙ ФОРМАТ "${elements.format}"!`);
     }
   }
-
+  console.log(JSON.stringify(elements.transitions));
   return elements;
 }
