@@ -10,13 +10,14 @@ export type CGMLState = {
 };
 
 export type CGMLInitialState = {
+  transitionId: string;
   id: string;
   target: string;
   position?: CGMLPoint;
 };
 
 export type CGMLTransition = {
-  // id: string;
+  id: string;
   source: string;
   target: string;
   color?: string;
@@ -32,7 +33,7 @@ export type CGMLComponent = {
 
 export type CGMLElements = {
   states: { [id: string]: CGMLState };
-  transitions: CGMLTransition[];
+  transitions: Record<string, CGMLTransition>;
   components: { [id: string]: CGMLComponent };
   initialState: CGMLInitialState | null;
   platform: string;
@@ -54,6 +55,7 @@ export type CGMLNode = {
 };
 
 export type CGMLEdge = {
+  id: string;
   source: string;
   target: string;
   data?: Array<CGMLDataNode>;

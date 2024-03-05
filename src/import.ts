@@ -48,7 +48,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     } else {
       if (transition !== undefined) {
         transition.actions = node.content;
-        elements.transitions.push(transition);
+        elements.transitions[transition.id] = transition;
       }
     }
   },
@@ -139,11 +139,13 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
           y: bounds.y,
         };
         elements.initialState.target = edge.target;
-        elements.transitions.push({
+        elements.initialState.transitionId = edge.id;
+        elements.transitions[edge.id] = {
+          id: edge.id,
           source: edge.source,
           target: edge.target,
           unsupportedDataNodes: [],
-        });
+        };
       } else {
         throw new Error('Непредвиденная ошибка. processTransitions: initialState == null');
       }
@@ -151,6 +153,7 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
     }
 
     const transition: CGMLTransition = {
+      id: edge.id,
       source: edge.source,
       target: edge.target,
       actions: '',
@@ -378,8 +381,9 @@ export function parseCGML(graphml: string): CGMLElements {
 
   const elements: CGMLElements = {
     states: {},
-    transitions: [],
+    transitions: {},
     initialState: {
+      transitionId: '',
       id: '',
       target: '',
     },
@@ -415,6 +419,6 @@ export function parseCGML(graphml: string): CGMLElements {
       throw new Error(`ОШИБКА! НЕИЗВЕСТНЫЙ ФОРМАТ "${elements.format}"!`);
     }
   }
-
+  console.log(JSON.stringify(elements.transitions));
   return elements;
 }

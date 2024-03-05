@@ -62,7 +62,7 @@ function stateToExportNode(state: CGMLState, id: string): ExportNode {
 
 function getExportNodes(
   states: { [id: string]: CGMLState },
-  initialState: CGMLInitialState | null
+  initialState: CGMLInitialState | null,
 ): ExportNode[] {
   const nodes: Map<string, ExportNode> = new Map<string, ExportNode>();
 
@@ -166,6 +166,7 @@ function getComponentEdges(components: { [id: string]: CGMLComponent }): ExportE
   for (const componentId in components) {
     const component = components[componentId];
     edges.push({
+      '@id': component.id,
       '@source': '',
       '@target': component.id,
       data: [],
@@ -175,11 +176,13 @@ function getComponentEdges(components: { [id: string]: CGMLComponent }): ExportE
   return edges;
 }
 
-function getEdges(transitions: CGMLTransition[]): ExportEdge[] {
+function getEdges(transitions: Record<string, CGMLTransition>): ExportEdge[] {
   const edges: ExportEdge[] = [];
 
-  for (const transition of transitions) {
+  for (const id in transitions) {
+    const transition = transitions[id];
     const edge: ExportEdge = {
+      '@id': transition.id,
       '@source': transition.source,
       '@target': transition.target,
     };
@@ -266,7 +269,7 @@ export function exportGraphml(elements: CGMLElements): string {
           ...getComponentStates(elements.components),
           ...getNoteNodes(elements.notes),
         ],
-        edge: [...getEdges(elements.transitions), ...getComponentEdges(elements.components)],
+        edge: { ...getEdges(elements.transitions), ...getComponentEdges(elements.components), },
       },
     },
   };
