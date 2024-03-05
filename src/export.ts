@@ -11,6 +11,20 @@ import {
   CGMLNote,
 } from './types/import';
 
+export function emptyCGMLElements(): CGMLElements {
+  return {
+    states: {},
+    transitions: [],
+    components: {},
+    initialState: null,
+    platform: '',
+    meta: '',
+    format: '',
+    keys: [],
+    notes: {},
+  };
+}
+
 function getMetaNode(platform: string, meta: string): ExportNode {
   return {
     '@id': '',
