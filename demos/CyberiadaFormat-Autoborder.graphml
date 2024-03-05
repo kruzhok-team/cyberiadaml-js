@@ -70,7 +70,11 @@ exit/
     <data key="dGeometry" x="-1482.03857" y="606.497559" 
           width="20" height="20" />      
   </node>
-  
+  <node id="emptyState">
+      <data key="dName">Состояние</data>
+      <data key="dGeometry" width="450" height="85" x="-1608.5385700000004" y="318.0811"></data>
+      <data key="dData"></data>
+    </node>
   <node id="note">
     <data key="dNote"> This is note!</data>
     <data key="dGeometry" x="12" y="12"></data>

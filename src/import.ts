@@ -28,7 +28,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
   gFormat({ elements, node }) {
     if (elements.format != '') {
       throw new Error(
-        `Повторное указание формата! Старое значение: ${elements.format}. Новое значение: ${node.content}`
+        `Повторное указание формата! Старое значение: ${elements.format}. Новое значение: ${node.content}`,
       );
     }
     elements.format = node.content;
@@ -60,7 +60,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
           data.elements.platform = data.node.content;
         } else {
           throw new Error(
-            `Повторное указание платформы! Старое значение: ${data.elements.platform}. Новое значение: ${data.node.content}`
+            `Повторное указание платформы! Старое значение: ${data.elements.platform}. Новое значение: ${data.node.content}`,
           );
         }
       } else {
@@ -210,7 +210,7 @@ function processNode(
   node: CGMLNode,
   awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
   parent?: CGMLNode,
-  component?: CGMLComponent
+  component?: CGMLComponent,
 ): CGMLState | CGMLNote {
   // Если находим dNote среди дата-нод, то создаем пустую заметку, а состояние делаем undefined
   const note: CGMLNote | undefined = node.data?.find((dataNode) => dataNode.key === 'dNote')
@@ -262,14 +262,14 @@ function emptyCGMLComponent(): CGMLComponent {
 }
 
 function isState(value: CGMLState | CGMLNote): value is CGMLState {
-  return (value as CGMLState).actions !== undefined;
+  return (value as CGMLState).actions !== undefined || (value as CGMLState).name !== undefined;
 }
 
 function processGraph(
   elements: CGMLElements,
   graph: CGMLGraph,
   awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
-  parent?: CGMLNode
+  parent?: CGMLNode,
 ) {
   if (parent === undefined) {
     if (graph.edge) {
@@ -308,7 +308,7 @@ function processGraph(
       elements,
       node,
       awailableDataProperties,
-      parent
+      parent,
     );
     if (isState(processResult)) {
       elements.states[node.id] = processResult;
@@ -326,7 +326,7 @@ function processGraph(
 function addPropertiesFromKeyNode(
   xml: CGML,
   elements: CGMLElements,
-  awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>> // Map<Название целевой ноды, Map<id свойства, аттрибуты свойства>>
+  awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>, // Map<Название целевой ноды, Map<id свойства, аттрибуты свойства>>
 ) {
   for (const node of xml.graphml.key) {
     const keyNode: CGMLKeyNode = {
@@ -355,7 +355,7 @@ function addPropertiesFromKeyNode(
         keyNode.for,
         new Map<string, CGMLKeyProperties>([
           [keyNode.id, { 'attr.name': node['attr.name'], 'attr.type': node['attr.type'] }],
-        ])
+        ]),
       );
     }
   }
