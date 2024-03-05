@@ -11,6 +11,20 @@ import {
   CGMLNote,
 } from './types/import';
 
+export function emptyCGMLElements(): CGMLElements {
+  return {
+    states: {},
+    transitions: [],
+    components: {},
+    initialState: null,
+    platform: '',
+    meta: '',
+    format: '',
+    keys: [],
+    notes: {},
+  };
+}
+
 function getMetaNode(platform: string, meta: string): ExportNode {
   return {
     '@id': '',
@@ -62,7 +76,7 @@ function stateToExportNode(state: CGMLState, id: string): ExportNode {
 
 function getExportNodes(
   states: { [id: string]: CGMLState },
-  initialState: CGMLInitialState | null
+  initialState: CGMLInitialState | null,
 ): ExportNode[] {
   const nodes: Map<string, ExportNode> = new Map<string, ExportNode>();
 
