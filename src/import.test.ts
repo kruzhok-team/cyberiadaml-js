@@ -72,44 +72,51 @@ test('test parsing Bearloga schema', () => {
         unsupportedDataNodes: [],
       },
     },
-    transitions: [
-      {
+    transitions: {
+      edge1: {
+        id: 'edge1',
         source: 'init',
         target: 'n3',
         unsupportedDataNodes: [],
       },
-      {
+      edge2: {
+        id: 'edge2',
         source: 'n0',
         target: 'n3',
         actions: 'АнализаторЦели.ЦельУничтожена/',
         unsupportedDataNodes: [],
       },
-      {
+      edge3: {
+        id: 'edge3',
         source: 'n0',
         target: 'n3',
         actions: 'АнализаторЦели.ЦельПотеряна/',
         unsupportedDataNodes: [],
       },
-      {
+      edge4: {
+        id: 'edge4',
         source: 'n3',
         target: 'n0::n1',
         actions: 'Сенсор.ЦельПолучена/',
         unsupportedDataNodes: [],
       },
-      {
+      edge5: {
+        id: 'edge5',
         source: 'n0::n1',
         target: 'n0::n2',
         actions: 'ОружиеЦелевое.ЦельВошлаВЗонуАтаки/',
         unsupportedDataNodes: [],
       },
-      {
+      edge6: {
+        id: 'edge6',
         source: 'n0::n2',
         target: 'n0::n1',
         actions: 'ОружиеЦелевое.ЦельВышлаИзЗоныАтаки/',
         unsupportedDataNodes: [],
       },
-    ],
+    },
     initialState: {
+      transitionId: 'edge1',
       id: 'init',
       target: 'n3',
       position: {
@@ -189,6 +196,7 @@ description/ Программный таймер.`,
     },
     format: 'Cyberiada-GraphML',
     initialState: {
+      transitionId: 'edge1',
       id: 'init',
       target: 'diod1',
       position: {
@@ -271,13 +279,15 @@ timer1.start(1000)`,
         unsupportedDataNodes: [],
       },
     },
-    transitions: [
-      {
+    transitions: {
+      edge1: {
+        id: 'edge1',
         source: 'init',
         target: 'diod1',
         unsupportedDataNodes: [],
       },
-      {
+      edge2: {
+        id: 'edge2',
         actions: 'timer1.timeout/',
         color: '#F29727',
         position: { x: 457, y: 173 },
@@ -285,7 +295,8 @@ timer1.start(1000)`,
         target: 'diod2',
         unsupportedDataNodes: [],
       },
-      {
+      edge3: {
+        id: 'edge3',
         actions: 'timer1.timeout/',
         color: '#F24C3D',
         position: { x: 16, y: 175 },
@@ -293,6 +304,6 @@ timer1.start(1000)`,
         target: 'diod1',
         unsupportedDataNodes: [],
       },
-    ],
+    },
   });
 });

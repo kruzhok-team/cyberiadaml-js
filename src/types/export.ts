@@ -17,9 +17,9 @@ export type ExportDataNode = {
 };
 
 export type ExportEdge = {
+  '@id': string;
   '@source': string;
   '@target': string;
-  //   id: string;
   data?: Array<ExportDataNode>;
 };
 

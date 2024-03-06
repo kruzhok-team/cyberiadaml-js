@@ -14,7 +14,7 @@ import {
 export function emptyCGMLElements(): CGMLElements {
   return {
     states: {},
-    transitions: [],
+    transitions: {},
     components: {},
     initialState: null,
     platform: '',
@@ -180,6 +180,7 @@ function getComponentEdges(components: { [id: string]: CGMLComponent }): ExportE
   for (const componentId in components) {
     const component = components[componentId];
     edges.push({
+      '@id': component.id,
       '@source': '',
       '@target': component.id,
       data: [],
@@ -189,11 +190,13 @@ function getComponentEdges(components: { [id: string]: CGMLComponent }): ExportE
   return edges;
 }
 
-function getEdges(transitions: CGMLTransition[]): ExportEdge[] {
+function getEdges(transitions: Record<string, CGMLTransition>): ExportEdge[] {
   const edges: ExportEdge[] = [];
 
-  for (const transition of transitions) {
+  for (const id in transitions) {
+    const transition = transitions[id];
     const edge: ExportEdge = {
+      '@id': transition.id,
       '@source': transition.source,
       '@target': transition.target,
     };
@@ -253,6 +256,27 @@ function getNoteNodes(notes: { [id: string]: CGMLNote }): ExportNode[] {
   return nodes;
 }
 
+function getInitEdge(initialState: CGMLInitialState): ExportEdge {
+  const initTransition: ExportEdge = {
+    '@id': initialState.transitionId,
+    '@source': initialState.id,
+    '@target': initialState.target,
+  };
+
+  if (initialState.position !== undefined) {
+    initTransition.data = [
+      {
+        '@key': 'dGeomtery',
+        '@x': initialState.position.x,
+        '@y': initialState.position.y,
+        content: '',
+      },
+    ];
+  }
+
+  return initTransition;
+}
+
 export function exportGraphml(elements: CGMLElements): string {
   const builder = new XMLBuilder({
     textNodeName: 'content',
@@ -280,9 +304,12 @@ export function exportGraphml(elements: CGMLElements): string {
           ...getComponentStates(elements.components),
           ...getNoteNodes(elements.notes),
         ],
-        edge: [...getEdges(elements.transitions), ...getComponentEdges(elements.components)],
+        edge: [ ...getEdges(elements.transitions), ...getComponentEdges(elements.components) ],
       },
     },
   };
+  if (elements.initialState !== null) {
+    xml.graphml.graph.edge.push(getInitEdge(elements.initialState));
+  }
   return builder.build(xml);
 }
