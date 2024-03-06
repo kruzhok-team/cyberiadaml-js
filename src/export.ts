@@ -14,7 +14,7 @@ import {
 export function emptyCGMLElements(): CGMLElements {
   return {
     states: {},
-    transitions: [],
+    transitions: {},
     components: {},
     initialState: null,
     platform: '',
@@ -256,6 +256,27 @@ function getNoteNodes(notes: { [id: string]: CGMLNote }): ExportNode[] {
   return nodes;
 }
 
+function getInitEdge(initialState: CGMLInitialState): ExportEdge {
+  const initTransition: ExportEdge = {
+    '@id': initialState.transitionId,
+    '@source': initialState.id,
+    '@target': initialState.target,
+  };
+
+  if (initialState.position !== undefined) {
+    initTransition.data = [
+      {
+        '@key': 'dGeomtery',
+        '@x': initialState.position.x,
+        '@y': initialState.position.y,
+        content: '',
+      },
+    ];
+  }
+
+  return initTransition;
+}
+
 export function exportGraphml(elements: CGMLElements): string {
   const builder = new XMLBuilder({
     textNodeName: 'content',
@@ -283,9 +304,12 @@ export function exportGraphml(elements: CGMLElements): string {
           ...getComponentStates(elements.components),
           ...getNoteNodes(elements.notes),
         ],
-        edge: { ...getEdges(elements.transitions), ...getComponentEdges(elements.components), },
+        edge: [...getEdges(elements.transitions), ...getComponentEdges(elements.components)],
       },
     },
   };
+  if (elements.initialState !== null) {
+    xml.graphml.graph.edge.push(getInitEdge(elements.initialState));
+  }
   return builder.build(xml);
 }

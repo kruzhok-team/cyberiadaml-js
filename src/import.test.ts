@@ -116,6 +116,7 @@ test('test parsing Bearloga schema', () => {
       },
     },
     initialState: {
+      transitionId: 'edge1',
       id: 'init',
       target: 'n3',
       position: {
@@ -195,6 +196,7 @@ description/ Программный таймер.`,
     },
     format: 'Cyberiada-GraphML',
     initialState: {
+      transitionId: 'edge1',
       id: 'init',
       target: 'diod1',
       position: {
