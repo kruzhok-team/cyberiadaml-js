@@ -304,7 +304,7 @@ export function exportGraphml(elements: CGMLElements): string {
           ...getComponentStates(elements.components),
           ...getNoteNodes(elements.notes),
         ],
-        edge: { ...getEdges(elements.transitions), ...getComponentEdges(elements.components), },
+        edge: [ ...getEdges(elements.transitions), ...getComponentEdges(elements.components) ],
       },
     },
   };
