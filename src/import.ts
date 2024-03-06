@@ -115,6 +115,8 @@ const dataNodeProcess: CGMLDataNodeProcess = {
   dColor(data: CGMLDataNodeProcessArgs) {
     if (data.transition !== undefined) {
       data.transition.color = data.node.content;
+    } else if (data.state !== undefined) {
+      data.state.color = data.node.content;
     }
   },
   dNote(data: CGMLDataNodeProcessArgs) {
@@ -419,6 +421,5 @@ export function parseCGML(graphml: string): CGMLElements {
       throw new Error(`ОШИБКА! НЕИЗВЕСТНЫЙ ФОРМАТ "${elements.format}"!`);
     }
   }
-  console.log(JSON.stringify(elements.transitions));
   return elements;
 }
