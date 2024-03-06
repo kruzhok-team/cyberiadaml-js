@@ -419,5 +419,6 @@ export function parseCGML(graphml: string): CGMLElements {
       throw new Error(`ОШИБКА! НЕИЗВЕСТНЫЙ ФОРМАТ "${elements.format}"!`);
     }
   }
+
   return elements;
 }
