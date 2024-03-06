@@ -50,6 +50,7 @@ test('test parsing Bearloga schema', () => {
         parent: 'n0',
       },
       n0: {
+        color: '#FFFFFF',
         name: 'Бой',
         bounds: {
           x: -578.005,
@@ -167,6 +168,12 @@ test('test parsing Bearloga schema', () => {
       },
       {
         id: 'dNote',
+        for: 'node',
+        'attr.name': undefined,
+        'attr.type': undefined,
+      },
+      {
+        id: 'dColor',
         for: 'node',
         'attr.name': undefined,
         'attr.type': undefined,

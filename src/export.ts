@@ -64,6 +64,13 @@ function stateToExportNode(state: CGMLState, id: string): ExportNode {
     ],
   };
 
+  if (state.color !== undefined) {
+    exportNode.data.push({
+      '@key': 'dColor',
+      content: state.color,
+    });
+  }
+
   for (const dataNode of state.unsupportedDataNodes) {
     exportNode.data.push({
       '@key': dataNode.key,
@@ -210,6 +217,13 @@ function getEdges(transitions: Record<string, CGMLTransition>): ExportEdge[] {
       ];
     }
 
+    if (transition.color !== undefined) {
+      edge.data?.push({
+        '@key': 'dColor',
+        content: transition.color,
+      });
+    }
+
     if (transition.position !== undefined) {
       edge.data?.push({
         '@key': 'dGeometry',
@@ -304,7 +318,7 @@ export function exportGraphml(elements: CGMLElements): string {
           ...getComponentStates(elements.components),
           ...getNoteNodes(elements.notes),
         ],
-        edge: [ ...getEdges(elements.transitions), ...getComponentEdges(elements.components) ],
+        edge: [...getEdges(elements.transitions), ...getComponentEdges(elements.components)],
       },
     },
   };

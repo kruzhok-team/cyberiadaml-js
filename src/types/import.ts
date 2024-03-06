@@ -7,6 +7,7 @@ export type CGMLState = {
   bounds: CGMLRectangle;
   actions: string;
   unsupportedDataNodes: Array<CGMLDataNode>;
+  color?: string;
 };
 
 export type CGMLInitialState = {
