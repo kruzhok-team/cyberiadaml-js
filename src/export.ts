@@ -187,7 +187,7 @@ function getComponentEdges(components: { [id: string]: CGMLComponent }): ExportE
   for (const componentId in components) {
     const component = components[componentId];
     edges.push({
-      '@id': component.id,
+      '@id': component.transitionId,
       '@source': '',
       '@target': component.id,
       data: [],

@@ -29,6 +29,7 @@ export type CGMLTransition = {
 
 export type CGMLComponent = {
   id: string;
+  transitionId: string;
   parameters: string;
 };
 

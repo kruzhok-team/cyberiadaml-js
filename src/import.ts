@@ -261,6 +261,7 @@ function processNode(
 
 function emptyCGMLComponent(): CGMLComponent {
   return {
+    transitionId: '',
     id: '',
     parameters: '',
   };
@@ -281,7 +282,8 @@ function processGraph(
       for (const idx in graph.edge) {
         const edge = graph.edge[idx];
         if (edge.source === '') {
-          components_id.push(edge.target);
+          elements.components[edge.target] = emptyCGMLComponent();
+          elements.components[edge.target].transitionId = edge.id;
           delete graph.edge[idx];
         }
       }
@@ -289,20 +291,15 @@ function processGraph(
 
     for (const idx in graph.node) {
       const node = graph.node[idx];
-      if (components_id.includes(node.id)) {
-        const component = emptyCGMLComponent();
+      const component = elements.components[node.id];
+      if (component !== undefined) {
+        // Если у компонента уже присвоен id, то мы его уже обрабатывали
+        if (component.id !== '') {
+          throw new Error(`Компонент с id ${component.id} уже существует!`);
+        }
         component.id = node.id;
         processNode(elements, node, awailableDataProperties, parent, component);
         delete graph.node[idx];
-
-        if (!elements.components[component.id]) {
-          elements.components[component.id] = {
-            id: component.id,
-            parameters: component.parameters,
-          };
-        } else {
-          throw new Error(`Компонент с id ${component.id} уже существует!`);
-        }
       }
     }
   }
@@ -367,11 +364,9 @@ function addPropertiesFromKeyNode(
 }
 
 let initialId = '';
-const components_id = new Array<string>();
 
 export function parseCGML(graphml: string): CGMLElements {
   initialId = '';
-  components_id.splice(0);
   const parser = new XMLParser({
     textNodeName: 'content',
     ignoreAttributes: false,
