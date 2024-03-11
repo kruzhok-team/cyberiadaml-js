@@ -193,12 +193,14 @@ test('test parsing ArduinoUno schema', () => {
 name/ Светодиод
 description/ Встроенный в плату светодиод, чтобы им мигать
 pin/ 12`,
+        transitionId: 'edge-1',
       },
       timer1: {
         id: 'timer1',
         parameters: `type/ Timer
 name/ Светодиод
 description/ Программный таймер.`,
+        transitionId: 'edge0',
       },
     },
     format: 'Cyberiada-GraphML',
