@@ -128,7 +128,11 @@ const dataNodeProcess: CGMLDataNodeProcess = {
   },
 };
 
-function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
+function processTransitions(
+  elements: CGMLElements,
+  edges: CGMLEdge[],
+  availableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
+) {
   let foundInitial = false;
   for (const idx in edges) {
     const edge = edges[idx];
@@ -164,6 +168,9 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
 
     for (const dataNodeIndex in edge.data) {
       const dataNode: CGMLDataNode = edge.data[+dataNodeIndex];
+      if (!availableDataProperties.get('edge')?.has(dataNode.key)) {
+        throw new Error(`Неизвестный key "${dataNode.key}" для узла edge!`);
+      }
       if (isDataKey(dataNode.key)) {
         const func = dataNodeProcess[dataNode.key];
         func({
@@ -213,7 +220,7 @@ function createEmptyNote(): CGMLNote {
 function processNode(
   elements: CGMLElements,
   node: CGMLNode,
-  awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
+  availableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
   parent?: CGMLNode,
   component?: CGMLComponent,
 ): CGMLState | CGMLNote {
@@ -221,23 +228,22 @@ function processNode(
   const note: CGMLNote | undefined = node.data?.find((dataNode) => dataNode.key === 'dNote')
     ? createEmptyNote()
     : undefined;
-  const state: CGMLState | undefined = note == undefined ? createEmptyState() : undefined;
+  const state: CGMLState | undefined = note === undefined ? createEmptyState() : undefined;
   if (node.data !== undefined) {
     for (const dataNode of node.data) {
-      if (awailableDataProperties.get('node')?.has(dataNode.key)) {
-        if (isDataKey(dataNode.key)) {
-          const func = dataNodeProcess[dataNode.key];
-          func({
-            elements: elements,
-            node: dataNode,
-            parentNode: node,
-            state: state,
-            component: component,
-            note: note,
-          });
-        }
-      } else {
+      if (!availableDataProperties.get('node')?.has(dataNode.key)) {
         throw new Error(`Неизвестный key "${dataNode.key}" для узла node!`);
+      }
+      if (isDataKey(dataNode.key)) {
+        const func = dataNodeProcess[dataNode.key];
+        func({
+          elements: elements,
+          node: dataNode,
+          parentNode: node,
+          state: state,
+          component: component,
+          note: note,
+        });
       }
     }
   }
@@ -247,7 +253,7 @@ function processNode(
   }
 
   if (node.graph !== undefined) {
-    processGraph(elements, node.graph, awailableDataProperties, node);
+    processGraph(elements, node.graph, availableDataProperties, node);
   }
 
   if (state !== undefined) {
@@ -274,7 +280,7 @@ function isState(value: CGMLState | CGMLNote): value is CGMLState {
 function processGraph(
   elements: CGMLElements,
   graph: CGMLGraph,
-  awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
+  availableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
   parent?: CGMLNode,
 ) {
   if (parent === undefined) {
@@ -298,7 +304,7 @@ function processGraph(
           throw new Error(`Компонент с id ${component.id} уже существует!`);
         }
         component.id = node.id;
-        processNode(elements, node, awailableDataProperties, parent, component);
+        processNode(elements, node, availableDataProperties, parent, component);
         delete graph.node[idx];
       }
     }
@@ -309,7 +315,7 @@ function processGraph(
     const processResult: CGMLState | CGMLNote = processNode(
       elements,
       node,
-      awailableDataProperties,
+      availableDataProperties,
       parent,
     );
     if (isState(processResult)) {
@@ -320,7 +326,7 @@ function processGraph(
   }
 
   if (graph.edge) {
-    processTransitions(elements, graph.edge);
+    processTransitions(elements, graph.edge, availableDataProperties);
   }
 }
 
@@ -328,7 +334,7 @@ function processGraph(
 function addPropertiesFromKeyNode(
   xml: CGML,
   elements: CGMLElements,
-  awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>, // Map<Название целевой ноды, Map<id свойства, аттрибуты свойства>>
+  availableDataProperties: Map<string, Map<string, CGMLKeyProperties>>, // Map<Название целевой ноды, Map<id свойства, аттрибуты свойства>>
 ) {
   for (const node of xml.graphml.key) {
     const keyNode: CGMLKeyNode = {
@@ -340,8 +346,8 @@ function addPropertiesFromKeyNode(
     elements.keys.push(keyNode);
     // Если у нас уже есть список свойств для целевой ноды, то добавляем в уже существующий Map,
     // иначе - создаем новый.
-    if (awailableDataProperties.has(keyNode.for)) {
-      const nodeProperties = awailableDataProperties.get(keyNode.for);
+    if (availableDataProperties.has(keyNode.for)) {
+      const nodeProperties = availableDataProperties.get(keyNode.for);
 
       // Если есть такое свойство - вывести ошибку, иначе - добавить!
       if (nodeProperties?.has(keyNode.id)) {
@@ -353,7 +359,7 @@ function addPropertiesFromKeyNode(
         });
       }
     } else {
-      awailableDataProperties.set(
+      availableDataProperties.set(
         keyNode.for,
         new Map<string, CGMLKeyProperties>([
           [keyNode.id, { 'attr.name': node['attr.name'], 'attr.type': node['attr.type'] }],
@@ -392,21 +398,21 @@ export function parseCGML(graphml: string): CGMLElements {
     notes: {},
   };
 
-  const awailableDataProperties = new Map<string, Map<string, CGMLKeyProperties>>();
+  const availableDataProperties = new Map<string, Map<string, CGMLKeyProperties>>();
 
   const xml = parser.parse(graphml) as CGML;
 
   setFormatToMeta(elements, xml);
 
-  addPropertiesFromKeyNode(xml, elements, awailableDataProperties);
+  addPropertiesFromKeyNode(xml, elements, availableDataProperties);
 
   switch (elements.format) {
     case 'Cyberiada-GraphML': {
       const indexOfMetaNode = xml.graphml.graph.node.findIndex((node) => node.id === '');
       if (indexOfMetaNode !== -1) {
-        processNode(elements, xml.graphml.graph.node[indexOfMetaNode], awailableDataProperties);
+        processNode(elements, xml.graphml.graph.node[indexOfMetaNode], availableDataProperties);
         xml.graphml.graph.node = xml.graphml.graph.node.filter((value) => value.id !== '');
-        processGraph(elements, xml.graphml.graph, awailableDataProperties);
+        processGraph(elements, xml.graphml.graph, availableDataProperties);
       } else {
         throw new Error('Отсутствует мета-узел!');
       }
