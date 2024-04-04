@@ -280,7 +280,7 @@ function getInitEdge(initialState: CGMLInitialState): ExportEdge {
   if (initialState.position !== undefined) {
     initTransition.data = [
       {
-        '@key': 'dGeomtery',
+        '@key': 'dGeometry',
         '@x': initialState.position.x,
         '@y': initialState.position.y,
         content: '',
