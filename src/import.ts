@@ -228,7 +228,7 @@ function processNode(
   const note: CGMLNote | undefined = node.data?.find((dataNode) => dataNode.key === 'dNote')
     ? createEmptyNote()
     : undefined;
-  const state: CGMLState | undefined = note == undefined ? createEmptyState() : undefined;
+  const state: CGMLState | undefined = note === undefined ? createEmptyState() : undefined;
   if (node.data !== undefined) {
     for (const dataNode of node.data) {
       if (!availableDataProperties.get('node')?.has(dataNode.key)) {
