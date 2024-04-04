@@ -128,7 +128,11 @@ const dataNodeProcess: CGMLDataNodeProcess = {
   },
 };
 
-function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
+function processTransitions(
+  elements: CGMLElements,
+  edges: CGMLEdge[],
+  awailableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
+) {
   let foundInitial = false;
   for (const idx in edges) {
     const edge = edges[idx];
@@ -164,17 +168,21 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
 
     for (const dataNodeIndex in edge.data) {
       const dataNode: CGMLDataNode = edge.data[+dataNodeIndex];
-      if (isDataKey(dataNode.key)) {
-        const func = dataNodeProcess[dataNode.key];
-        func({
-          elements: elements,
-          node: dataNode,
-          component: undefined,
-          parentNode: undefined,
-          transition: transition,
-        });
+      if (awailableDataProperties.get('edge')?.has(dataNode.key)) {
+        if (isDataKey(dataNode.key)) {
+          const func = dataNodeProcess[dataNode.key];
+          func({
+            elements: elements,
+            node: dataNode,
+            component: undefined,
+            parentNode: undefined,
+            transition: transition,
+          });
+        } else {
+          transition.unsupportedDataNodes.push(dataNode);
+        }
       } else {
-        transition.unsupportedDataNodes.push(dataNode);
+        throw new Error(`Неизвестный key "${dataNode.key}" для узла edge!`);
       }
     }
   }
@@ -320,7 +328,7 @@ function processGraph(
   }
 
   if (graph.edge) {
-    processTransitions(elements, graph.edge);
+    processTransitions(elements, graph.edge, awailableDataProperties);
   }
 }
 
