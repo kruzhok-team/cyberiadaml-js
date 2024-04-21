@@ -27,27 +27,49 @@ export type CGMLTransition = {
   unsupportedDataNodes: Array<CGMLDataNode>;
 };
 
-export type CGMLComponent = {
-  id: string;
-  transitionId: string;
-  parameters: string;
+// export type CGMLComponent = {
+//   id: string;
+//   transitionId: string;
+//   parameters: string;
+// };
+
+export type CGMLFinalState = {
+  position: CGMLPoint;
 };
+
+export type CGMLChoice = {
+  position: CGMLPoint;
+};
+
+export type CGMLTerminate = {
+  position: CGMLPoint;
+  exitCode: number;
+};
+
+export type CGMLMeta = { [id: string]: string };
 
 export type CGMLElements = {
   states: { [id: string]: CGMLState };
   transitions: Record<string, CGMLTransition>;
-  components: { [id: string]: CGMLComponent };
-  initialState: CGMLInitialState | null;
+  components: { [id: string]: string };
+  initialStates: { [id: string]: CGMLInitialState };
   platform: string;
-  meta: string;
+  meta: CGMLMeta;
   format: string;
   keys: Array<CGMLKeyNode>;
   notes: { [id: string]: CGMLNote };
+  finals: { [id: string]: CGMLFinalState };
+  choices: { [id: string]: CGMLChoice };
+  terminates: { [id: string]: CGMLTerminate };
 };
 
+export type NoteType = 'formal' | 'informal';
+
 export type CGMLNote = {
+  name: string | undefined;
   position: CGMLPoint;
   text: string;
+  type: 'formal' | 'informal';
 };
 
 export type CGMLNode = {
@@ -70,11 +92,6 @@ export type CGMLGraph = {
   id?: string;
 };
 
-export type CGMLKeyProperties = {
-  'attr.name'?: string;
-  'attr.type'?: string;
-};
-
 export type CGMLDataNode = {
   key: string;
   content: string;
@@ -95,14 +112,16 @@ export type CGMLDataNodeProcess = {
   [key in CGMLDataKey]: (data: CGMLDataNodeProcessArgs) => void;
 };
 
+export type VertexType = 'final' | 'initial' | 'terminate' | 'choice';
+
 export const CGMLDataKeys = [
   'gFormat',
   'dData',
   'dName',
-  'dInitial',
   'dGeometry',
   'dColor',
   'dNote',
+  'dVertex',
 ] as const;
 
 export type CGMLDataKey = (typeof CGMLDataKeys)[number];
