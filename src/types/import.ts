@@ -11,9 +11,6 @@ export type CGMLState = {
 };
 
 export type CGMLInitialState = {
-  transitionId: string;
-  id: string;
-  target: string;
   position?: CGMLPoint;
 };
 
@@ -27,8 +24,14 @@ export type CGMLTransition = {
   unsupportedDataNodes: Array<CGMLDataNode>;
 };
 
+export type CGMLVertex = {
+  type: string;
+  data?: string;
+  position?: CGMLPoint | CGMLRectangle;
+};
+
 // export type CGMLComponent = {
-//   id: string;
+// id: string;
 //   transitionId: string;
 //   parameters: string;
 // };
@@ -46,21 +49,26 @@ export type CGMLTerminate = {
   exitCode: number;
 };
 
-export type CGMLMeta = { [id: string]: string };
+export type CGMLMeta = {
+  id: string;
+  values: { [id: string]: string };
+};
+
+export type CGMLComponent = { [id: string]: string };
 
 export type CGMLElements = {
   states: { [id: string]: CGMLState };
   transitions: Record<string, CGMLTransition>;
-  components: { [id: string]: string };
+  components: { [id: string]: CGMLComponent };
   initialStates: { [id: string]: CGMLInitialState };
   platform: string;
   meta: CGMLMeta;
   format: string;
   keys: Array<CGMLKeyNode>;
   notes: { [id: string]: CGMLNote };
-  finals: { [id: string]: CGMLFinalState };
-  choices: { [id: string]: CGMLChoice };
-  terminates: { [id: string]: CGMLTerminate };
+  finals: { [id: string]: CGMLVertex };
+  choices: { [id: string]: CGMLVertex };
+  terminates: { [id: string]: CGMLVertex };
 };
 
 export type NoteType = 'formal' | 'informal';
@@ -112,7 +120,7 @@ export type CGMLDataNodeProcess = {
   [key in CGMLDataKey]: (data: CGMLDataNodeProcessArgs) => void;
 };
 
-export type VertexType = 'final' | 'initial' | 'terminate' | 'choice';
+// export type VertexType = 'final' | 'initial' | 'terminate' | 'choice' | '';
 
 export const CGMLDataKeys = [
   'gFormat',
@@ -130,11 +138,11 @@ export interface CGMLDataNodeProcessArgs {
   elements: CGMLElements;
   meta?: string;
   node: CGMLDataNode;
-  component?: CGMLComponent;
   parentNode?: CGMLNode;
   state?: CGMLState;
   transition?: CGMLTransition;
   note?: CGMLNote;
+  vertex?: CGMLVertex;
 }
 
 export type XMLProperies = {

@@ -12,11 +12,11 @@ import {
   CGMLDataNodeProcessArgs,
   CGMLKeyNode,
   CGMLNode,
-  CGMLComponent,
   CGML,
   CGMLGraph,
   CGMLEdge,
   CGMLNote,
+  CGMLVertex,
 } from './types/import';
 
 function isDataKey(key: string): key is CGMLDataKey {
@@ -29,7 +29,12 @@ function isNoteType(value: string): value is NoteType {
 
 // Набор функций, обрабатывающих data-узлы в зависимости от их ключа.
 const dataNodeProcess: CGMLDataNodeProcess = {
-  dVertex({ elements, parentNode, node }) {},
+  dVertex({ elements, parentNode, node, vertex }) {
+    if (!parentNode || !vertex) {
+      throw new Error('Непредвиденный вызов dVertex!');
+    }
+    vertex.type = node.content;
+  },
   gFormat({ elements, node }) {
     if (elements.format != '') {
       throw new Error(
@@ -38,11 +43,9 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     }
     elements.format = node.content;
   },
-  dData({ elements, state, parentNode, node, component, transition, note }) {
+  dData({ elements, state, parentNode, node, transition, note }) {
     if (parentNode !== undefined) {
-      if (component !== undefined) {
-        component.parameters = node.content;
-      } else if (state !== undefined) {
+      if (state !== undefined) {
         state.actions = node.content;
       } else if (note !== undefined) {
         note.text = node.content;
@@ -56,20 +59,23 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     }
   },
   dName(data: CGMLDataNodeProcessArgs) {
-    if (data.parentNode !== undefined) {
-      if (data.note !== undefined) {
-        if (data.note.name !== undefined) {
-          throw new Error('Для комментария уже указано поле dName!');
-        }
-        data.note.name = data.node.content;
-      }
-      if (data.component !== undefined) {
-        data.component.parameters = data.node.content;
-      } else if (data.state != undefined) {
-        data.state.name = data.node.content;
-      }
-    } else {
+    if (data.parentNode == undefined) {
       throw new Error('Непредвиденный вызов функции dName');
+    }
+    if (data.note !== undefined) {
+      if (data.note.name !== undefined) {
+        throw new Error('Для комментария уже указано поле dName!');
+      }
+      data.note.name = data.node.content;
+      return;
+    }
+    if (data.state !== undefined) {
+      data.state.name = data.node.content;
+      return;
+    }
+    if (data.vertex !== undefined) {
+      data.vertex.data = data.node.content;
+      return;
     }
   },
   dGeometry(data: CGMLDataNodeProcessArgs) {
@@ -86,19 +92,33 @@ const dataNodeProcess: CGMLDataNodeProcess = {
         width: data.node['width'] ? +data.node['width'] : 0,
         height: data.node['height'] ? +data.node['height'] : 0,
       };
-    } else if (data.transition !== undefined) {
+      return;
+    }
+    if (data.transition !== undefined) {
       data.transition.position = {
         x: x,
         y: y,
       };
-    } else if (data.note !== undefined) {
+      return;
+    }
+    if (data.note !== undefined) {
       data.note.position = {
         x: x,
         y: y,
       };
-    } else {
-      throw new Error('Непредвиденный вызов функции dGeometry');
+      return;
     }
+
+    if (data.vertex !== undefined) {
+      data.vertex.position = {
+        x: x,
+        y: y,
+        width: data.node['width'] ? +data.node['width'] : 0,
+        height: data.node['height'] ? +data.node['height'] : 0,
+      };
+    }
+
+    throw new Error('Непредвиденный вызов функции dGeometry');
   },
   dColor(data: CGMLDataNodeProcessArgs) {
     if (data.transition !== undefined) {
@@ -110,6 +130,10 @@ const dataNodeProcess: CGMLDataNodeProcess = {
   dNote(data: CGMLDataNodeProcessArgs) {
     if (data.note == undefined) {
       throw new Error('Непредвиденный вызов функции dNote');
+    }
+    if (data.node.content == '' || data.node.content == undefined) {
+      data.note.type = 'informal';
+      return;
     }
     if (!isNoteType(data.node.content)) {
       throw new Error('Значение поля dNote должно быть formal или informal!');
@@ -137,7 +161,6 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
         func({
           elements: elements,
           node: dataNode,
-          component: undefined,
           parentNode: undefined,
           transition: transition,
         });
@@ -179,18 +202,29 @@ function createEmptyNote(): CGMLNote {
   };
 }
 
+function createEmptyVertex(): CGMLVertex {
+  return {
+    type: '',
+  };
+}
+
 // Обработка нод
 function processNode(
   elements: CGMLElements,
   node: CGMLNode,
   parent?: CGMLNode,
-  component?: CGMLComponent,
-): CGMLState | CGMLNote {
+): CGMLState | CGMLNote | CGMLVertex {
   // Если находим dNote среди дата-нод, то создаем пустую заметку, а состояние делаем undefined
   const note: CGMLNote | undefined = node.data?.find((dataNode) => dataNode.key === 'dNote')
     ? createEmptyNote()
     : undefined;
-  const state: CGMLState | undefined = note === undefined ? createEmptyState() : undefined;
+
+  const vertex: CGMLVertex | undefined = node.data?.find((dataNode) => dataNode.key === 'dVertex')
+    ? createEmptyVertex()
+    : undefined;
+
+  const state: CGMLState | undefined =
+    note === undefined && vertex === undefined ? createEmptyState() : undefined;
   if (node.data !== undefined) {
     for (const dataNode of node.data) {
       if (isDataKey(dataNode.key)) {
@@ -200,8 +234,8 @@ function processNode(
           node: dataNode,
           parentNode: node,
           state: state,
-          component: component,
           note: note,
+          vertex: vertex,
         });
       }
     }
@@ -217,47 +251,69 @@ function processNode(
 
   if (state !== undefined) {
     return state;
-  } else if (note !== undefined) {
-    return note;
-  } else {
-    throw new Error('Отсутствует состояние или заметка для данного узла!');
   }
-}
+  if (note !== undefined) {
+    return note;
+  }
+  if (vertex !== undefined) {
+    return vertex;
+  }
 
-function isComponentNote(note: CGMLNote): boolean {
-  return note.name == 'CGML_COMPONENT';
+  throw new Error('Отсутствует состояние или заметка для данного узла!');
 }
 
 function parseMeta(rawParameters: string): { [id: string]: string } {
   const splitedParameters = rawParameters.split('\n\n');
   const meta: { [id: string]: string } = {};
-  for (const splitedParameter in splitedParameters) {
+  for (const splitedParameter of splitedParameters) {
     const [name, value] = splitedParameter.split('/');
-    meta[name] = value;
+    meta[name] = value.trim();
   }
 
   return meta;
 }
-// function emptyCGMLComponent(): CGMLComponent {
-//   return {
-//     transitionId: '',
-//     id: '',
-//     parameters: '',
-//   };
-// }
 
-function isState(value: CGMLState | CGMLNote): value is CGMLState {
-  return (value as CGMLState).actions !== undefined || (value as CGMLState).name !== undefined;
+function isVertex(value: CGMLState | CGMLNote | CGMLVertex): value is CGMLVertex {
+  return (
+    (value as CGMLNote).text == undefined &&
+    (value as CGMLState).actions == undefined &&
+    (value as CGMLVertex).type !== undefined
+  );
+}
+
+function isState(value: CGMLState | CGMLNote | CGMLVertex): value is CGMLState {
+  return (value as CGMLState).actions !== undefined && (value as CGMLState).name !== undefined;
 }
 
 function processGraph(elements: CGMLElements, graph: CGMLGraph, parent?: CGMLNode) {
   for (const idx in graph.node) {
     const node = graph.node[idx];
-    const processResult: CGMLState | CGMLNote = processNode(elements, node, parent);
+    const processResult: CGMLState | CGMLNote | CGMLVertex = processNode(elements, node, parent);
     if (isState(processResult)) {
       elements.states[node.id] = processResult;
       continue;
     }
+    if (isVertex(processResult)) {
+      const vertex = processResult;
+      switch (vertex.type) {
+        case 'initial':
+          elements.initialStates[node.id] = vertex;
+          break;
+        case 'choice':
+          elements.choices[node.id] = vertex;
+          break;
+        case 'final':
+          elements.finals[node.id] = vertex;
+          break;
+        case 'terminate':
+          elements.terminates[node.id] = vertex;
+          break;
+        default:
+          break;
+      }
+      continue;
+    }
+
     const note = processResult;
     if (note.type == 'informal') {
       elements.notes[node.id] = note;
@@ -268,20 +324,16 @@ function processGraph(elements: CGMLElements, graph: CGMLGraph, parent?: CGMLNod
         if (elements.components[node.id] !== undefined) {
           throw new Error(`Компонент с идентификатором ${node.id} уже существует!`);
         }
-        elements.components[node.id] = note.text;
+        elements.components[node.id] = parseMeta(note.text);
         break;
       case 'CGML_META':
-        meta = '';
+        elements.meta.values = parseMeta(note.text);
+        elements.meta.id = node.id;
         break;
       default:
-        break;
-    }
-    if (isComponentNote(note)) {
-      if (elements.components[node.id] !== undefined) {
-        throw new Error(`Компонент с идентификатором ${node.id} уже существует!`);
-      }
-      elements.components[node.id] = note.text;
-      continue;
+        throw new Error(
+          `Неизвестный тип мета-информации ${note.text}. Ожидается CGML_META или CGML_COMPONENT.`,
+        );
     }
   }
 
@@ -304,10 +356,23 @@ function getKeyNodes(xml: CGML): Array<CGMLKeyNode> {
   return keyNodes;
 }
 
-let initialId = '';
+function removeComponentsTransitions(
+  transitions: Record<string, CGMLTransition>,
+  metaId: string,
+): Record<string, CGMLTransition> {
+  const newTransitions: Record<string, CGMLTransition> = {};
+  for (const transitionId in transitions) {
+    const transition = transitions[transitionId];
+    if (transition.source == metaId) {
+      continue;
+    }
+    newTransitions[transitionId] = transition;
+  }
+
+  return newTransitions;
+}
 
 export function parseCGML(graphml: string): CGMLElements {
-  initialId = '';
   const parser = new XMLParser({
     textNodeName: 'content',
     ignoreAttributes: false,
@@ -323,7 +388,10 @@ export function parseCGML(graphml: string): CGMLElements {
     initialStates: {},
     components: {},
     platform: '',
-    meta: '',
+    meta: {
+      values: {},
+      id: '',
+    },
     format: '',
     keys: [],
     notes: {},
@@ -336,14 +404,8 @@ export function parseCGML(graphml: string): CGMLElements {
 
   setFormatToMeta(elements, xml);
   elements.keys = getKeyNodes(xml);
-  switch (elements.format) {
-    case 'Cyberiada-GraphML': {
-      processGraph(elements, xml.graphml.graph);
-      break;
-    }
-    default: {
-      throw new Error(`ОШИБКА! НЕИЗВЕСТНЫЙ ФОРМАТ "${elements.format}"!`);
-    }
-  }
+  processGraph(elements, xml.graphml.graph);
+  elements.transitions = removeComponentsTransitions(elements.transitions, elements.meta.id);
+  elements.platform = elements.meta.values['platform'];
   return elements;
 }
