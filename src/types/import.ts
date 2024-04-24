@@ -1,11 +1,17 @@
 export type CGMLPoint = { x: number; y: number };
 export type CGMLRectangle = CGMLPoint & { width: number; height: number };
 
+export type CGMLAction = {
+  trigger: string;
+  condition: string | undefined;
+  action: string | undefined;
+};
+
 export type CGMLState = {
   parent?: string;
   name: string;
   bounds: CGMLRectangle;
-  actions: string;
+  actions: Array<CGMLAction>;
   unsupportedDataNodes: Array<CGMLDataNode>;
   color?: string;
 };
@@ -21,7 +27,7 @@ export type CGMLTransition = {
   color?: string;
   position?: CGMLPoint;
   labelPosition: CGMLPoint;
-  actions?: string;
+  actions: Array<CGMLAction>;
   unsupportedDataNodes: Array<CGMLDataNode>;
   pivot: string | undefined;
 };

@@ -17,6 +17,7 @@ import {
   CGMLEdge,
   CGMLNote,
   CGMLVertex,
+  CGMLAction,
 } from './types/import';
 
 function isDataKey(key: string): key is CGMLDataKey {
@@ -25,6 +26,37 @@ function isDataKey(key: string): key is CGMLDataKey {
 
 function isNoteType(value: string): value is NoteType {
   return value == 'informal' || value == 'formal';
+}
+
+function parseTrigger(trigger: string): [string, string | undefined] {
+  const regWithCondition = /^(?<trigger>.+)\[(?<condition>.+)\]$/;
+  const regWithoutCondition = /^(?<trigger>.+)$/;
+  const withCondition = regWithCondition.exec(trigger);
+  const withoutCondition = regWithoutCondition.exec(trigger);
+  if (withCondition && withCondition.groups) {
+    return [withCondition.groups['condition'].trim(), withCondition.groups['trigger'].trim()];
+  }
+  if (withoutCondition && withoutCondition.groups) {
+    return [withoutCondition.groups['trigger'].trim(), undefined];
+  }
+
+  throw new Error('No reg!')
+}
+
+function parseActions(rawActions: string): Array<CGMLAction> {
+  const actions: Array<CGMLAction> = [];
+  const splitedActions = rawActions.split('\n\n');
+  for (const splitedAction of splitedActions) {
+    let [rawTrigger, action] = splitedAction.split('/');
+    const [trigger, condition] = parseTrigger(rawTrigger);
+    action = action.trim()
+    actions.push({
+      trigger: trigger,
+      condition: condition,
+      action: action === '' ? undefined : action,
+    })
+  }
+  return actions;
 }
 
 // Набор функций, обрабатывающих data-узлы в зависимости от их ключа.
@@ -46,7 +78,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
   dData({ elements, state, parentNode, node, transition, note }) {
     if (parentNode !== undefined) {
       if (state !== undefined) {
-        state.actions = node.content;
+        state.actions = parseActions(node.content);
       } else if (note !== undefined) {
         note.text = node.content;
       }
@@ -54,7 +86,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
       if (transition == undefined) {
         throw new Error('Непредвиденный вызов dData.');
       }
-      transition.actions = node.content;
+      transition.actions = parseActions(node.content);
       elements.transitions[transition.id] = transition;
     }
   },
@@ -180,7 +212,7 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
       id: edge.id,
       source: edge.source,
       target: edge.target,
-      actions: '',
+      actions: [],
       unsupportedDataNodes: [],
       pivot: undefined,
       labelPosition: { x: 0, y: 0 },
@@ -217,7 +249,7 @@ function createEmptyState(): CGMLState {
   return {
     name: '',
     bounds: { x: 0, y: 0, width: 0, height: 0 },
-    actions: '',
+    actions: [],
     unsupportedDataNodes: [],
   };
 }
