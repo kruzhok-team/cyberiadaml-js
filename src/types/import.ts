@@ -20,8 +20,10 @@ export type CGMLTransition = {
   target: string;
   color?: string;
   position?: CGMLPoint;
+  labelPosition: CGMLPoint;
   actions?: string;
   unsupportedDataNodes: Array<CGMLDataNode>;
+  pivot: string | undefined;
 };
 
 export type CGMLVertex = {
@@ -29,12 +31,6 @@ export type CGMLVertex = {
   data?: string;
   position?: CGMLPoint | CGMLRectangle;
 };
-
-// export type CGMLComponent = {
-// id: string;
-//   transitionId: string;
-//   parameters: string;
-// };
 
 export type CGMLFinalState = {
   position: CGMLPoint;
@@ -103,6 +99,8 @@ export type CGMLGraph = {
 export type CGMLDataNode = {
   key: string;
   content: string;
+  rect: Array<CGMLRectangle> | undefined;
+  point: Array<CGMLPoint> | undefined;
   x?: number;
   y?: number;
   width?: number;
@@ -130,6 +128,8 @@ export const CGMLDataKeys = [
   'dColor',
   'dNote',
   'dVertex',
+  'dPivot',
+  'dLabelGeometry',
 ] as const;
 
 export type CGMLDataKey = (typeof CGMLDataKeys)[number];

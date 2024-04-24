@@ -29,7 +29,7 @@ function isNoteType(value: string): value is NoteType {
 
 // Набор функций, обрабатывающих data-узлы в зависимости от их ключа.
 const dataNodeProcess: CGMLDataNodeProcess = {
-  dVertex({ elements, parentNode, node, vertex }) {
+  dVertex({ parentNode, node, vertex }) {
     if (!parentNode || !vertex) {
       throw new Error('Непредвиденный вызов dVertex!');
     }
@@ -79,18 +79,34 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     }
   },
   dGeometry(data: CGMLDataNodeProcessArgs) {
-    if (data.node['x'] === undefined || data.node['y'] === undefined) {
-      throw new Error('Не указаны x или y для узла data с ключом dGeometry');
+    if (data.node.rect === undefined && data.node.point === undefined) {
+      throw new Error('Не указаны point и rect для узла data с ключом dGeometry');
     }
-    const x = +data.node['x'];
-    const y = +data.node['y'];
 
+    let x = 0;
+    let y = 0;
+    let width = -1;
+    let height = -1;
+
+    if (data.node.rect) {
+      const rect = data.node.rect[0];
+      x = +rect.x;
+      y = +rect.y;
+      width = +rect.width;
+      height = +rect.height;
+    } else if (data.node.point) {
+      const point = data.node.point[0];
+      x = +point.x;
+      y = +point.y;
+    } else {
+      throw new Error('Internal error!');
+    }
     if (data.state !== undefined) {
       data.state.bounds = {
         x: x,
         y: y,
-        width: data.node['width'] ? +data.node['width'] : 0,
-        height: data.node['height'] ? +data.node['height'] : 0,
+        width: width,
+        height: height,
       };
       return;
     }
@@ -113,8 +129,8 @@ const dataNodeProcess: CGMLDataNodeProcess = {
       data.vertex.position = {
         x: x,
         y: y,
-        width: data.node['width'] ? +data.node['width'] : 0,
-        height: data.node['height'] ? +data.node['height'] : 0,
+        width: width,
+        height: height,
       };
     }
 
@@ -140,10 +156,24 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     }
     data.note.type = data.node.content;
   },
+  dPivot(data: CGMLDataNodeProcessArgs) {
+    if (data.transition == undefined) {
+      throw new Error('Непредвиденный вызов функции dPivot!');
+    }
+    data.transition.pivot = data.node.content;
+  },
+  dLabelGeometry(data: CGMLDataNodeProcessArgs) {
+    if (data.transition == undefined) {
+      throw new Error('Непредвиденный вызов функции dPivot!');
+    }
+    if (data.node.point == undefined) {
+      throw new Error('Нет дочернего <point> у <data> с ключом dLabelGeometry ');
+    }
+    data.transition.labelPosition = data.node.point[0];
+  },
 };
 
 function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
-  let foundInitial = false;
   for (const idx in edges) {
     const edge = edges[idx];
     const transition: CGMLTransition = {
@@ -152,6 +182,8 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
       target: edge.target,
       actions: '',
       unsupportedDataNodes: [],
+      pivot: undefined,
+      labelPosition: { x: 0, y: 0 },
     };
 
     for (const dataNodeIndex in edge.data) {
@@ -309,7 +341,9 @@ function processGraph(elements: CGMLElements, graph: CGMLGraph, parent?: CGMLNod
           elements.terminates[node.id] = vertex;
           break;
         default:
-          break;
+          throw new Error(
+            'Неправильное значение dVertex! Ожидается "initial", "choice", "final", "terminate"',
+          );
       }
       continue;
     }

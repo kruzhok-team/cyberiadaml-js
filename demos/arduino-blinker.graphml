@@ -7,7 +7,8 @@
 <key id="dVertex" for="node" attr.name="vertex" attr.type="string"/>
 <key id="dStateMachine" for="graph" attr.name="stateMachine" attr.type="string"/>
 <key id="dGeometry" for="node" attr.name="geometry"/>
-<key id="dGeometry" for="edge" attr.name="stateMachine"/>
+<key id="dLabelGeometry" for="edge" attr.name="labelGeometry"/>
+<key id="dPivot" for="edge" attr.name="pivot" attr.type="string"/>
 <key id="dNote" for="node" attr.name="note" attr.type="string"/>
 <key id="dData" for="node" attr.name="data" attr.type="string"/>
 <key id="dData" for="edge" attr.name="data" attr.type="string"/>
@@ -56,6 +57,7 @@ type/ Timer
 name/ Таймер
 
 description/ Программный таймер.
+
         </data>
     </node>
 
@@ -68,9 +70,11 @@ description/ Программный таймер.
         <data key="dData">entry/
 LED1.on()
 timer1.start(1000)
+
         </data>
-        <data key="dGeometry" x="82" y="57"
-            width="450.0" height="95" />
+        <data key="dGeometry">
+            <rect x="82" y="57" width="450.0" height="95"/>
+        </data>
     </node>
 
     <node id="diod2">
@@ -78,28 +82,40 @@ timer1.start(1000)
         <data key="dData">entry/
 LED1.off()
 timer1.start(1000)
+
         </data>
-        <data key="dGeometry" x="81" y="334"
-            width="450" height="95" />
+        <data key="dGeometry">
+            <rect x="81" y="334" width="450" height="95" />
+        </data> 
     </node>
 
     <node id="commentX">
         <data key="dNote"/>
         <data key="dData"> Включение и выключение лампочки по таймеру! </data>
-        <data key="dGeometry" x="640" y="114" />
+        <data key="dGeometry">
+            <point x="640" y="114" />
+        </data> 
     </node>
 
-    <edge id="edge0" source="coreMeta" target="ctimer1"/>
-    <edge id="edge1" source="coreMeta" target="cLED1"/>
+    <edge id="edge0" source="coreMeta" target="ctimer1"> 
+        <data key="dPivot"/>
+    </edge>
+    <edge id="edge1" source="coreMeta" target="cLED1">
+        <data key="dPivot"/>
+    </edge>
     <edge id="edge3" source="diod1" target="diod2">
         <data key="dData">timer1.timeout/</data>
         <data key="dColor">#F29727</data>
-        <data key="dGeometry" x="457" y="173"/>
+        <data key="dLabelGeometry">
+            <point x="457" y="173"/>
+        </data> 
     </edge>
 
     <edge id="edge4" source="diod2" target="diod1">
         <data key="dData">timer1.timeout/</data>
-        <data key="dGeometry" x="16" y="175"/>
+        <data key="dLabelGeometry">
+            <point x="16" y="175"/>
+        </data> 
         <data key="dColor">#F24C3D</data>
     </edge>
 </graph>

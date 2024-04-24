@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 
 test('test parsing arduino', () => {
   const arduinoDemo: string = readFileSync('demos/arduino-blinker.graphml', 'utf-8');
-  console.log(parseCGML(arduinoDemo));
+  console.log(JSON.stringify(parseCGML(arduinoDemo), null, 2),);
 });
 
 // test('test parsing Bearloga schema', () => {
