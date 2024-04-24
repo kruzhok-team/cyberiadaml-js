@@ -40,7 +40,7 @@ function parseTrigger(trigger: string): [string, string | undefined] {
     return [withoutCondition.groups['trigger'].trim(), undefined];
   }
 
-  throw new Error('No reg!')
+  throw new Error('No reg!');
 }
 
 function parseActions(rawActions: string): Array<CGMLAction> {
@@ -49,12 +49,12 @@ function parseActions(rawActions: string): Array<CGMLAction> {
   for (const splitedAction of splitedActions) {
     let [rawTrigger, action] = splitedAction.split('/');
     const [trigger, condition] = parseTrigger(rawTrigger);
-    action = action.trim()
+    action = action.trim();
     actions.push({
       trigger: trigger,
       condition: condition,
       action: action === '' ? undefined : action,
-    })
+    });
   }
   return actions;
 }
@@ -86,8 +86,15 @@ const dataNodeProcess: CGMLDataNodeProcess = {
       if (transition == undefined) {
         throw new Error('Непредвиденный вызов dData.');
       }
-      transition.actions = parseActions(node.content);
-      elements.transitions[transition.id] = transition;
+      if (elements.initialStates[transition.source]) {
+        transition.actions = [
+          {
+            action: node.content,
+          },
+        ];
+      } else {
+        transition.actions = parseActions(node.content);
+      }
     }
   },
   dName(data: CGMLDataNodeProcessArgs) {
@@ -215,9 +222,9 @@ function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
       actions: [],
       unsupportedDataNodes: [],
       pivot: undefined,
-      labelPosition: { x: 0, y: 0 },
+      labelPosition: undefined,
     };
-
+    elements.transitions[edge.id] = transition;
     for (const dataNodeIndex in edge.data) {
       const dataNode: CGMLDataNode = edge.data[+dataNodeIndex];
       if (isDataKey(dataNode.key)) {
@@ -390,7 +397,16 @@ function processGraph(elements: CGMLElements, graph: CGMLGraph, parent?: CGMLNod
         if (elements.components[node.id] !== undefined) {
           throw new Error(`Компонент с идентификатором ${node.id} уже существует!`);
         }
-        elements.components[node.id] = parseMeta(note.text);
+        const componentParameters = parseMeta(note.text);
+        const componentId = componentParameters['id'];
+        const componentType = componentParameters['type'];
+        delete componentParameters['id'];
+        delete componentParameters['type'];
+        elements.components[node.id] = {
+          id: componentId,
+          type: componentType,
+          parameters: componentParameters,
+        };
         break;
       case 'CGML_META':
         elements.meta.values = parseMeta(note.text);
@@ -458,6 +474,7 @@ export function parseCGML(graphml: string): CGMLElements {
       values: {},
       id: '',
     },
+    standartVersion: '',
     format: '',
     keys: [],
     notes: {},
@@ -473,5 +490,6 @@ export function parseCGML(graphml: string): CGMLElements {
   processGraph(elements, xml.graphml.graph);
   elements.transitions = removeComponentsTransitions(elements.transitions, elements.meta.id);
   elements.platform = elements.meta.values['platform'];
+  elements.standartVersion = elements.meta.values['standartVersion'];
   return elements;
 }

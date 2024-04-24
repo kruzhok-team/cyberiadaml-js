@@ -1,10 +1,16 @@
 export type CGMLPoint = { x: number; y: number };
 export type CGMLRectangle = CGMLPoint & { width: number; height: number };
 
+export type CGMLTransitionAction = {
+  trigger?: string;
+  condition?: string;
+  action?: string;
+};
+
 export type CGMLAction = {
   trigger: string;
-  condition: string | undefined;
-  action: string | undefined;
+  condition?: string;
+  action?: string;
 };
 
 export type CGMLState = {
@@ -26,8 +32,8 @@ export type CGMLTransition = {
   target: string;
   color?: string;
   position?: CGMLPoint;
-  labelPosition: CGMLPoint;
-  actions: Array<CGMLAction>;
+  labelPosition: CGMLPoint | undefined;
+  actions: Array<CGMLTransitionAction>;
   unsupportedDataNodes: Array<CGMLDataNode>;
   pivot: string | undefined;
 };
@@ -56,7 +62,11 @@ export type CGMLMeta = {
   values: { [id: string]: string };
 };
 
-export type CGMLComponent = { [id: string]: string };
+export type CGMLComponent = {
+  id: string;
+  type: string;
+  parameters: { [id: string]: string };
+};
 
 export type CGMLElements = {
   states: { [id: string]: CGMLState };
@@ -64,6 +74,7 @@ export type CGMLElements = {
   components: { [id: string]: CGMLComponent };
   initialStates: { [id: string]: CGMLInitialState };
   platform: string;
+  standartVersion: string;
   meta: CGMLMeta;
   format: string;
   keys: Array<CGMLKeyNode>;
