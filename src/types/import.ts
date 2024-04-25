@@ -1,19 +1,29 @@
 export type CGMLPoint = { x: number; y: number };
 export type CGMLRectangle = CGMLPoint & { width: number; height: number };
 
+export type CGMLTransitionAction = {
+  trigger?: string;
+  condition?: string;
+  action?: string;
+};
+
+export type CGMLAction = {
+  trigger: string;
+  condition?: string;
+  action?: string;
+};
+
 export type CGMLState = {
   parent?: string;
   name: string;
   bounds: CGMLRectangle;
-  actions: string;
+  actions: Array<CGMLAction>;
   unsupportedDataNodes: Array<CGMLDataNode>;
   color?: string;
 };
 
 export type CGMLInitialState = {
-  transitionId: string;
-  id: string;
-  target: string;
+  parent?: string;
   position?: CGMLPoint;
 };
 
@@ -23,31 +33,66 @@ export type CGMLTransition = {
   target: string;
   color?: string;
   position?: CGMLPoint;
-  actions?: string;
+  labelPosition: CGMLPoint | undefined;
+  actions: Array<CGMLTransitionAction>;
   unsupportedDataNodes: Array<CGMLDataNode>;
+  pivot: string | undefined;
+};
+
+export type CGMLVertex = {
+  parent?: string;
+  type: string;
+  data?: string;
+  position?: CGMLPoint | CGMLRectangle;
+};
+
+export type CGMLFinalState = {
+  position: CGMLPoint;
+};
+
+export type CGMLChoice = {
+  position: CGMLPoint;
+};
+
+export type CGMLTerminate = {
+  position: CGMLPoint;
+  exitCode: number;
+};
+
+export type CGMLMeta = {
+  id: string;
+  values: { [id: string]: string };
 };
 
 export type CGMLComponent = {
   id: string;
-  transitionId: string;
-  parameters: string;
+  type: string;
+  parameters: { [id: string]: string };
 };
 
 export type CGMLElements = {
   states: { [id: string]: CGMLState };
   transitions: Record<string, CGMLTransition>;
   components: { [id: string]: CGMLComponent };
-  initialState: CGMLInitialState | null;
+  initialStates: { [id: string]: CGMLInitialState };
   platform: string;
-  meta: string;
+  standardVersion: string;
+  meta: CGMLMeta;
   format: string;
   keys: Array<CGMLKeyNode>;
   notes: { [id: string]: CGMLNote };
+  finals: { [id: string]: CGMLVertex };
+  choices: { [id: string]: CGMLVertex };
+  terminates: { [id: string]: CGMLVertex };
 };
 
+export type NoteType = 'formal' | 'informal';
+
 export type CGMLNote = {
+  name: string | undefined;
   position: CGMLPoint;
   text: string;
+  type: 'formal' | 'informal';
 };
 
 export type CGMLNode = {
@@ -70,14 +115,11 @@ export type CGMLGraph = {
   id?: string;
 };
 
-export type CGMLKeyProperties = {
-  'attr.name'?: string;
-  'attr.type'?: string;
-};
-
 export type CGMLDataNode = {
   key: string;
   content: string;
+  rect: Array<CGMLRectangle> | undefined;
+  point: Array<CGMLPoint> | undefined;
   x?: number;
   y?: number;
   width?: number;
@@ -95,14 +137,18 @@ export type CGMLDataNodeProcess = {
   [key in CGMLDataKey]: (data: CGMLDataNodeProcessArgs) => void;
 };
 
+// export type VertexType = 'final' | 'initial' | 'terminate' | 'choice' | '';
+
 export const CGMLDataKeys = [
   'gFormat',
   'dData',
   'dName',
-  'dInitial',
   'dGeometry',
   'dColor',
   'dNote',
+  'dVertex',
+  'dPivot',
+  'dLabelGeometry',
 ] as const;
 
 export type CGMLDataKey = (typeof CGMLDataKeys)[number];
@@ -111,11 +157,11 @@ export interface CGMLDataNodeProcessArgs {
   elements: CGMLElements;
   meta?: string;
   node: CGMLDataNode;
-  component?: CGMLComponent;
   parentNode?: CGMLNode;
   state?: CGMLState;
   transition?: CGMLTransition;
   note?: CGMLNote;
+  vertex?: CGMLVertex;
 }
 
 export type XMLProperies = {

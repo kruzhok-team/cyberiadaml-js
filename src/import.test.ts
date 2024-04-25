@@ -1,30 +1,206 @@
 import { parseCGML } from './import';
 import { readFileSync } from 'fs';
 
-test('test parsing Bearloga schema', () => {
-  const bearlogaDemo: string = readFileSync('demos/CyberiadaFormat-Autoborder.graphml', 'utf-8');
-  expect(parseCGML(bearlogaDemo)).toStrictEqual({
-    notes: {
-      note: {
-        text: 'This is note!',
-        position: {
-          x: 12,
-          y: 12,
+test('test parsing arduino', () => {
+  const arduinoDemo: string = readFileSync('demos/arduino-blinker.graphml', 'utf-8');
+  expect(parseCGML(arduinoDemo)).toEqual({
+    states: {
+      diod1: {
+        name: 'Включен',
+        bounds: {
+          x: 82,
+          y: 57,
+          width: 450,
+          height: 95,
+        },
+        actions: [
+          {
+            trigger: 'entry',
+            action: 'LED1.on()\ntimer1.start(1000)',
+          },
+        ],
+        unsupportedDataNodes: [],
+      },
+      diod2: {
+        name: 'Выключен',
+        bounds: {
+          x: 81,
+          y: 334,
+          width: 450,
+          height: 95,
+        },
+        actions: [
+          {
+            trigger: 'entry',
+            action: 'LED1.off()\ntimer1.start(1000)',
+          },
+        ],
+        unsupportedDataNodes: [],
+      },
+    },
+    transitions: {
+      'init-edge': {
+        id: 'init-edge',
+        source: 'init',
+        target: 'diod1',
+        actions: [],
+        unsupportedDataNodes: [],
+      },
+      edge3: {
+        id: 'edge3',
+        source: 'diod1',
+        target: 'diod2',
+        actions: [
+          {
+            trigger: 'timer1.timeout',
+          },
+        ],
+        unsupportedDataNodes: [],
+        labelPosition: {
+          x: '457',
+          y: '173',
+        },
+        color: '#F29727',
+      },
+      edge4: {
+        id: 'edge4',
+        source: 'diod2',
+        target: 'diod1',
+        actions: [
+          {
+            trigger: 'timer1.timeout',
+          },
+        ],
+        unsupportedDataNodes: [],
+        labelPosition: {
+          x: '16',
+          y: '175',
+        },
+        color: '#F24C3D',
+      },
+    },
+    initialStates: {
+      init: {
+        type: 'initial',
+      },
+    },
+    components: {
+      cLED1: {
+        id: 'LED1',
+        type: 'LED',
+        parameters: {
+          name: 'Светодиод',
+          description: 'Встроенный в плату светодиод, чтобы им мигать',
+          pin: '12',
+        },
+      },
+      ctimer1: {
+        id: 'timer1',
+        type: 'Timer',
+        parameters: {
+          name: 'Таймер',
+          description: 'Программный таймер.',
         },
       },
     },
-    states: {
-      emptyState: {
-        name: 'Состояние',
-        bounds: {
-          x: -1608.5385700000004,
-          y: 318.0811,
-          width: 450,
-          height: 85,
-        },
-        actions: undefined,
-        unsupportedDataNodes: [],
+    standardVersion: '1.0',
+    platform: 'ArduinoUno',
+    meta: {
+      values: {
+        name: 'Arduino Blinker',
+        author: 'Lapki IDE TEAM',
+        description: 'Включение и выключение лампочки по таймеру',
       },
+      id: 'coreMeta',
+    },
+    format: 'Cyberiada-GraphML-1.0',
+    keys: [
+      {
+        id: 'gFormat',
+        for: 'graphml',
+        'attr.name': 'format',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dName',
+        for: 'node',
+        'attr.name': 'name',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dVertex',
+        for: 'node',
+        'attr.name': 'vertex',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dStateMachine',
+        for: 'graph',
+        'attr.name': 'stateMachine',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dGeometry',
+        for: 'node',
+        'attr.name': 'geometry',
+      },
+      {
+        id: 'dLabelGeometry',
+        for: 'edge',
+        'attr.name': 'labelGeometry',
+      },
+      {
+        id: 'dPivot',
+        for: 'edge',
+        'attr.name': 'pivot',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dNote',
+        for: 'node',
+        'attr.name': 'note',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dData',
+        for: 'node',
+        'attr.name': 'data',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dData',
+        for: 'edge',
+        'attr.name': 'data',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dColor',
+        for: 'edge',
+        'attr.name': 'color',
+        'attr.type': 'string',
+      },
+    ],
+    notes: {
+      commentX: {
+        type: 'informal',
+        position: {
+          x: 640,
+          y: 114,
+        },
+        text: 'Включение и выключение лампочки по таймеру!',
+      },
+    },
+    choices: {},
+    terminates: {},
+    finals: {},
+  });
+});
+
+test('test parsing bearloga', () => {
+  const bearlogaDemo = readFileSync('demos/autoborder.graphml', 'utf-8');
+  const parsed = parseCGML(bearlogaDemo);
+  expect(parsed).toEqual({
+    states: {
       'n0::n1': {
         name: 'Сближение',
         bounds: {
@@ -33,7 +209,15 @@ test('test parsing Bearloga schema', () => {
           width: 468,
           height: 170,
         },
-        actions: 'entry/\nМодульДвижения.ДвигатьсяКЦели()\n\nexit/',
+        actions: [
+          {
+            trigger: 'entry',
+            action: 'МодульДвижения.ДвигатьсяКЦели()',
+          },
+          {
+            trigger: 'exit',
+          },
+        ],
         unsupportedDataNodes: [],
         parent: 'n0',
       },
@@ -45,12 +229,19 @@ test('test parsing Bearloga schema', () => {
           width: 468,
           height: 170,
         },
-        actions: 'entry/\nОружиеЦелевое.АтаковатьЦель()\n\nexit/',
+        actions: [
+          {
+            trigger: 'entry',
+            action: 'ОружиеЦелевое.АтаковатьЦель()',
+          },
+          {
+            trigger: 'exit',
+          },
+        ],
         unsupportedDataNodes: [],
         parent: 'n0',
       },
       n0: {
-        color: '#FFFFFF',
         name: 'Бой',
         bounds: {
           x: -578.005,
@@ -58,7 +249,14 @@ test('test parsing Bearloga schema', () => {
           width: 672.532166,
           height: 802.962646,
         },
-        actions: 'entry/\nexit/',
+        actions: [
+          {
+            trigger: 'entry',
+          },
+          {
+            trigger: 'exit',
+          },
+        ],
         unsupportedDataNodes: [],
       },
       n3: {
@@ -69,67 +267,111 @@ test('test parsing Bearloga schema', () => {
           width: 468,
           height: 330,
         },
-        actions: 'entry/\nСенсор.ПоискВрагаПоДистанции(мин)\n\nexit/\nСенсор.ОстановкаПоиска()',
+        actions: [
+          {
+            trigger: 'entry',
+            action: 'Сенсор.ПоискВрагаПоДистанции(мин)',
+          },
+          {
+            trigger: 'exit',
+            action: 'Сенсор.ОстановкаПоиска()',
+          },
+        ],
         unsupportedDataNodes: [],
       },
     },
     transitions: {
-      edge1: {
-        id: 'edge1',
+      'init-n3': {
+        id: 'init-n3',
         source: 'init',
         target: 'n3',
+        actions: [],
         unsupportedDataNodes: [],
       },
-      edge2: {
-        id: 'edge2',
+      'n0-n3': {
+        id: 'n0-n3',
         source: 'n0',
         target: 'n3',
-        actions: 'АнализаторЦели.ЦельУничтожена/',
+        actions: [
+          {
+            trigger: 'АнализаторЦели.ЦельПотеряна',
+          },
+        ],
         unsupportedDataNodes: [],
       },
-      edge3: {
-        id: 'edge3',
-        source: 'n0',
-        target: 'n3',
-        actions: 'АнализаторЦели.ЦельПотеряна/',
-        unsupportedDataNodes: [],
-      },
-      edge4: {
-        id: 'edge4',
+      'n3-n0::n1': {
+        id: 'n3-n0::n1',
         source: 'n3',
         target: 'n0::n1',
-        actions: 'Сенсор.ЦельПолучена/',
+        actions: [
+          {
+            trigger: 'Сенсор.ЦельПолучена',
+          },
+        ],
         unsupportedDataNodes: [],
       },
-      edge5: {
-        id: 'edge5',
+      'n0::n1-n0::n2': {
+        id: 'n0::n1-n0::n2',
         source: 'n0::n1',
         target: 'n0::n2',
-        actions: 'ОружиеЦелевое.ЦельВошлаВЗонуАтаки/',
+        actions: [
+          {
+            trigger: 'ОружиеЦелевое.ЦельВошлаВЗонуАтаки',
+          },
+        ],
         unsupportedDataNodes: [],
       },
-      edge6: {
-        id: 'edge6',
+      'n0::n2-n0::n1': {
+        id: 'n0::n2-n0::n1',
         source: 'n0::n2',
         target: 'n0::n1',
-        actions: 'ОружиеЦелевое.ЦельВышлаИзЗоныАтаки/',
+        actions: [
+          {
+            trigger: 'ОружиеЦелевое.ЦельВышлаИзЗоныАтаки',
+          },
+        ],
         unsupportedDataNodes: [],
       },
     },
-    initialState: {
-      transitionId: 'edge1',
-      id: 'init',
-      target: 'n3',
-      position: {
-        x: -1482.03857,
-        y: 606.497559,
+    initialStates: {
+      init: {
+        type: 'initial',
+        position: {
+          x: -1482.03857,
+          y: 606.497559,
+          width: 20,
+          height: 20,
+        },
       },
     },
     components: {},
-    platform: 'BearlogaDefend',
-    meta: 'name/ Автобортник\nauthor/ Матросов В.М.\ncontact/ matrosov@mail.ru\ndescription/ Пример описания схемы, \nкоторый может быть многострочным, потому что так удобнее\nunit/ Autoborder',
-    format: 'Cyberiada-GraphML',
+    platform: 'BearsTowerDefence',
+    meta: {
+      values: {
+        name: 'Автобортник',
+        author: 'Матросов В.М.',
+        contact: 'matrosov@mail.ru',
+        description:
+          'Пример описания схемы, \nкоторый может быть многострочным, потому что так удобнее',
+        target: 'Autoborder',
+      },
+      id: 'nMeta',
+    },
+    standardVersion: '1.0',
+    format: 'Cyberiada-GraphML-1.0',
     keys: [
+      {
+        id: 'gFormat',
+        for: 'graphml',
+        'attr.name': 'format',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dName',
+        for: 'graph',
+        'attr.name': 'name',
+        'attr.type': 'string',
+      },
       {
         id: 'dName',
         for: 'node',
@@ -137,182 +379,105 @@ test('test parsing Bearloga schema', () => {
         'attr.type': 'string',
       },
       {
-        id: 'dData',
-        for: 'edge',
-        'attr.name': 'data',
+        id: 'dStateMachine',
+        for: 'graph',
+        'attr.name': 'stateMachine',
         'attr.type': 'string',
       },
       {
-        id: 'dData',
+        id: 'dSubmachineState',
         for: 'node',
-        'attr.name': 'data',
-        'attr.type': 'string',
-      },
-      {
-        id: 'dInitial',
-        for: 'node',
-        'attr.name': 'initial',
+        'attr.name': 'submachineState',
         'attr.type': 'string',
       },
       {
         id: 'dGeometry',
-        for: 'edge',
-        'attr.name': undefined,
-        'attr.type': undefined,
+        for: 'graph',
+        'attr.name': 'geometry',
       },
       {
         id: 'dGeometry',
         for: 'node',
-        'attr.name': undefined,
-        'attr.type': undefined,
+        'attr.name': 'geometry',
+      },
+      {
+        id: 'dGeometry',
+        for: 'edge',
+        'attr.name': 'geometry',
+      },
+      {
+        id: 'dSourcePoint',
+        for: 'edge',
+        'attr.name': 'sourcePoint',
+      },
+      {
+        id: 'dTargetPoint',
+        for: 'edge',
+        'attr.name': 'targetPoint',
+      },
+      {
+        id: 'dLabelGeometry',
+        for: 'edge',
+        'attr.name': 'labelGeometry',
       },
       {
         id: 'dNote',
         for: 'node',
-        'attr.name': undefined,
-        'attr.type': undefined,
+        'attr.name': 'note',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dVertex',
+        for: 'node',
+        'attr.name': 'vertex',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dData',
+        for: 'node',
+        'attr.name': 'data',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dData',
+        for: 'edge',
+        'attr.name': 'data',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dMarkup',
+        for: 'node',
+        'attr.name': 'markup',
+        'attr.type': 'string',
       },
       {
         id: 'dColor',
         for: 'node',
-        'attr.name': undefined,
-        'attr.type': undefined,
+        'attr.name': 'color',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dColor',
+        for: 'edge',
+        'attr.name': 'color',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dPivot',
+        for: 'edge',
+        'attr.name': 'pivot',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dChunk',
+        for: 'edge',
+        'attr.name': 'chunk',
+        'attr.type': 'string',
       },
     ],
-  });
-});
-
-test('test parsing ArduinoUno schema', () => {
-  const arduinoDemo: string = readFileSync('demos/CyberiadaFormat-Blinker.graphml', 'utf-8');
-  expect(parseCGML(arduinoDemo)).toStrictEqual({
     notes: {},
-    components: {
-      LED1: {
-        id: 'LED1',
-        parameters: `type/ LED
-name/ Светодиод
-description/ Встроенный в плату светодиод, чтобы им мигать
-pin/ 12`,
-        transitionId: 'edge-1',
-      },
-      timer1: {
-        id: 'timer1',
-        parameters: `type/ Timer
-name/ Светодиод
-description/ Программный таймер.`,
-        transitionId: 'edge0',
-      },
-    },
-    format: 'Cyberiada-GraphML',
-    initialState: {
-      transitionId: 'edge1',
-      id: 'init',
-      target: 'diod1',
-      position: {
-        x: 311,
-        y: -94,
-      },
-    },
-    keys: [
-      {
-        'attr.name': 'name',
-        'attr.type': 'string',
-        for: 'node',
-        id: 'dName',
-      },
-      {
-        'attr.name': 'data',
-        'attr.type': 'string',
-        for: 'edge',
-        id: 'dData',
-      },
-      {
-        'attr.name': 'data',
-        'attr.type': 'string',
-        for: 'node',
-        id: 'dData',
-      },
-      {
-        'attr.name': 'initial',
-        'attr.type': 'string',
-        for: 'node',
-        id: 'dInitial',
-      },
-      {
-        'attr.name': undefined,
-        'attr.type': undefined,
-        for: 'edge',
-        id: 'dGeometry',
-      },
-      {
-        'attr.name': undefined,
-        'attr.type': undefined,
-        for: 'node',
-        id: 'dGeometry',
-      },
-      {
-        'attr.name': undefined,
-        'attr.type': undefined,
-        for: 'edge',
-        id: 'dColor',
-      },
-    ],
-    meta: `name/ Arduino-Blinker
-description/ Включение и выключение лампочки по таймеру`,
-    platform: 'ArduinoUno',
-    states: {
-      diod1: {
-        actions: `entry/
-LED1.on()
-timer1.start(1000)`,
-        bounds: {
-          height: 95,
-          width: 450,
-          x: 82,
-          y: 57,
-        },
-        name: 'Включен',
-        unsupportedDataNodes: [],
-      },
-      diod2: {
-        actions: `entry/
-LED1.off()
-timer1.start(1000)`,
-        bounds: {
-          height: 95,
-          width: 450,
-          x: 81,
-          y: 334,
-        },
-        name: 'Выключен',
-        unsupportedDataNodes: [],
-      },
-    },
-    transitions: {
-      edge1: {
-        id: 'edge1',
-        source: 'init',
-        target: 'diod1',
-        unsupportedDataNodes: [],
-      },
-      edge2: {
-        id: 'edge2',
-        actions: 'timer1.timeout/',
-        color: '#F29727',
-        position: { x: 457, y: 173 },
-        source: 'diod1',
-        target: 'diod2',
-        unsupportedDataNodes: [],
-      },
-      edge3: {
-        id: 'edge3',
-        actions: 'timer1.timeout/',
-        color: '#F24C3D',
-        position: { x: 16, y: 175 },
-        source: 'diod2',
-        target: 'diod1',
-        unsupportedDataNodes: [],
-      },
-    },
+    choices: {},
+    terminates: {},
+    finals: {},
   });
 });

@@ -7,13 +7,23 @@ export type ExportKeyNode = {
   '@attr.type'?: string;
 };
 
+export type ExportRect = {
+  '@x': number;
+  '@y': number;
+  '@width': number;
+  '@height': number;
+}
+
+export type ExportPoint = {
+  '@x': number;
+  '@y': number;
+}
+
 export type ExportDataNode = {
   '@key': string;
-  '@x'?: number;
-  '@y'?: number;
-  '@width'?: number;
-  '@height'?: number;
   content: string;
+  rect?: ExportRect;
+  point?: ExportPoint;
 };
 
 export type ExportEdge = {

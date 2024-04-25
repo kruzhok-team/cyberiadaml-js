@@ -1,10 +1,10 @@
 import { XMLParser } from 'fast-xml-parser';
 
 import {
+  NoteType,
   CGMLState,
   CGMLTransition,
   CGMLElements,
-  CGMLKeyProperties,
   CGMLDataNodeProcess,
   CGMLDataKey,
   CGMLDataKeys,
@@ -12,19 +12,60 @@ import {
   CGMLDataNodeProcessArgs,
   CGMLKeyNode,
   CGMLNode,
-  CGMLComponent,
   CGML,
   CGMLGraph,
   CGMLEdge,
   CGMLNote,
+  CGMLVertex,
+  CGMLAction,
 } from './types/import';
 
 function isDataKey(key: string): key is CGMLDataKey {
   return CGMLDataKeys.includes(key as CGMLDataKey);
 }
 
+function isNoteType(value: string): value is NoteType {
+  return value == 'informal' || value == 'formal';
+}
+
+function parseTrigger(trigger: string): [string, string | undefined] {
+  const regWithCondition = /^(?<trigger>.+)\[(?<condition>.+)\]$/;
+  const regWithoutCondition = /^(?<trigger>.+)$/;
+  const withCondition = regWithCondition.exec(trigger);
+  const withoutCondition = regWithoutCondition.exec(trigger);
+  if (withCondition && withCondition.groups) {
+    return [withCondition.groups['condition'].trim(), withCondition.groups['trigger'].trim()];
+  }
+  if (withoutCondition && withoutCondition.groups) {
+    return [withoutCondition.groups['trigger'].trim(), undefined];
+  }
+  throw new Error('No reg!');
+}
+
+function parseActions(rawActions: string): Array<CGMLAction> {
+  const actions: Array<CGMLAction> = [];
+  const splitedActions = rawActions.split('\n\n');
+  for (const splitedAction of splitedActions) {
+    let [rawTrigger, action] = splitedAction.split('/');
+    const [trigger, condition] = parseTrigger(rawTrigger);
+    action = action.trim();
+    actions.push({
+      trigger: trigger,
+      condition: condition,
+      action: action === '' ? undefined : action,
+    });
+  }
+  return actions;
+}
+
 // Набор функций, обрабатывающих data-узлы в зависимости от их ключа.
 const dataNodeProcess: CGMLDataNodeProcess = {
+  dVertex({ parentNode, node, vertex }) {
+    if (!parentNode || !vertex) {
+      throw new Error('Непредвиденный вызов dVertex!');
+    }
+    vertex.type = node.content;
+  },
   gFormat({ elements, node }) {
     if (elements.format != '') {
       throw new Error(
@@ -33,84 +74,105 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     }
     elements.format = node.content;
   },
-  dData({ elements, state, parentNode, node, component, transition }) {
+  dData({ elements, state, parentNode, node, transition, note }) {
     if (parentNode !== undefined) {
-      // Если это мета-компонент, то извлекаем мета-информацию
-      if (parentNode.id === '') {
-        elements.meta = node.content;
-      } else {
-        if (component !== undefined) {
-          component.parameters = node.content;
-        } else if (state !== undefined) {
-          state.actions = node.content;
-        }
+      if (state !== undefined) {
+        state.actions = parseActions(node.content);
+      } else if (note !== undefined) {
+        note.text = node.content;
       }
     } else {
-      if (transition !== undefined) {
-        transition.actions = node.content;
-        elements.transitions[transition.id] = transition;
+      if (transition == undefined) {
+        throw new Error('Непредвиденный вызов dData.');
+      }
+      if (elements.initialStates[transition.source]) {
+        transition.actions = [
+          {
+            action: node.content,
+          },
+        ];
+      } else {
+        transition.actions = parseActions(node.content);
       }
     }
   },
   dName(data: CGMLDataNodeProcessArgs) {
-    if (data.parentNode !== undefined) {
-      // В мета-состоянии dName означает название платформы
-      if (data.parentNode.id === '') {
-        if (data.elements.platform === '') {
-          data.elements.platform = data.node.content;
-        } else {
-          throw new Error(
-            `Повторное указание платформы! Старое значение: ${data.elements.platform}. Новое значение: ${data.node.content}`,
-          );
-        }
-      } else {
-        if (data.component !== undefined) {
-          data.component.parameters = data.node.content;
-        } else if (data.state != undefined) {
-          data.state.name = data.node.content;
-        }
-      }
-    } else {
+    if (data.parentNode == undefined) {
       throw new Error('Непредвиденный вызов функции dName');
     }
-  },
-  dInitial(data: CGMLDataNodeProcessArgs) {
-    if (data.parentNode !== undefined) {
-      if (data.elements.initialState !== null) {
-        initialId = data.parentNode.id;
-        data.elements.initialState.id = data.parentNode.id;
+    if (data.note !== undefined) {
+      if (data.note.name !== undefined) {
+        throw new Error('Для комментария уже указано поле dName!');
       }
-    } else {
-      throw new Error('Непредвиденный вызов функции dInitial');
+      data.note.name = data.node.content;
+      return;
+    }
+    if (data.state !== undefined) {
+      data.state.name = data.node.content;
+      return;
+    }
+    if (data.vertex !== undefined) {
+      data.vertex.data = data.node.content;
+      return;
     }
   },
   dGeometry(data: CGMLDataNodeProcessArgs) {
-    if (data.node['x'] === undefined || data.node['y'] === undefined) {
-      throw new Error('Не указаны x или y для узла data с ключом dGeometry');
+    if (data.node.rect === undefined && data.node.point === undefined) {
+      throw new Error('Не указаны point и rect для узла data с ключом dGeometry');
     }
-    const x = +data.node['x'];
-    const y = +data.node['y'];
 
+    let x = 0;
+    let y = 0;
+    let width = -1;
+    let height = -1;
+
+    if (data.node.rect) {
+      const rect = data.node.rect[0];
+      x = +rect.x;
+      y = +rect.y;
+      width = +rect.width;
+      height = +rect.height;
+    } else if (data.node.point) {
+      const point = data.node.point[0];
+      x = +point.x;
+      y = +point.y;
+    } else {
+      throw new Error('Internal error!');
+    }
     if (data.state !== undefined) {
       data.state.bounds = {
         x: x,
         y: y,
-        width: data.node['width'] ? +data.node['width'] : 0,
-        height: data.node['height'] ? +data.node['height'] : 0,
+        width: width,
+        height: height,
       };
-    } else if (data.transition !== undefined) {
+      return;
+    }
+    if (data.transition !== undefined) {
       data.transition.position = {
         x: x,
         y: y,
       };
-    } else if (data.note !== undefined) {
+      return;
+    }
+    if (data.note !== undefined) {
       data.note.position = {
         x: x,
         y: y,
       };
-    } else {
-      throw new Error('Непредвиденный вызов функции dGeometry');
+      return;
     }
+    if (data.vertex !== undefined) {
+      data.vertex.position = {
+        x: x,
+        y: y,
+        width: width,
+        height: height,
+      };
+      return;
+    }
+
+    throw new Error('Непредвиденный вызов функции dGeometry');
   },
   dColor(data: CGMLDataNodeProcessArgs) {
     if (data.transition !== undefined) {
@@ -120,63 +182,55 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     }
   },
   dNote(data: CGMLDataNodeProcessArgs) {
-    if (data.note !== undefined) {
-      data.note.text = data.node.content;
-    } else {
+    if (data.note == undefined) {
       throw new Error('Непредвиденный вызов функции dNote');
     }
+    if (data.node.content == '' || data.node.content == undefined) {
+      data.note.type = 'informal';
+      return;
+    }
+    if (!isNoteType(data.node.content)) {
+      throw new Error('Значение поля dNote должно быть formal или informal!');
+    }
+    data.note.type = data.node.content;
+  },
+  dPivot(data: CGMLDataNodeProcessArgs) {
+    if (data.transition == undefined) {
+      throw new Error('Непредвиденный вызов функции dPivot!');
+    }
+    data.transition.pivot = data.node.content;
+  },
+  dLabelGeometry(data: CGMLDataNodeProcessArgs) {
+    if (data.transition == undefined) {
+      throw new Error('Непредвиденный вызов функции dPivot!');
+    }
+    if (data.node.point == undefined) {
+      throw new Error('Нет дочернего <point> у <data> с ключом dLabelGeometry ');
+    }
+    data.transition.labelPosition = data.node.point[0];
   },
 };
 
-function processTransitions(
-  elements: CGMLElements,
-  edges: CGMLEdge[],
-  availableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
-) {
-  let foundInitial = false;
+function processTransitions(elements: CGMLElements, edges: CGMLEdge[]) {
   for (const idx in edges) {
     const edge = edges[idx];
-    if (!foundInitial && edge.source === initialId) {
-      const bounds = elements.states[edge.source].bounds;
-      delete elements.states[edge.source];
-      if (elements.initialState !== null) {
-        elements.initialState.position = {
-          x: bounds.x,
-          y: bounds.y,
-        };
-        elements.initialState.target = edge.target;
-        elements.initialState.transitionId = edge.id;
-        elements.transitions[edge.id] = {
-          id: edge.id,
-          source: edge.source,
-          target: edge.target,
-          unsupportedDataNodes: [],
-        };
-      } else {
-        throw new Error('Непредвиденная ошибка. processTransitions: initialState == null');
-      }
-      foundInitial = true;
-    }
-
     const transition: CGMLTransition = {
       id: edge.id,
       source: edge.source,
       target: edge.target,
-      actions: '',
+      actions: [],
       unsupportedDataNodes: [],
+      pivot: undefined,
+      labelPosition: undefined,
     };
-
+    elements.transitions[edge.id] = transition;
     for (const dataNodeIndex in edge.data) {
       const dataNode: CGMLDataNode = edge.data[+dataNodeIndex];
-      if (!availableDataProperties.get('edge')?.has(dataNode.key)) {
-        throw new Error(`Неизвестный key "${dataNode.key}" для узла edge!`);
-      }
       if (isDataKey(dataNode.key)) {
         const func = dataNodeProcess[dataNode.key];
         func({
           elements: elements,
           node: dataNode,
-          component: undefined,
           parentNode: undefined,
           transition: transition,
         });
@@ -201,13 +255,15 @@ function createEmptyState(): CGMLState {
   return {
     name: '',
     bounds: { x: 0, y: 0, width: 0, height: 0 },
-    actions: '',
+    actions: [],
     unsupportedDataNodes: [],
   };
 }
 
 function createEmptyNote(): CGMLNote {
   return {
+    name: undefined,
+    type: 'informal',
     position: {
       x: 0,
       y: 0,
@@ -216,24 +272,30 @@ function createEmptyNote(): CGMLNote {
   };
 }
 
+function createEmptyVertex(): CGMLVertex {
+  return {
+    type: '',
+  };
+}
+
 // Обработка нод
 function processNode(
   elements: CGMLElements,
   node: CGMLNode,
-  availableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
   parent?: CGMLNode,
-  component?: CGMLComponent,
-): CGMLState | CGMLNote {
+): CGMLState | CGMLNote | CGMLVertex {
   // Если находим dNote среди дата-нод, то создаем пустую заметку, а состояние делаем undefined
   const note: CGMLNote | undefined = node.data?.find((dataNode) => dataNode.key === 'dNote')
     ? createEmptyNote()
     : undefined;
-  const state: CGMLState | undefined = note === undefined ? createEmptyState() : undefined;
+
+  const vertex: CGMLVertex | undefined = node.data?.find((dataNode) => dataNode.key === 'dVertex')
+    ? createEmptyVertex()
+    : undefined;
+  const state: CGMLState | undefined =
+    note === undefined && vertex === undefined ? createEmptyState() : undefined;
   if (node.data !== undefined) {
     for (const dataNode of node.data) {
-      if (!availableDataProperties.get('node')?.has(dataNode.key)) {
-        throw new Error(`Неизвестный key "${dataNode.key}" для узла node!`);
-      }
       if (isDataKey(dataNode.key)) {
         const func = dataNodeProcess[dataNode.key];
         func({
@@ -241,8 +303,8 @@ function processNode(
           node: dataNode,
           parentNode: node,
           state: state,
-          component: component,
           note: note,
+          vertex: vertex,
         });
       }
     }
@@ -253,126 +315,147 @@ function processNode(
   }
 
   if (node.graph !== undefined) {
-    processGraph(elements, node.graph, availableDataProperties, node);
+    processGraph(elements, node.graph, node);
   }
 
   if (state !== undefined) {
     return state;
-  } else if (note !== undefined) {
+  }
+  if (note !== undefined) {
     return note;
-  } else {
-    throw new Error('Отсутствует состояние или заметка для данного узла!');
   }
-}
-
-function emptyCGMLComponent(): CGMLComponent {
-  return {
-    transitionId: '',
-    id: '',
-    parameters: '',
-  };
-}
-
-function isState(value: CGMLState | CGMLNote): value is CGMLState {
-  return (value as CGMLState).actions !== undefined || (value as CGMLState).name !== undefined;
-}
-
-function processGraph(
-  elements: CGMLElements,
-  graph: CGMLGraph,
-  availableDataProperties: Map<string, Map<string, CGMLKeyProperties>>,
-  parent?: CGMLNode,
-) {
-  if (parent === undefined) {
-    if (graph.edge) {
-      for (const idx in graph.edge) {
-        const edge = graph.edge[idx];
-        if (edge.source === '') {
-          elements.components[edge.target] = emptyCGMLComponent();
-          elements.components[edge.target].transitionId = edge.id;
-          delete graph.edge[idx];
-        }
-      }
-    }
-
-    for (const idx in graph.node) {
-      const node = graph.node[idx];
-      const component = elements.components[node.id];
-      if (component !== undefined) {
-        // Если у компонента уже присвоен id, то мы его уже обрабатывали
-        if (component.id !== '') {
-          throw new Error(`Компонент с id ${component.id} уже существует!`);
-        }
-        component.id = node.id;
-        processNode(elements, node, availableDataProperties, parent, component);
-        delete graph.node[idx];
-      }
-    }
+  if (vertex !== undefined) {
+    return vertex;
   }
 
+  throw new Error('Отсутствует состояние или заметка для данного узла!');
+}
+
+function parseMeta(rawParameters: string): { [id: string]: string } {
+  const splitedParameters = rawParameters.split('\n\n');
+  const meta: { [id: string]: string } = {};
+  for (const splitedParameter of splitedParameters) {
+    const [name, value] = splitedParameter.split('/');
+    meta[name] = value.trim();
+  }
+
+  return meta;
+}
+
+function isVertex(value: CGMLState | CGMLNote | CGMLVertex): value is CGMLVertex {
+  return (
+    (value as CGMLNote).text == undefined &&
+    (value as CGMLState).actions == undefined &&
+    (value as CGMLVertex).type !== undefined
+  );
+}
+
+function isState(value: CGMLState | CGMLNote | CGMLVertex): value is CGMLState {
+  return (value as CGMLState).actions !== undefined && (value as CGMLState).name !== undefined;
+}
+
+function processGraph(elements: CGMLElements, graph: CGMLGraph, parent?: CGMLNode) {
   for (const idx in graph.node) {
     const node = graph.node[idx];
-    const processResult: CGMLState | CGMLNote = processNode(
-      elements,
-      node,
-      availableDataProperties,
-      parent,
-    );
+    const processResult: CGMLState | CGMLNote | CGMLVertex = processNode(elements, node, parent);
     if (isState(processResult)) {
       elements.states[node.id] = processResult;
-    } else {
-      elements.notes[node.id] = processResult;
+      continue;
+    }
+    if (isVertex(processResult)) {
+      const vertex = processResult;
+      if (parent) {
+        vertex.parent = parent.id;
+      }
+      switch (vertex.type) {
+        case 'initial':
+          elements.initialStates[node.id] = vertex;
+          break;
+        case 'choice':
+          elements.choices[node.id] = vertex;
+          break;
+        case 'final':
+          elements.finals[node.id] = vertex;
+          break;
+        case 'terminate':
+          elements.terminates[node.id] = vertex;
+          break;
+        default:
+          throw new Error(
+            'Неправильное значение dVertex! Ожидается "initial", "choice", "final", "terminate"',
+          );
+      }
+      continue;
+    }
+
+    const note = processResult;
+    if (note.type == 'informal') {
+      elements.notes[node.id] = note;
+      continue;
+    }
+    switch (note.name) {
+      case 'CGML_COMPONENT':
+        if (elements.components[node.id] !== undefined) {
+          throw new Error(`Компонент с идентификатором ${node.id} уже существует!`);
+        }
+        const componentParameters = parseMeta(note.text);
+        const componentId = componentParameters['id'];
+        const componentType = componentParameters['type'];
+        delete componentParameters['id'];
+        delete componentParameters['type'];
+        elements.components[node.id] = {
+          id: componentId,
+          type: componentType,
+          parameters: componentParameters,
+        };
+        break;
+      case 'CGML_META':
+        elements.meta.values = parseMeta(note.text);
+        elements.meta.id = node.id;
+        break;
+      default:
+        throw new Error(
+          `Неизвестный тип мета-информации ${note.text}. Ожидается CGML_META или CGML_COMPONENT.`,
+        );
     }
   }
 
   if (graph.edge) {
-    processTransitions(elements, graph.edge, availableDataProperties);
+    processTransitions(elements, graph.edge);
   }
 }
 
-// Добавляет допустимые свойства у узлов (dData, dInitial и т.д)
-function addPropertiesFromKeyNode(
-  xml: CGML,
-  elements: CGMLElements,
-  availableDataProperties: Map<string, Map<string, CGMLKeyProperties>>, // Map<Название целевой ноды, Map<id свойства, аттрибуты свойства>>
-) {
+function getKeyNodes(xml: CGML): Array<CGMLKeyNode> {
+  const keyNodes: Array<CGMLKeyNode> = [];
   for (const node of xml.graphml.key) {
-    const keyNode: CGMLKeyNode = {
+    keyNodes.push({
       id: node.id,
       for: node.for,
       'attr.name': node['attr.name'],
       'attr.type': node['attr.type'],
-    };
-    elements.keys.push(keyNode);
-    // Если у нас уже есть список свойств для целевой ноды, то добавляем в уже существующий Map,
-    // иначе - создаем новый.
-    if (availableDataProperties.has(keyNode.for)) {
-      const nodeProperties = availableDataProperties.get(keyNode.for);
-
-      // Если есть такое свойство - вывести ошибку, иначе - добавить!
-      if (nodeProperties?.has(keyNode.id)) {
-        throw new Error(`Дублирование свойства ${keyNode.id} для узла ${keyNode.for}!`);
-      } else {
-        nodeProperties?.set(keyNode.id, {
-          'attr.name': node['attr.name'],
-          'attr.type': node['attr.type'],
-        });
-      }
-    } else {
-      availableDataProperties.set(
-        keyNode.for,
-        new Map<string, CGMLKeyProperties>([
-          [keyNode.id, { 'attr.name': node['attr.name'], 'attr.type': node['attr.type'] }],
-        ]),
-      );
-    }
+    });
   }
+
+  return keyNodes;
 }
 
-let initialId = '';
+function removeComponentsTransitions(
+  transitions: Record<string, CGMLTransition>,
+  metaId: string,
+): Record<string, CGMLTransition> {
+  const newTransitions: Record<string, CGMLTransition> = {};
+  for (const transitionId in transitions) {
+    const transition = transitions[transitionId];
+    if (transition.source == metaId) {
+      continue;
+    }
+    newTransitions[transitionId] = transition;
+  }
+
+  return newTransitions;
+}
 
 export function parseCGML(graphml: string): CGMLElements {
-  initialId = '';
   const parser = new XMLParser({
     textNodeName: 'content',
     ignoreAttributes: false,
@@ -385,42 +468,31 @@ export function parseCGML(graphml: string): CGMLElements {
   const elements: CGMLElements = {
     states: {},
     transitions: {},
-    initialState: {
-      transitionId: '',
-      id: '',
-      target: '',
-    },
+    initialStates: {},
     components: {},
     platform: '',
-    meta: '',
+    meta: {
+      values: {},
+      id: '',
+    },
+    standardVersion: '',
     format: '',
     keys: [],
     notes: {},
+    choices: {},
+    terminates: {},
+    finals: {},
   };
-
-  const availableDataProperties = new Map<string, Map<string, CGMLKeyProperties>>();
 
   const xml = parser.parse(graphml) as CGML;
 
   setFormatToMeta(elements, xml);
-
-  addPropertiesFromKeyNode(xml, elements, availableDataProperties);
-
-  switch (elements.format) {
-    case 'Cyberiada-GraphML': {
-      const indexOfMetaNode = xml.graphml.graph.node.findIndex((node) => node.id === '');
-      if (indexOfMetaNode !== -1) {
-        processNode(elements, xml.graphml.graph.node[indexOfMetaNode], availableDataProperties);
-        xml.graphml.graph.node = xml.graphml.graph.node.filter((value) => value.id !== '');
-        processGraph(elements, xml.graphml.graph, availableDataProperties);
-      } else {
-        throw new Error('Отсутствует мета-узел!');
-      }
-      break;
-    }
-    default: {
-      throw new Error(`ОШИБКА! НЕИЗВЕСТНЫЙ ФОРМАТ "${elements.format}"!`);
-    }
-  }
+  elements.keys = getKeyNodes(xml);
+  processGraph(elements, xml.graphml.graph);
+  elements.transitions = removeComponentsTransitions(elements.transitions, elements.meta.id);
+  elements.platform = elements.meta.values['platform'];
+  elements.standardVersion = elements.meta.values['standardVersion'];
+  delete elements.meta.values['platform'];
+  delete elements.meta.values['standardVersion'];
   return elements;
 }
