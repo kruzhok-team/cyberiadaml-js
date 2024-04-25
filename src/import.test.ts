@@ -3,7 +3,6 @@ import { readFileSync } from 'fs';
 
 test('test parsing arduino', () => {
   const arduinoDemo: string = readFileSync('demos/arduino-blinker.graphml', 'utf-8');
-  console.log(JSON.stringify(parseCGML(arduinoDemo), null, 2));
   expect(parseCGML(arduinoDemo)).toEqual({
     states: {
       diod1: {
@@ -104,10 +103,10 @@ test('test parsing arduino', () => {
         },
       },
     },
+    standardVersion: '1.0',
     platform: 'ArduinoUno',
     meta: {
       values: {
-        standartVersion: '1.0',
         name: 'Arduino Blinker',
         author: 'Lapki IDE TEAM',
         description: 'Включение и выключение лампочки по таймеру',
@@ -200,7 +199,6 @@ test('test parsing arduino', () => {
 test('test parsing bearloga', () => {
   const bearlogaDemo = readFileSync('demos/autoborder.graphml', 'utf-8');
   const parsed = parseCGML(bearlogaDemo);
-  console.log(JSON.stringify(parsed, null, 4));
   expect(parsed).toEqual({
     states: {
       'n0::n1': {

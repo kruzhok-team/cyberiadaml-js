@@ -156,7 +156,7 @@ function getGeometryDataNode(position: CGMLPoint | CGMLRectangle): ExportDataNod
 
 function getLabelPositionNode(position: CGMLPoint): ExportDataNode {
   return {
-    '@key': 'dLabelPosition',
+    '@key': 'dLabelGeometry',
     content: '',
     point: {
       '@x': position.x,
@@ -260,6 +260,10 @@ function getComponentStates(components: { [id: string]: CGMLComponent }): Export
     nodes.push({
       '@id': componentId,
       data: [
+        {
+          '@key': 'dNote',
+          content: 'formal'
+        },
         {
           '@key': 'dName',
           content: 'CGML_COMPONENT',
