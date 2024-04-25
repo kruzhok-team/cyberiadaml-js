@@ -39,7 +39,6 @@ function parseTrigger(trigger: string): [string, string | undefined] {
   if (withoutCondition && withoutCondition.groups) {
     return [withoutCondition.groups['trigger'].trim(), undefined];
   }
-
   throw new Error('No reg!');
 }
 
@@ -163,7 +162,6 @@ const dataNodeProcess: CGMLDataNodeProcess = {
       };
       return;
     }
-
     if (data.vertex !== undefined) {
       data.vertex.position = {
         x: x,
@@ -171,6 +169,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
         width: width,
         height: height,
       };
+      return;
     }
 
     throw new Error('Непредвиденный вызов функции dGeometry');
@@ -293,7 +292,6 @@ function processNode(
   const vertex: CGMLVertex | undefined = node.data?.find((dataNode) => dataNode.key === 'dVertex')
     ? createEmptyVertex()
     : undefined;
-
   const state: CGMLState | undefined =
     note === undefined && vertex === undefined ? createEmptyState() : undefined;
   if (node.data !== undefined) {
@@ -366,6 +364,9 @@ function processGraph(elements: CGMLElements, graph: CGMLGraph, parent?: CGMLNod
     }
     if (isVertex(processResult)) {
       const vertex = processResult;
+      if (parent) {
+        vertex.parent = parent.id;
+      }
       switch (vertex.type) {
         case 'initial':
           elements.initialStates[node.id] = vertex;
@@ -474,7 +475,7 @@ export function parseCGML(graphml: string): CGMLElements {
       values: {},
       id: '',
     },
-    standartVersion: '',
+    standardVersion: '',
     format: '',
     keys: [],
     notes: {},
@@ -490,6 +491,8 @@ export function parseCGML(graphml: string): CGMLElements {
   processGraph(elements, xml.graphml.graph);
   elements.transitions = removeComponentsTransitions(elements.transitions, elements.meta.id);
   elements.platform = elements.meta.values['platform'];
-  elements.standartVersion = elements.meta.values['standartVersion'];
+  elements.standardVersion = elements.meta.values['standardVersion'];
+  delete elements.meta.values['platform'];
+  delete elements.meta.values['standardVersion'];
   return elements;
 }

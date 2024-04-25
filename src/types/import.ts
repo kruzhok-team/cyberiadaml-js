@@ -23,6 +23,7 @@ export type CGMLState = {
 };
 
 export type CGMLInitialState = {
+  parent?: string;
   position?: CGMLPoint;
 };
 
@@ -39,6 +40,7 @@ export type CGMLTransition = {
 };
 
 export type CGMLVertex = {
+  parent?: string;
   type: string;
   data?: string;
   position?: CGMLPoint | CGMLRectangle;
@@ -74,7 +76,7 @@ export type CGMLElements = {
   components: { [id: string]: CGMLComponent };
   initialStates: { [id: string]: CGMLInitialState };
   platform: string;
-  standartVersion: string;
+  standardVersion: string;
   meta: CGMLMeta;
   format: string;
   keys: Array<CGMLKeyNode>;

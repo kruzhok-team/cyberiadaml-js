@@ -1,6 +1,6 @@
 import { XMLBuilder } from 'fast-xml-parser';
 
-import { ExportCGML, ExportEdge, ExportKeyNode, ExportNode, ExportNote } from './types/export';
+import { ExportCGML, ExportEdge, ExportKeyNode, ExportNode, ExportDataNode } from './types/export';
 import {
   CGMLComponent,
   CGMLElements,
@@ -9,6 +9,12 @@ import {
   CGMLTransition,
   CGMLInitialState,
   CGMLNote,
+  CGMLMeta,
+  CGMLAction,
+  CGMLVertex,
+  CGMLPoint,
+  CGMLRectangle,
+  CGMLTransitionAction,
 } from './types/import';
 
 export function emptyCGMLElements(): CGMLElements {
@@ -16,26 +22,65 @@ export function emptyCGMLElements(): CGMLElements {
     states: {},
     transitions: {},
     components: {},
-    initialState: null,
+    initialStates: {},
     platform: '',
-    meta: '',
+    meta: {
+      id: '',
+      values: {},
+    },
     format: '',
+    standardVersion: '',
     keys: [],
     notes: {},
+    terminates: {},
+    choices: {},
+    finals: {},
   };
 }
 
-function getMetaNode(platform: string, meta: string): ExportNode {
+function serializeMeta(meta: CGMLMeta, platform: string, standardVersion: string): string {
+  return serialaizeParameters({
+    platform: platform,
+    standardVersion: standardVersion,
+    ...meta.values,
+  });
+}
+
+function serializeActions(actions: Array<CGMLAction> | Array<CGMLTransitionAction>): string {
+  let strActions = '';
+  for (const action of actions) {
+    if (action.trigger) {
+      strActions += `${action.trigger}`;
+      if (action.condition) {
+        strActions += `${action.condition}`;
+      }
+      strActions += '/\n';
+    }
+    if (action.action) {
+      strActions += action.action;
+      strActions += '\n';
+    }
+    strActions += '\n';
+  }
+
+  return strActions;
+}
+
+function getMetaNode(platform: string, meta: CGMLMeta, standardVersion: string): ExportNode {
   return {
-    '@id': '',
+    '@id': meta.id,
     data: [
       {
+        '@key': 'dNote',
+        content: 'formal',
+      },
+      {
         '@key': 'dName',
-        content: platform,
+        content: 'CGML_META',
       },
       {
         '@key': 'dData',
-        content: meta,
+        content: serializeMeta(meta, platform, standardVersion),
       },
     ],
   };
@@ -50,17 +95,10 @@ function stateToExportNode(state: CGMLState, id: string): ExportNode {
         content: state.name,
       },
       {
-        '@key': 'dGeometry',
-        '@width': state.bounds.width,
-        '@height': state.bounds.height,
-        '@x': state.bounds.x,
-        '@y': state.bounds.y,
-        content: '',
-      },
-      {
         '@key': 'dData',
-        content: state.actions,
+        content: serializeActions(state.actions),
       },
+      getGeometryDataNode(state.bounds),
     ],
   };
 
@@ -81,66 +119,137 @@ function stateToExportNode(state: CGMLState, id: string): ExportNode {
   return exportNode;
 }
 
+function getVertexDataNode(type: string): ExportDataNode {
+  return {
+    '@key': 'dVertex',
+    content: type,
+  };
+}
+
+function isRect(value: any): value is CGMLRectangle {
+  return value.width !== undefined && value.height !== undefined;
+}
+
+function getGeometryDataNode(position: CGMLPoint | CGMLRectangle): ExportDataNode {
+  if (isRect(position)) {
+    return {
+      '@key': 'dGeometry',
+      content: '',
+      rect: {
+        '@x': position.x,
+        '@y': position.y,
+        '@width': position.width,
+        '@height': position.height,
+      },
+    };
+  } else {
+    return {
+      '@key': 'dGeometry',
+      content: '',
+      point: {
+        '@x': position.x,
+        '@y': position.y,
+      },
+    };
+  }
+}
+
+function getLabelPositionNode(position: CGMLPoint): ExportDataNode {
+  return {
+    '@key': 'dLabelPosition',
+    content: '',
+    point: {
+      '@x': position.x,
+      '@y': position.y,
+    },
+  };
+}
+
+function getNameDataNode(data: string): ExportDataNode {
+  return {
+    '@key': 'dName',
+    content: data,
+  };
+}
+
+function serialaizeParameters(parameters: { [id: string]: string }): string {
+  let strParameters = '';
+  for (const parameterName in parameters) {
+    const value = parameters[parameterName];
+    strParameters += `${parameterName}/ ${value}\n\n`;
+  }
+  return strParameters;
+}
+
 function getExportNodes(
   states: { [id: string]: CGMLState },
-  initialState: CGMLInitialState | null,
+  initialStates: { [id: string]: CGMLInitialState },
+  terminates: { [id: string]: CGMLVertex },
+  finals: { [id: string]: CGMLVertex },
+  choices: { [id: string]: CGMLVertex },
 ): ExportNode[] {
-  const nodes: Map<string, ExportNode> = new Map<string, ExportNode>();
+  const nodes: { [id: string]: ExportNode } = {};
 
   const getExportNode = (stateId: string): ExportNode => {
-    const node = nodes.get(stateId);
-    if (node !== undefined) {
-      return node;
+    if (nodes[stateId]) {
+      return nodes[stateId];
     } else {
       return stateToExportNode(states[stateId], stateId);
+    }
+  };
+
+  const addToParent = (parent: string | undefined, node: ExportNode, id: string) => {
+    if (parent) {
+      const parentNode: ExportNode = getExportNode(parent);
+      if (parentNode.graph !== undefined) {
+        parentNode.graph.node.push(node);
+      } else {
+        parentNode.graph = {
+          '@id': parentNode['@id'],
+          node: [node],
+          edge: [],
+        };
+      }
+      nodes[parent] = parentNode;
+    } else {
+      nodes[id] = node;
     }
   };
 
   for (const stateId in states) {
     const state = states[stateId];
     const node: ExportNode = getExportNode(stateId);
-
-    if (state.parent !== undefined) {
-      const parent: ExportNode = getExportNode(state.parent);
-      if (parent.graph !== undefined) {
-        parent.graph.node.push(node);
-      } else {
-        parent.graph = {
-          '@id': parent['@id'],
-          node: [node],
-          edge: [],
-        };
-      }
-      nodes.set(state.parent, parent);
-    } else {
-      nodes.set(stateId, node);
-    }
+    addToParent(state.parent, node, stateId);
   }
 
-  if (initialState !== null) {
+  for (const initialId in initialStates) {
+    const initial = initialStates[initialId];
     const initialNode: ExportNode = {
-      '@id': initialState.id,
-      data: [
-        {
-          '@key': 'dInitial',
-          content: '',
-        },
-      ],
+      '@id': initialId,
+      data: [getVertexDataNode('initial')],
     };
-
-    if (initialState.position !== undefined) {
-      initialNode.data.push({
-        '@key': 'dGeometry',
-        '@x': initialState.position.x,
-        '@y': initialState.position.y,
-        content: '',
-      });
+    if (initial.position) {
+      initialNode.data.push(getGeometryDataNode(initial.position));
     }
-
-    nodes.set(initialState.id, initialNode);
+    addToParent(initial.parent, initialNode, initialId);
   }
+  const vertexes = { ...terminates, ...finals, ...choices };
 
-  return [...nodes.values()];
+  for (const vertexId in vertexes) {
+    const vertex = vertexes[vertexId];
+    const vertexNode = {
+      '@id': vertexId,
+      data: [getVertexDataNode(vertex.type)],
+    };
+    if (vertex.position) {
+      vertexNode.data.push(getGeometryDataNode(vertex.position));
+    }
+    if (vertex.data) {
+      vertexNode.data.push(getNameDataNode(vertex.data));
+    }
+    addToParent(vertex.parent, vertexNode, vertexId);
+  }
+  return Object.values(nodes);
 }
 
 function getComponentStates(components: { [id: string]: CGMLComponent }): ExportNode[] {
@@ -149,15 +258,19 @@ function getComponentStates(components: { [id: string]: CGMLComponent }): Export
   for (const componentId in components) {
     const component = components[componentId];
     nodes.push({
-      '@id': component.id,
+      '@id': componentId,
       data: [
         {
           '@key': 'dName',
-          content: component.id,
+          content: 'CGML_COMPONENT',
         },
         {
           '@key': 'dData',
-          content: component.parameters,
+          content: serialaizeParameters({
+            id: component.id,
+            type: component.type,
+            ...component.parameters,
+          }),
         },
       ],
     });
@@ -181,22 +294,6 @@ function getExportKeys(keys: Array<CGMLKeyNode>): ExportKeyNode[] {
   return exportKeyNodes;
 }
 
-function getComponentEdges(components: { [id: string]: CGMLComponent }): ExportEdge[] {
-  const edges: ExportEdge[] = [];
-
-  for (const componentId in components) {
-    const component = components[componentId];
-    edges.push({
-      '@id': component.transitionId,
-      '@source': '',
-      '@target': component.id,
-      data: [],
-    });
-  }
-
-  return edges;
-}
-
 function getEdges(transitions: Record<string, CGMLTransition>): ExportEdge[] {
   const edges: ExportEdge[] = [];
 
@@ -207,30 +304,26 @@ function getEdges(transitions: Record<string, CGMLTransition>): ExportEdge[] {
       '@source': transition.source,
       '@target': transition.target,
     };
-
-    if (transition.actions !== undefined) {
+    if (transition.actions.length !== 0) {
       edge.data = [
         {
           '@key': 'dData',
-          content: transition.actions !== undefined ? transition.actions : '',
+          content: serializeActions(transition.actions),
         },
       ];
     }
-
     if (transition.color !== undefined) {
       edge.data?.push({
         '@key': 'dColor',
         content: transition.color,
       });
     }
-
     if (transition.position !== undefined) {
-      edge.data?.push({
-        '@key': 'dGeometry',
-        '@x': transition.position.x,
-        '@y': transition.position.y,
-        content: '',
-      });
+      edge.data?.push(getGeometryDataNode(transition.position));
+    }
+
+    if (transition.labelPosition) {
+      edge.data?.push(getLabelPositionNode(transition.labelPosition));
     }
 
     for (const dataNode of transition.unsupportedDataNodes) {
@@ -254,41 +347,22 @@ function getNoteNodes(notes: { [id: string]: CGMLNote }): ExportNode[] {
       '@id': noteId,
       data: [],
     };
-    node.data.push({
-      '@key': 'dGeometry',
-      '@x': note.position.x,
-      '@y': note.position.y,
-      content: '',
-    });
+    node.data.push(getGeometryDataNode(note.position));
     node.data.push({
       '@key': 'dNote',
+      content: note.type,
+    });
+    if (note.name) {
+      node.data.push(getNameDataNode(note.name));
+    }
+    node.data.push({
+      '@key': 'dData',
       content: note.text,
     });
 
     nodes.push(node);
   }
   return nodes;
-}
-
-function getInitEdge(initialState: CGMLInitialState): ExportEdge {
-  const initTransition: ExportEdge = {
-    '@id': initialState.transitionId,
-    '@source': initialState.id,
-    '@target': initialState.target,
-  };
-
-  if (initialState.position !== undefined) {
-    initTransition.data = [
-      {
-        '@key': 'dGeometry',
-        '@x': initialState.position.x,
-        '@y': initialState.position.y,
-        content: '',
-      },
-    ];
-  }
-
-  return initTransition;
 }
 
 export function exportGraphml(elements: CGMLElements): string {
@@ -313,17 +387,20 @@ export function exportGraphml(elements: CGMLElements): string {
       graph: {
         '@id': 'G',
         node: [
-          getMetaNode(elements.platform, elements.meta),
-          ...getExportNodes(elements.states, elements.initialState),
+          getMetaNode(elements.platform, elements.meta, elements.standardVersion),
+          ...getExportNodes(
+            elements.states,
+            elements.initialStates,
+            elements.terminates,
+            elements.finals,
+            elements.choices,
+          ),
           ...getComponentStates(elements.components),
           ...getNoteNodes(elements.notes),
         ],
-        edge: [...getEdges(elements.transitions), ...getComponentEdges(elements.components)],
+        edge: [...getEdges(elements.transitions)],
       },
     },
   };
-  if (elements.initialState !== null) {
-    xml.graphml.graph.edge.push(getInitEdge(elements.initialState));
-  }
   return builder.build(xml);
 }
