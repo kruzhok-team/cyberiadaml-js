@@ -34,7 +34,7 @@ function parseTrigger(trigger: string): [string, string | undefined] {
   const withCondition = regWithCondition.exec(trigger);
   const withoutCondition = regWithoutCondition.exec(trigger);
   if (withCondition && withCondition.groups) {
-    return [withCondition.groups['condition'].trim(), withCondition.groups['trigger'].trim()];
+    return [withCondition.groups['trigger'].trim(), withCondition.groups['condition'].trim()];
   }
   if (withoutCondition && withoutCondition.groups) {
     return [withoutCondition.groups['trigger'].trim(), undefined];

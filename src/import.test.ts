@@ -82,7 +82,7 @@ test('test parsing arduino', () => {
     initialStates: {
       init: {
         type: 'initial',
-        data: ''
+        data: '',
       },
     },
     components: {

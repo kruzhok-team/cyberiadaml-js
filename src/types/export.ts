@@ -12,12 +12,12 @@ export type ExportRect = {
   '@y': number;
   '@width': number;
   '@height': number;
-}
+};
 
 export type ExportPoint = {
   '@x': number;
   '@y': number;
-}
+};
 
 export type ExportDataNode = {
   '@key': string;
