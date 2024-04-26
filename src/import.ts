@@ -207,7 +207,13 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     if (data.node.point == undefined) {
       throw new Error('Нет дочернего <point> у <data> с ключом dLabelGeometry ');
     }
-    data.transition.labelPosition = data.node.point[0];
+    const point = data.node.point[0];
+    const x = +point.x;
+    const y = +point.y;
+    data.transition.labelPosition = {
+      x: x,
+      y: y,
+    };
   },
 };
 
