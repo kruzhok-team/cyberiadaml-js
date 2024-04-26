@@ -57,8 +57,8 @@ test('test parsing arduino', () => {
         ],
         unsupportedDataNodes: [],
         labelPosition: {
-          x: '457',
-          y: '173',
+          x: 457,
+          y: 173,
         },
         color: '#F29727',
       },
@@ -73,8 +73,8 @@ test('test parsing arduino', () => {
         ],
         unsupportedDataNodes: [],
         labelPosition: {
-          x: '16',
-          y: '175',
+          x: 16,
+          y: 175,
         },
         color: '#F24C3D',
       },
