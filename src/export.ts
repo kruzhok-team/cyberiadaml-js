@@ -262,7 +262,7 @@ function getComponentStates(components: { [id: string]: CGMLComponent }): Export
       data: [
         {
           '@key': 'dNote',
-          content: 'formal'
+          content: 'formal',
         },
         {
           '@key': 'dName',
