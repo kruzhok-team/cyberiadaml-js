@@ -18,3 +18,11 @@ test('test parse-export-parse cycle ArduinoUno', () => {
   const parsedAgain: CGMLElements = parseCGML(exported);
   expect(parsedAgain).toStrictEqual(parsed);
 });
+
+test('test parse-export-parse cycle with empty state', () => {
+  const fileContent: string = readFileSync('demos/with-empty-state.graphml', 'utf-8');
+  const parsed: CGMLElements = parseCGML(fileContent);
+  const exported: string = exportGraphml(parsed);
+  const parsedAgain: CGMLElements = parseCGML(exported);
+  expect(parsedAgain).toStrictEqual(parsed);
+});

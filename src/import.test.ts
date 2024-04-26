@@ -82,6 +82,7 @@ test('test parsing arduino', () => {
     initialStates: {
       init: {
         type: 'initial',
+        data: ''
       },
     },
     components: {
@@ -342,6 +343,7 @@ test('test parsing bearloga', () => {
           width: 20,
           height: 20,
         },
+        data: '',
       },
     },
     components: {},
@@ -480,4 +482,9 @@ test('test parsing bearloga', () => {
     terminates: {},
     finals: {},
   });
+});
+
+test('test parsing scheme with empty state.', () => {
+  const arduinoDemo: string = readFileSync('demos/with-empty-state.graphml', 'utf-8');
+  parseCGML(arduinoDemo);
 });
