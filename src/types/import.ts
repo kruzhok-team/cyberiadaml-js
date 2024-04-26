@@ -42,7 +42,7 @@ export type CGMLTransition = {
 export type CGMLVertex = {
   parent?: string;
   type: string;
-  data?: string;
+  data: string;
   position?: CGMLPoint | CGMLRectangle;
 };
 

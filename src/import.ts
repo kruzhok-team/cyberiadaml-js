@@ -44,6 +44,9 @@ function parseTrigger(trigger: string): [string, string | undefined] {
 
 function parseActions(rawActions: string): Array<CGMLAction> {
   const actions: Array<CGMLAction> = [];
+  if (!rawActions) {
+    return actions;
+  }
   const splitedActions = rawActions.split('\n\n');
   for (const splitedAction of splitedActions) {
     let [rawTrigger, action] = splitedAction.split('/');
@@ -281,6 +284,7 @@ function createEmptyNote(): CGMLNote {
 function createEmptyVertex(): CGMLVertex {
   return {
     type: '',
+    data: '',
   };
 }
 
@@ -350,6 +354,7 @@ function parseMeta(rawParameters: string): { [id: string]: string } {
 
 function isVertex(value: CGMLState | CGMLNote | CGMLVertex): value is CGMLVertex {
   return (
+    (value as CGMLVertex).data !== undefined &&
     (value as CGMLNote).text == undefined &&
     (value as CGMLState).actions == undefined &&
     (value as CGMLVertex).type !== undefined
