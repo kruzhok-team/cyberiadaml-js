@@ -35,10 +35,11 @@ export function emptyCGMLElements(): CGMLElements {
     terminates: {},
     choices: {},
     finals: {},
+    unknownVertexes: {},
   };
 }
 
-function serializeMeta(meta: CGMLMeta, platform: string, standardVersion: string): string {
+export function serializeMeta(meta: CGMLMeta, platform: string, standardVersion: string): string {
   return serialaizeParameters({
     platform: platform,
     standardVersion: standardVersion,
@@ -46,16 +47,19 @@ function serializeMeta(meta: CGMLMeta, platform: string, standardVersion: string
   });
 }
 
-function serializeActions(actions: Array<CGMLAction> | Array<CGMLTransitionAction>): string {
+export function serializeActions(actions: Array<CGMLAction> | Array<CGMLTransitionAction>): string {
   let strActions = '';
   for (const action of actions) {
-    if (action.trigger) {
-      strActions += `${action.trigger}`;
-      if (action.condition) {
-        strActions += `${action.condition}`;
-      }
-      strActions += '/\n';
+    if (action.trigger?.event) {
+      strActions += `${action.trigger.event}`;
     }
+    if (action.trigger?.condition) {
+      strActions += `[${action.trigger.condition}]`;
+    }
+    if (action.trigger?.postfix) {
+      strActions += ' ' + action.trigger.postfix;
+    }
+    strActions += '/\n';
     if (action.action) {
       strActions += action.action;
       strActions += '\n';
@@ -172,7 +176,7 @@ function getNameDataNode(data: string): ExportDataNode {
   };
 }
 
-function serialaizeParameters(parameters: { [id: string]: string }): string {
+export function serialaizeParameters(parameters: { [id: string]: string }): string {
   let strParameters = '';
   for (const parameterName in parameters) {
     const value = parameters[parameterName];

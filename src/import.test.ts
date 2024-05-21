@@ -1,9 +1,10 @@
 import { parseCGML } from './import';
 import { readFileSync } from 'fs';
+import { CGMLElements } from './types/import';
 
 test('test parsing arduino', () => {
   const arduinoDemo: string = readFileSync('demos/arduino-blinker.graphml', 'utf-8');
-  expect(parseCGML(arduinoDemo)).toEqual({
+  const predicted: CGMLElements = {
     states: {
       diod1: {
         name: 'Включен',
@@ -15,7 +16,11 @@ test('test parsing arduino', () => {
         },
         actions: [
           {
-            trigger: 'entry',
+            trigger: {
+              event: 'entry',
+              condition: undefined,
+              postfix: 'propagate',
+            },
             action: 'LED1.on()\ntimer1.start(1000)',
           },
         ],
@@ -31,7 +36,11 @@ test('test parsing arduino', () => {
         },
         actions: [
           {
-            trigger: 'entry',
+            trigger: {
+              event: 'entry',
+              condition: undefined,
+              postfix: undefined,
+            },
             action: 'LED1.off()\ntimer1.start(1000)',
           },
         ],
@@ -44,6 +53,8 @@ test('test parsing arduino', () => {
         source: 'init',
         target: 'diod1',
         actions: [],
+        pivot: undefined,
+        labelPosition: undefined,
         unsupportedDataNodes: [],
       },
       edge3: {
@@ -52,9 +63,15 @@ test('test parsing arduino', () => {
         target: 'diod2',
         actions: [
           {
-            trigger: 'timer1.timeout',
+            trigger: {
+              event: 'timer1.timeout',
+              condition: undefined,
+              postfix: undefined,
+            },
+            action: undefined,
           },
         ],
+        pivot: undefined,
         unsupportedDataNodes: [],
         labelPosition: {
           x: 457,
@@ -68,9 +85,14 @@ test('test parsing arduino', () => {
         target: 'diod1',
         actions: [
           {
-            trigger: 'timer1.timeout',
+            trigger: {
+              event: undefined,
+              condition: 'condition',
+            },
+            action: 'blabla',
           },
         ],
+        pivot: undefined,
         unsupportedDataNodes: [],
         labelPosition: {
           x: 16,
@@ -81,8 +103,8 @@ test('test parsing arduino', () => {
     },
     initialStates: {
       init: {
-        type: 'initial',
         data: '',
+        type: 'initial',
       },
     },
     components: {
@@ -144,11 +166,13 @@ test('test parsing arduino', () => {
         id: 'dGeometry',
         for: 'node',
         'attr.name': 'geometry',
+        'attr.type': undefined,
       },
       {
         id: 'dLabelGeometry',
         for: 'edge',
         'attr.name': 'labelGeometry',
+        'attr.type': undefined,
       },
       {
         id: 'dPivot',
@@ -183,6 +207,7 @@ test('test parsing arduino', () => {
     ],
     notes: {
       commentX: {
+        name: undefined,
         type: 'informal',
         position: {
           x: 640,
@@ -194,13 +219,14 @@ test('test parsing arduino', () => {
     choices: {},
     terminates: {},
     finals: {},
-  });
+    unknownVertexes: {},
+  };
+  expect(parseCGML(arduinoDemo)).toEqual(predicted);
 });
 
 test('test parsing bearloga', () => {
   const bearlogaDemo = readFileSync('demos/autoborder.graphml', 'utf-8');
-  const parsed = parseCGML(bearlogaDemo);
-  expect(parsed).toEqual({
+  const predicted: CGMLElements = {
     states: {
       'n0::n1': {
         name: 'Сближение',
@@ -212,11 +238,20 @@ test('test parsing bearloga', () => {
         },
         actions: [
           {
-            trigger: 'entry',
+            trigger: {
+              event: 'entry',
+              condition: undefined,
+              postfix: undefined,
+            },
             action: 'МодульДвижения.ДвигатьсяКЦели()',
           },
           {
-            trigger: 'exit',
+            trigger: {
+              event: 'exit',
+              condition: undefined,
+              postfix: undefined,
+            },
+            action: undefined,
           },
         ],
         unsupportedDataNodes: [],
@@ -232,11 +267,19 @@ test('test parsing bearloga', () => {
         },
         actions: [
           {
-            trigger: 'entry',
+            trigger: {
+              event: 'entry',
+              condition: undefined,
+              postfix: undefined,
+            },
             action: 'ОружиеЦелевое.АтаковатьЦель()',
           },
           {
-            trigger: 'exit',
+            trigger: {
+              event: 'exit',
+              condition: undefined,
+              postfix: undefined,
+            },
           },
         ],
         unsupportedDataNodes: [],
@@ -252,10 +295,18 @@ test('test parsing bearloga', () => {
         },
         actions: [
           {
-            trigger: 'entry',
+            trigger: {
+              event: 'entry',
+              condition: undefined,
+              postfix: undefined,
+            },
           },
           {
-            trigger: 'exit',
+            trigger: {
+              event: 'exit',
+              condition: undefined,
+              postfix: undefined,
+            },
           },
         ],
         unsupportedDataNodes: [],
@@ -270,11 +321,19 @@ test('test parsing bearloga', () => {
         },
         actions: [
           {
-            trigger: 'entry',
+            trigger: {
+              event: 'entry',
+              condition: undefined,
+              postfix: undefined,
+            },
             action: 'Сенсор.ПоискВрагаПоДистанции(мин)',
           },
           {
-            trigger: 'exit',
+            trigger: {
+              event: 'exit',
+              condition: undefined,
+              postfix: undefined,
+            },
             action: 'Сенсор.ОстановкаПоиска()',
           },
         ],
@@ -287,6 +346,8 @@ test('test parsing bearloga', () => {
         source: 'init',
         target: 'n3',
         actions: [],
+        labelPosition: undefined,
+        pivot: undefined,
         unsupportedDataNodes: [],
       },
       'n0-n3': {
@@ -295,9 +356,15 @@ test('test parsing bearloga', () => {
         target: 'n3',
         actions: [
           {
-            trigger: 'АнализаторЦели.ЦельПотеряна',
+            trigger: {
+              event: 'АнализаторЦели.ЦельПотеряна',
+              condition: undefined,
+              postfix: undefined,
+            },
           },
         ],
+        labelPosition: undefined,
+        pivot: undefined,
         unsupportedDataNodes: [],
       },
       'n3-n0::n1': {
@@ -306,9 +373,15 @@ test('test parsing bearloga', () => {
         target: 'n0::n1',
         actions: [
           {
-            trigger: 'Сенсор.ЦельПолучена',
+            trigger: {
+              event: 'Сенсор.ЦельПолучена',
+              condition: undefined,
+              postfix: undefined,
+            },
           },
         ],
+        labelPosition: undefined,
+        pivot: undefined,
         unsupportedDataNodes: [],
       },
       'n0::n1-n0::n2': {
@@ -317,9 +390,15 @@ test('test parsing bearloga', () => {
         target: 'n0::n2',
         actions: [
           {
-            trigger: 'ОружиеЦелевое.ЦельВошлаВЗонуАтаки',
+            trigger: {
+              event: 'ОружиеЦелевое.ЦельВошлаВЗонуАтаки',
+              condition: undefined,
+              postfix: undefined,
+            },
           },
         ],
+        pivot: undefined,
+        labelPosition: undefined,
         unsupportedDataNodes: [],
       },
       'n0::n2-n0::n1': {
@@ -328,9 +407,15 @@ test('test parsing bearloga', () => {
         target: 'n0::n1',
         actions: [
           {
-            trigger: 'ОружиеЦелевое.ЦельВышлаИзЗоныАтаки',
+            trigger: {
+              event: 'ОружиеЦелевое.ЦельВышлаИзЗоныАтаки',
+              condition: undefined,
+              postfix: undefined,
+            },
           },
         ],
+        labelPosition: undefined,
+        pivot: undefined,
         unsupportedDataNodes: [],
       },
     },
@@ -481,7 +566,10 @@ test('test parsing bearloga', () => {
     choices: {},
     terminates: {},
     finals: {},
-  });
+    unknownVertexes: {},
+  };
+  const parsed = parseCGML(bearlogaDemo);
+  expect(parsed).toEqual(predicted);
 });
 
 test('test parsing scheme with empty state.', () => {

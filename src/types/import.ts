@@ -2,14 +2,20 @@ export type CGMLPoint = { x: number; y: number };
 export type CGMLRectangle = CGMLPoint & { width: number; height: number };
 
 export type CGMLTransitionAction = {
-  trigger?: string;
-  condition?: string;
+  trigger?: CGMLTransitionTrigger;
   action?: string;
 };
 
-export type CGMLAction = {
-  trigger: string;
+type CGMLBaseTrigger = {
+  postfix?: string; // propagate/block
   condition?: string;
+};
+
+export type CGMLTransitionTrigger = CGMLBaseTrigger & { event?: string };
+export type CGMLTrigger = CGMLBaseTrigger & { event: string };
+
+export type CGMLAction = {
+  trigger: CGMLTrigger;
   action?: string;
 };
 
@@ -74,7 +80,7 @@ export type CGMLElements = {
   states: { [id: string]: CGMLState };
   transitions: Record<string, CGMLTransition>;
   components: { [id: string]: CGMLComponent };
-  initialStates: { [id: string]: CGMLInitialState };
+  initialStates: { [id: string]: CGMLVertex };
   platform: string;
   standardVersion: string;
   meta: CGMLMeta;
@@ -84,6 +90,7 @@ export type CGMLElements = {
   finals: { [id: string]: CGMLVertex };
   choices: { [id: string]: CGMLVertex };
   terminates: { [id: string]: CGMLVertex };
+  unknownVertexes: { [id: string]: CGMLVertex };
 };
 
 export type NoteType = 'formal' | 'informal';

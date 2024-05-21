@@ -10,6 +10,7 @@ import {
   CGMLDataKeys,
   CGMLDataNode,
   CGMLDataNodeProcessArgs,
+  CGMLTransitionAction,
   CGMLKeyNode,
   CGMLNode,
   CGML,
@@ -18,7 +19,17 @@ import {
   CGMLNote,
   CGMLVertex,
   CGMLAction,
+  CGMLTransitionTrigger,
+  CGMLTrigger,
 } from './types/import';
+
+const regexes = [
+  /^(?<trigger>[^\[\]]+)\[(?<condition>.+)\]$ (?<postfix>w+)$/,
+  /^(?<trigger>[^\[\]]+) (?<postfix>.+)$/,
+  /^(?<trigger>[^\[\]]+)\[(?<condition>.+)\]$/,
+  /^\[(?<condition>.+)\]$/,
+  /^(?<trigger>[^\[\]]+)$/,
+];
 
 function isDataKey(key: string): key is CGMLDataKey {
   return CGMLDataKeys.includes(key as CGMLDataKey);
@@ -28,33 +39,39 @@ function isNoteType(value: string): value is NoteType {
   return value == 'informal' || value == 'formal';
 }
 
-function parseTrigger(trigger: string): [string, string | undefined] {
-  const regWithCondition = /^(?<trigger>.+)\[(?<condition>.+)\]$/;
-  const regWithoutCondition = /^(?<trigger>.+)$/;
-  const withCondition = regWithCondition.exec(trigger);
-  const withoutCondition = regWithoutCondition.exec(trigger);
-  if (withCondition && withCondition.groups) {
-    return [withCondition.groups['trigger'].trim(), withCondition.groups['condition'].trim()];
-  }
-  if (withoutCondition && withoutCondition.groups) {
-    return [withoutCondition.groups['trigger'].trim(), undefined];
+function parseTrigger(trigger: string, regexes: Array<RegExp>): CGMLTransitionTrigger {
+  for (const regex of regexes) {
+    const regExec = regex.exec(trigger);
+    if (!regExec?.groups) {
+      continue;
+    }
+    return {
+      event: regExec.groups['trigger'],
+      condition: regExec.groups['condition'],
+      postfix: regExec.groups['postfix'],
+    };
   }
   throw new Error('No reg!');
 }
 
-function parseActions(rawActions: string): Array<CGMLAction> {
-  const actions: Array<CGMLAction> = [];
+function parseActions(
+  rawActions: string,
+  triggerRequiered: boolean,
+): Array<CGMLAction> | Array<CGMLTransitionAction> {
+  const actions: Array<CGMLTransitionAction> = [];
   if (!rawActions) {
     return actions;
   }
   const splitedActions = rawActions.split('\n\n');
   for (const splitedAction of splitedActions) {
     let [rawTrigger, action] = splitedAction.split('/');
-    const [trigger, condition] = parseTrigger(rawTrigger);
+    const trigger = parseTrigger(rawTrigger, regexes);
+    if (!trigger && triggerRequiered) {
+      throw new Error('No trigger for actions, but its requiered!');
+    }
     action = action.trim();
     actions.push({
       trigger: trigger,
-      condition: condition,
       action: action === '' ? undefined : action,
     });
   }
@@ -80,7 +97,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
   dData({ elements, state, parentNode, node, transition, note }) {
     if (parentNode !== undefined) {
       if (state !== undefined) {
-        state.actions = parseActions(node.content);
+        state.actions = parseActions(node.content, true) as CGMLAction[];
       } else if (note !== undefined) {
         note.text = node.content;
       }
@@ -95,7 +112,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
           },
         ];
       } else {
-        transition.actions = parseActions(node.content);
+        transition.actions = parseActions(node.content, false);
       }
     }
   },
@@ -392,9 +409,7 @@ function processGraph(elements: CGMLElements, graph: CGMLGraph, parent?: CGMLNod
           elements.terminates[node.id] = vertex;
           break;
         default:
-          throw new Error(
-            'Неправильное значение dVertex! Ожидается "initial", "choice", "final", "terminate"',
-          );
+          elements.unknownVertexes[node.id] = vertex;
       }
       continue;
     }
@@ -493,6 +508,7 @@ export function parseCGML(graphml: string): CGMLElements {
     choices: {},
     terminates: {},
     finals: {},
+    unknownVertexes: {},
   };
 
   const xml = parser.parse(graphml) as CGML;
