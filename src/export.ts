@@ -51,13 +51,13 @@ export function serializeActions(actions: Array<CGMLAction> | Array<CGMLTransiti
   let strActions = '';
   for (const action of actions) {
     if (action.trigger?.event) {
-      strActions += `${action.trigger}`;
+      strActions += `${action.trigger.event}`;
     }
     if (action.trigger?.condition) {
-      strActions += `${action.trigger.condition}`;
+      strActions += `[${action.trigger.condition}]`;
     }
     if (action.trigger?.postfix) {
-      strActions += action.trigger.postfix;
+      strActions += ' ' + action.trigger.postfix;
     }
     strActions += '/\n';
     if (action.action) {

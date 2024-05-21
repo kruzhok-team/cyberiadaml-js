@@ -69,7 +69,7 @@ description/ Программный таймер.
 
    <node id="diod1">
         <data key="dName">Включен</data>
-        <data key="dData">entry/
+        <data key="dData">entry propagate/
 LED1.on()
 timer1.start(1000)
 
@@ -114,7 +114,7 @@ timer1.start(1000)
     </edge>
 
     <edge id="edge4" source="diod2" target="diod1">
-        <data key="dData">[blaba]/ blabla</data>
+        <data key="dData">[condition]/ blabla</data>
         <data key="dLabelGeometry">
             <point x="16" y="175"/>
         </data> 

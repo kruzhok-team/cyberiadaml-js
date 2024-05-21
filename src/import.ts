@@ -20,6 +20,7 @@ import {
   CGMLVertex,
   CGMLAction,
   CGMLTransitionTrigger,
+  CGMLTrigger,
 } from './types/import';
 
 const regexes = [

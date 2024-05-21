@@ -80,7 +80,7 @@ export type CGMLElements = {
   states: { [id: string]: CGMLState };
   transitions: Record<string, CGMLTransition>;
   components: { [id: string]: CGMLComponent };
-  initialStates: { [id: string]: CGMLInitialState };
+  initialStates: { [id: string]: CGMLVertex };
   platform: string;
   standardVersion: string;
   meta: CGMLMeta;
