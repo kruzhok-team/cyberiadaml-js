@@ -35,6 +35,7 @@ export function emptyCGMLElements(): CGMLElements {
     terminates: {},
     choices: {},
     finals: {},
+    unknownVertexes: {},
   };
 }
 
@@ -46,16 +47,19 @@ function serializeMeta(meta: CGMLMeta, platform: string, standardVersion: string
   });
 }
 
-function serializeActions(actions: Array<CGMLAction> | Array<CGMLTransitionAction>): string {
+export function serializeActions(actions: Array<CGMLAction> | Array<CGMLTransitionAction>): string {
   let strActions = '';
   for (const action of actions) {
-    if (action.trigger) {
+    if (action.trigger?.event) {
       strActions += `${action.trigger}`;
-      if (action.condition) {
-        strActions += `${action.condition}`;
-      }
-      strActions += '/\n';
     }
+    if (action.trigger?.condition) {
+      strActions += `${action.trigger.condition}`;
+    }
+    if (action.trigger?.postfix) {
+      strActions += action.trigger.postfix;
+    }
+    strActions += '/\n';
     if (action.action) {
       strActions += action.action;
       strActions += '\n';
