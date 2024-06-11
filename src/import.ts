@@ -77,7 +77,7 @@ export function createEmptyTextElements(): CGMLTextElements {
   };
 }
 
-export function parseCGMLText(graphml: string): CGMLTextElements {
+export function parseTextCGML(graphml: string): CGMLTextElements {
   const parser = new XMLParser({
     textNodeName: 'content',
     ignoreAttributes: false,
