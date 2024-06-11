@@ -17,59 +17,7 @@ import {
   CGMLTransitionAction,
 } from './types/import';
 import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './types/text_import';
-
-export function emptyCGMLElements(): CGMLElements {
-  return {
-    states: {},
-    transitions: {},
-    components: {},
-    initialStates: {},
-    platform: '',
-    meta: {
-      id: '',
-      values: {},
-    },
-    format: '',
-    standardVersion: '',
-    keys: [],
-    notes: {},
-    terminates: {},
-    choices: {},
-    finals: {},
-    unknownVertexes: {},
-  };
-}
-
-export function serializeMeta(meta: CGMLMeta, platform: string, standardVersion: string): string {
-  return serialaizeParameters({
-    platform: platform,
-    standardVersion: standardVersion,
-    ...meta.values,
-  });
-}
-
-export function serializeActions(actions: Array<CGMLAction> | Array<CGMLTransitionAction>): string {
-  let strActions = '';
-  for (const action of actions) {
-    if (action.trigger?.event) {
-      strActions += `${action.trigger.event}`;
-    }
-    if (action.trigger?.condition) {
-      strActions += `[${action.trigger.condition}]`;
-    }
-    if (action.trigger?.postfix) {
-      strActions += ' ' + action.trigger.postfix;
-    }
-    strActions += '/\n';
-    if (action.action) {
-      strActions += action.action;
-      strActions += '\n';
-    }
-    strActions += '\n';
-  }
-
-  return strActions;
-}
+import { serialaizeParameters, serializeActions, serializeMeta } from './utils';
 
 function getMetaNode(platform: string, meta: CGMLMeta, standardVersion: string): ExportNode {
   return {
@@ -181,15 +129,6 @@ function getNameDataNode(data: string): ExportDataNode {
     '@key': 'dName',
     content: data,
   };
-}
-
-export function serialaizeParameters(parameters: { [id: string]: string }): string {
-  let strParameters = '';
-  for (const parameterName in parameters) {
-    const value = parameters[parameterName];
-    strParameters += `${parameterName}/ ${value}\n\n`;
-  }
-  return strParameters;
 }
 
 function getExportNodes(
@@ -386,9 +325,9 @@ function getNoteNodes(notes: { [id: string]: CGMLNote }): ExportNode[] {
   return nodes;
 }
 
-function templateExportGraphml(
+export function templateExportGraphml(
   elements: CGMLElements | CGMLTextElements,
-  textMode: string,
+  textMode: boolean,
 ): string {
   const builder = new XMLBuilder({
     textNodeName: 'content',
@@ -418,12 +357,12 @@ function templateExportGraphml(
             elements.terminates,
             elements.finals,
             elements.choices,
-            false,
+            textMode,
           ),
           ...getComponentStates(elements.components),
           ...getNoteNodes(elements.notes),
         ],
-        edge: [...getEdges(elements.transitions, false)],
+        edge: [...getEdges(elements.transitions, textMode)],
       },
     },
   };
