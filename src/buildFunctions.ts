@@ -16,7 +16,7 @@ import {
   CGMLRectangle,
   CGMLTransitionAction,
 } from './types/import';
-import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './types/text_import';
+import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './types/textImport';
 import { serialaizeParameters, serializeActions, serializeMeta } from './utils';
 
 function getMetaNode(platform: string, meta: CGMLMeta, standardVersion: string): ExportNode {

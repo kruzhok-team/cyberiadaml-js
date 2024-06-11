@@ -1,4 +1,4 @@
-import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './text_import';
+import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './textImport';
 
 export type CGMLPoint = { x: number; y: number };
 export type CGMLRectangle = CGMLPoint & { width: number; height: number };

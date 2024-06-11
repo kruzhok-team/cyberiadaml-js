@@ -7,7 +7,7 @@ import {
   removeComponentsTransitions,
   getKeyNodes,
 } from './parseFunctions';
-import { CGMLTextElements, CGMLTextTransition } from './types/text_import';
+import { CGMLTextElements, CGMLTextTransition } from './types/textImport';
 
 export function parseCGML(graphml: string): CGMLElements {
   const parser = new XMLParser({
@@ -93,7 +93,7 @@ export function parseTextCGML(graphml: string): CGMLTextElements {
 
   setFormatToMeta(elements, xml);
   elements.keys = getKeyNodes(xml);
-  processGraph(elements, xml.graphml.graph, false);
+  processGraph(elements, xml.graphml.graph, true);
   elements.transitions = removeComponentsTransitions(
     elements.transitions,
     elements.meta.id,

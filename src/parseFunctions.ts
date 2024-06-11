@@ -18,7 +18,7 @@ import {
   CGMLVertex,
   CGMLAction,
 } from './types/import';
-import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './types/text_import';
+import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './types/textImport';
 import { parseTrigger } from './utils';
 
 const regexes = [
@@ -93,11 +93,15 @@ const dataNodeProcess: CGMLDataNodeProcess = {
         throw new Error('Непредвиденный вызов dData.');
       }
       if (elements.initialStates[transition.source]) {
-        transition.actions = [
-          {
-            action: node.content,
-          },
-        ];
+        if (textMode) {
+          transition.actions = node.content;
+        } else {
+          transition.actions = [
+            {
+              action: node.content,
+            },
+          ];
+        }
       } else {
         if (textMode) {
           transition.actions = node.content;
@@ -235,15 +239,28 @@ function processTransitions(
 ) {
   for (const idx in edges) {
     const edge = edges[idx];
-    const transition: CGMLTransition = {
-      id: edge.id,
-      source: edge.source,
-      target: edge.target,
-      actions: [],
-      unsupportedDataNodes: [],
-      pivot: undefined,
-      labelPosition: undefined,
-    };
+    let transition: CGMLTextTransition | CGMLTransition;
+    if (textMode) {
+      transition = {
+        id: edge.id,
+        source: edge.source,
+        target: edge.target,
+        actions: '',
+        unsupportedDataNodes: [],
+        pivot: undefined,
+        labelPosition: undefined,
+      };
+    } else {
+      transition = {
+        id: edge.id,
+        source: edge.source,
+        target: edge.target,
+        actions: [],
+        unsupportedDataNodes: [],
+        pivot: undefined,
+        labelPosition: undefined,
+      };
+    }
     elements.transitions[edge.id] = transition;
     for (const dataNodeIndex in edge.data) {
       const dataNode: CGMLDataNode = edge.data[+dataNodeIndex];
