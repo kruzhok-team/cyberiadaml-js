@@ -1,24 +1,15 @@
+import { CGMLTextElements, CGMLTextTransition } from '../types/text_import';
 import { XMLParser } from 'fast-xml-parser';
-
-import { CGMLElements, CGML, CGMLTransition } from './types/import';
+import { CGML } from '../types/import';
 import {
   setFormatToMeta,
+  getKeyNodes,
   processGraph,
   removeComponentsTransitions,
-  getKeyNodes,
-} from './parseFunctions';
+} from '../parseFunctions';
 
-export function parseCGML(graphml: string): CGMLElements {
-  const parser = new XMLParser({
-    textNodeName: 'content',
-    ignoreAttributes: false,
-    attributeNamePrefix: '',
-    isArray: (_name, _jpath, isLeafNode, isAttribute) => {
-      return isLeafNode && !isAttribute;
-    },
-  });
-
-  const elements: CGMLElements = {
+export function createEmptyTextElements(): CGMLTextElements {
+  return {
     states: {},
     transitions: {},
     initialStates: {},
@@ -37,6 +28,19 @@ export function parseCGML(graphml: string): CGMLElements {
     finals: {},
     unknownVertexes: {},
   };
+}
+
+export function parseCGMLText(graphml: string): CGMLTextElements {
+  const parser = new XMLParser({
+    textNodeName: 'content',
+    ignoreAttributes: false,
+    attributeNamePrefix: '',
+    isArray: (_name, _jpath, isLeafNode, isAttribute) => {
+      return isLeafNode && !isAttribute;
+    },
+  });
+
+  const elements = createEmptyTextElements();
 
   const xml = parser.parse(graphml) as CGML;
 
@@ -46,7 +50,7 @@ export function parseCGML(graphml: string): CGMLElements {
   elements.transitions = removeComponentsTransitions(
     elements.transitions,
     elements.meta.id,
-  ) as Record<string, CGMLTransition>;
+  ) as Record<string, CGMLTextTransition>;
   elements.platform = elements.meta.values['platform'];
   elements.standardVersion = elements.meta.values['standardVersion'];
   delete elements.meta.values['platform'];
