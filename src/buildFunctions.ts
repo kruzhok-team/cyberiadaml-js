@@ -16,7 +16,7 @@ import {
   CGMLRectangle,
   CGMLTransitionAction,
 } from './types/import';
-import { CGMLTextState, CGMLTextTransition } from './types/text_import';
+import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './types/text_import';
 
 export function emptyCGMLElements(): CGMLElements {
   return {
@@ -193,7 +193,7 @@ export function serialaizeParameters(parameters: { [id: string]: string }): stri
 }
 
 function getExportNodes(
-  states: { [id: string]: CGMLState },
+  states: { [id: string]: CGMLState | CGMLTextState },
   initialStates: { [id: string]: CGMLInitialState },
   terminates: { [id: string]: CGMLVertex },
   finals: { [id: string]: CGMLVertex },
@@ -386,7 +386,10 @@ function getNoteNodes(notes: { [id: string]: CGMLNote }): ExportNode[] {
   return nodes;
 }
 
-export function exportGraphml(elements: CGMLElements): string {
+function templateExportGraphml(
+  elements: CGMLElements | CGMLTextElements,
+  textMode: string,
+): string {
   const builder = new XMLBuilder({
     textNodeName: 'content',
     ignoreAttributes: false,
