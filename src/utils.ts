@@ -4,7 +4,7 @@ import {
   CGMLMeta,
   CGMLTransitionAction,
   CGMLTransitionTrigger,
-} from '../dist';
+} from './types/import';
 
 export function parseTrigger(trigger: string, regexes: Array<RegExp>): CGMLTransitionTrigger {
   for (const regex of regexes) {
