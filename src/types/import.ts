@@ -1,3 +1,5 @@
+import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './textImport';
+
 export type CGMLPoint = { x: number; y: number };
 export type CGMLRectangle = CGMLPoint & { width: number; height: number };
 
@@ -13,6 +15,15 @@ type CGMLBaseTrigger = {
 
 export type CGMLTransitionTrigger = CGMLBaseTrigger & { event?: string };
 export type CGMLTrigger = CGMLBaseTrigger & { event: string };
+
+export type CGMLBaseState = {
+  parent?: string;
+  name: string;
+  bounds: CGMLRectangle;
+  actions: Array<CGMLAction>;
+  unsupportedDataNodes: Array<CGMLDataNode>;
+  color?: string;
+};
 
 export type CGMLAction = {
   trigger: CGMLTrigger;
@@ -99,7 +110,8 @@ export type CGMLNote = {
   name: string | undefined;
   position: CGMLPoint;
   text: string;
-  type: 'formal' | 'informal';
+  type: NoteType;
+  data?: string;
 };
 
 export type CGMLNode = {
@@ -161,14 +173,15 @@ export const CGMLDataKeys = [
 export type CGMLDataKey = (typeof CGMLDataKeys)[number];
 
 export interface CGMLDataNodeProcessArgs {
-  elements: CGMLElements;
+  elements: CGMLElements | CGMLTextElements;
   meta?: string;
   node: CGMLDataNode;
   parentNode?: CGMLNode;
-  state?: CGMLState;
-  transition?: CGMLTransition;
+  state?: CGMLState | CGMLTextState;
+  transition?: CGMLTransition | CGMLTextTransition;
   note?: CGMLNote;
   vertex?: CGMLVertex;
+  textMode: boolean;
 }
 
 export type XMLProperies = {
