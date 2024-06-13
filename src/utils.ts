@@ -1,9 +1,10 @@
 import {
   CGMLAction,
-  CGMLElements,
+  CGMLStateMachine,
   CGMLMeta,
   CGMLTransitionAction,
   CGMLTransitionTrigger,
+  CGMLElements,
 } from './types/import';
 
 export function parseTrigger(trigger: string, regexes: Array<RegExp>): CGMLTransitionTrigger {
@@ -21,25 +22,31 @@ export function parseTrigger(trigger: string, regexes: Array<RegExp>): CGMLTrans
   throw new Error('No reg!');
 }
 
-export function emptyCGMLElements(): CGMLElements {
+export function emptyCGMLStateMachine(): CGMLStateMachine {
   return {
     states: {},
     transitions: {},
     components: {},
     initialStates: {},
-    platform: '',
-    meta: {
-      id: '',
-      values: {},
-    },
-    format: '',
-    standardVersion: '',
-    keys: [],
     notes: {},
     terminates: {},
     choices: {},
     finals: {},
     unknownVertexes: {},
+  };
+}
+
+export function createEmptyElements(): CGMLElements {
+  return {
+    stateMachines: {},
+    platform: '',
+    meta: {
+      values: {},
+      id: '',
+    },
+    standardVersion: '',
+    format: '',
+    keys: [],
   };
 }
 

@@ -1,9 +1,16 @@
 import { XMLBuilder } from 'fast-xml-parser';
 
-import { ExportCGML, ExportEdge, ExportKeyNode, ExportNode, ExportDataNode } from './types/export';
+import {
+  ExportCGML,
+  ExportEdge,
+  ExportKeyNode,
+  ExportNode,
+  ExportDataNode,
+  ExportGraph,
+} from './types/export';
 import {
   CGMLComponent,
-  CGMLElements,
+  CGMLStateMachine,
   CGMLKeyNode,
   CGMLState,
   CGMLTransition,
@@ -15,8 +22,9 @@ import {
   CGMLPoint,
   CGMLRectangle,
   CGMLTransitionAction,
+  CGMLElements,
 } from './types/import';
-import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './types/textImport';
+import { CGMLTextStateMachine, CGMLTextState, CGMLTextTransition } from './types/textImport';
 import { serialaizeParameters, serializeActions, serializeMeta } from './utils';
 
 function getMetaNode(platform: string, meta: CGMLMeta, standardVersion: string): ExportNode {
@@ -325,16 +333,15 @@ function getNoteNodes(notes: { [id: string]: CGMLNote }): ExportNode[] {
   return nodes;
 }
 
-export function templateExportGraphml(
-  elements: CGMLElements | CGMLTextElements,
-  textMode: boolean,
-): string {
+export function templateExportGraphml(elements: CGMLElements, textMode: boolean): string {
   const builder = new XMLBuilder({
     textNodeName: 'content',
     ignoreAttributes: false,
     attributeNamePrefix: '@',
     format: true,
   });
+  const graphs: ExportGraph[] = [];
+
   const xml: ExportCGML = {
     '?xml': {
       '@version': '1.0',

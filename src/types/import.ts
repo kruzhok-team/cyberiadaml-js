@@ -1,4 +1,4 @@
-import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './textImport';
+import { CGMLTextStateMachine, CGMLTextState, CGMLTextTransition } from './textImport';
 
 export type CGMLPoint = { x: number; y: number };
 export type CGMLRectangle = CGMLPoint & { width: number; height: number };
@@ -88,15 +88,20 @@ export type CGMLComponent = {
 };
 
 export type CGMLElements = {
+  stateMachines: { [id: string]: CGMLStateMachine } | { [id: string]: CGMLTextStateMachine };
+  meta: CGMLMeta;
+  standardVersion: string;
+  platform: string;
+  format: string;
+  keys: Array<CGMLKeyNode>;
+};
+
+export type CGMLStateMachine = {
+  name?: string;
   states: { [id: string]: CGMLState };
   transitions: Record<string, CGMLTransition>;
   components: { [id: string]: CGMLComponent };
   initialStates: { [id: string]: CGMLVertex };
-  platform: string;
-  standardVersion: string;
-  meta: CGMLMeta;
-  format: string;
-  keys: Array<CGMLKeyNode>;
   notes: { [id: string]: CGMLNote };
   finals: { [id: string]: CGMLVertex };
   choices: { [id: string]: CGMLVertex };
@@ -131,7 +136,7 @@ export type CGMLGraph = {
   node: Array<CGMLNode>;
   edge: Array<CGMLEdge>;
   edgedefault: string;
-  id?: string;
+  id: string;
 };
 
 export type CGMLDataNode = {
@@ -168,12 +173,14 @@ export const CGMLDataKeys = [
   'dVertex',
   'dPivot',
   'dLabelGeometry',
+  'dStateMachine',
 ] as const;
 
 export type CGMLDataKey = (typeof CGMLDataKeys)[number];
 
 export interface CGMLDataNodeProcessArgs {
-  elements: CGMLElements | CGMLTextElements;
+  elements?: CGMLElements;
+  stateMachine?: CGMLStateMachine | CGMLTextStateMachine;
   meta?: string;
   node: CGMLDataNode;
   parentNode?: CGMLNode;
@@ -193,7 +200,7 @@ export type CGMLGraphmlNode = {
   xmlns: string;
   data: Array<CGMLDataNode>;
   key: Array<CGMLKeyNode>;
-  graph: CGMLGraph;
+  graph: CGMLGraph[];
 };
 
 export type CGML = {

@@ -1,11 +1,11 @@
 import { parseCGML, parseTextCGML } from './import';
 import { readFileSync } from 'fs';
-import { CGMLElements } from './types/import';
-import { CGMLTextElements } from './types/textImport';
+import { CGMLStateMachine } from './types/import';
+import { CGMLTextStateMachine } from './types/textImport';
 
 test('test parsing arduino', () => {
   const arduinoDemo: string = readFileSync('demos/arduino-blinker.graphml', 'utf-8');
-  const predicted: CGMLElements = {
+  const predicted: CGMLStateMachine = {
     states: {
       diod1: {
         name: 'Включен',
@@ -227,7 +227,7 @@ test('test parsing arduino', () => {
 
 test('test parsing bearloga', () => {
   const bearlogaDemo = readFileSync('demos/autoborder.graphml', 'utf-8');
-  const predicted: CGMLElements = {
+  const predicted: CGMLStateMachine = {
     states: {
       'n0::n1': {
         name: 'Сближение',
@@ -580,7 +580,7 @@ test('test parsing scheme with empty state.', () => {
 
 test('test parsing arduino with textMode', () => {
   const arduinoDemo: string = readFileSync('demos/arduino-blinker.graphml', 'utf-8');
-  const predicted: CGMLTextElements = {
+  const predicted: CGMLTextStateMachine = {
     states: {
       diod1: {
         name: 'Включен',
