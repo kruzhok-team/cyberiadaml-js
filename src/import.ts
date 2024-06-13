@@ -12,6 +12,7 @@ import {
   processGraph,
   removeComponentsTransitions,
   getKeyNodes,
+  resetComponentOrder,
 } from './parseFunctions';
 import { CGMLTextStateMachine, CGMLTextTransition } from './types/textImport';
 import {
@@ -30,7 +31,7 @@ export function parseCGML(graphml: string): CGMLElements {
       return isLeafNode && !isAttribute;
     },
   });
-
+ 
   const elements: CGMLElements = createEmptyElements();
 
   const xml = parser.parse(graphml) as CGML;
@@ -61,8 +62,8 @@ export function parseTextCGML(graphml: string): CGMLTextElements {
       return isLeafNode && !isAttribute;
     },
   });
-
-  const elements: CGMLTextElements = createEmptyTextElements();
+  const elements: CGMLTextElements = createEmptyTextElements()
+  resetComponentOrder();
 
   const xml = parser.parse(graphml) as CGML;
 

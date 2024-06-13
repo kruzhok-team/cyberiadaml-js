@@ -85,6 +85,7 @@ export type CGMLComponent = {
   id: string;
   type: string;
   parameters: { [id: string]: string };
+  order?: number;
 };
 
 export type CGMLElements = {

@@ -23,6 +23,8 @@ import {
 import { CGMLTextStateMachine, CGMLTextState, CGMLTextTransition } from './types/textImport';
 import { parseTrigger } from './utils';
 
+export let componentOrder = 0;
+
 const regexes = [
   /^(?<trigger>[^\[\]]+)\[(?<condition>.+)\]$ (?<postfix>w+)$/,
   /^(?<trigger>[^\[\]]+) (?<postfix>.+)$/,
@@ -492,7 +494,9 @@ export function processGraph(
           id: componentId,
           type: componentType,
           parameters: componentParameters,
+          order: componentOrder,
         };
+        componentOrder += 1;
         break;
       case 'CGML_META':
         if (!(Object.values(elements.meta.values).length === 0) && !(elements.meta.id === '')) {
@@ -526,6 +530,10 @@ export function getKeyNodes(xml: CGML): Array<CGMLKeyNode> {
   }
 
   return keyNodes;
+}
+
+export function resetComponentOrder() {
+  componentOrder = 0;
 }
 
 export function removeComponentsTransitions(
