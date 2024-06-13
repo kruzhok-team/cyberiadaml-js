@@ -1,11 +1,11 @@
-import { CGMLStateMachine } from './types/import';
+import { CGMLElements } from './types/import';
 import { templateExportGraphml } from './buildFunctions';
 import { CGMLTextStateMachine } from './types/textImport';
 
-export function exportGraphml(elements: CGMLStateMachine): string {
+export function exportGraphml(elements: CGMLElements): string {
   return templateExportGraphml(elements, false);
 }
 
-export function exportTextGraphml(elements: CGMLTextStateMachine): string {
+export function exportTextGraphml(elements: CGMLElements): string {
   return templateExportGraphml(elements, true);
 }

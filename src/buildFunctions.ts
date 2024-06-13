@@ -333,15 +333,43 @@ function getNoteNodes(notes: { [id: string]: CGMLNote }): ExportNode[] {
   return nodes;
 }
 
+function getGraphs(elements: CGMLElements, textMode: boolean): ExportGraph[] {
+  const graphs: ExportGraph[] = [];
+  for (const stateMachineId in elements.stateMachines) {
+    const stateMachine = elements.stateMachines[stateMachineId];
+    const graph = {
+      '@id': stateMachineId,
+      node: [
+        ...getExportNodes(
+          stateMachine.states,
+          stateMachine.initialStates,
+          stateMachine.terminates,
+          stateMachine.finals,
+          stateMachine.choices,
+          textMode,
+        ),
+        ...getComponentStates(stateMachine.components),
+        ...getNoteNodes(stateMachine.notes),
+      ],
+      edge: [...getEdges(stateMachine.transitions, textMode)],
+    };
+    graphs.push(graph);
+  }
+  graphs[0].node = [
+    getMetaNode(elements.platform, elements.meta, elements.standardVersion),
+    ...graphs[0].node,
+  ];
+  return graphs;
+}
+
 export function templateExportGraphml(elements: CGMLElements, textMode: boolean): string {
   const builder = new XMLBuilder({
     textNodeName: 'content',
     ignoreAttributes: false,
     attributeNamePrefix: '@',
+
     format: true,
   });
-  const graphs: ExportGraph[] = [];
-
   const xml: ExportCGML = {
     '?xml': {
       '@version': '1.0',
@@ -354,23 +382,7 @@ export function templateExportGraphml(elements: CGMLElements, textMode: boolean)
         content: elements.format,
       },
       key: getExportKeys(elements.keys),
-      graph: {
-        '@id': 'G',
-        node: [
-          getMetaNode(elements.platform, elements.meta, elements.standardVersion),
-          ...getExportNodes(
-            elements.states,
-            elements.initialStates,
-            elements.terminates,
-            elements.finals,
-            elements.choices,
-            textMode,
-          ),
-          ...getComponentStates(elements.components),
-          ...getNoteNodes(elements.notes),
-        ],
-        edge: [...getEdges(elements.transitions, textMode)],
-      },
+      graph: getGraphs(elements, textMode),
     },
   };
   return builder.build(xml);

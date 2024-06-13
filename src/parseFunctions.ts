@@ -494,6 +494,9 @@ export function processGraph(
         };
         break;
       case 'CGML_META':
+        if (!(Object.values(elements.meta.values).length === 0) && !(elements.meta.id === '')) {
+          throw new Error('Double meta-node!');
+        }
         elements.meta.values = parseMeta(note.text);
         elements.meta.id = node.id;
         break;

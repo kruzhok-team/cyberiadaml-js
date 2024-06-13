@@ -22,6 +22,10 @@ export function parseTrigger(trigger: string, regexes: Array<RegExp>): CGMLTrans
   throw new Error('No reg!');
 }
 
+export function toArray<Type>(value: Type | Array<Type>): Array<Type> {
+  return Array.isArray(value) ? value : [value];
+}
+
 export function emptyCGMLStateMachine(): CGMLStateMachine {
   return {
     states: {},

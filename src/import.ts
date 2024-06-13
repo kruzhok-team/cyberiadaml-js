@@ -8,7 +8,7 @@ import {
   getKeyNodes,
 } from './parseFunctions';
 import { CGMLTextStateMachine, CGMLTextTransition } from './types/textImport';
-import { createEmptyElements, emptyCGMLStateMachine } from './utils';
+import { createEmptyElements, emptyCGMLStateMachine, toArray } from './utils';
 
 export function parseCGML(graphml: string): CGMLElements {
   const parser = new XMLParser({
@@ -26,13 +26,13 @@ export function parseCGML(graphml: string): CGMLElements {
 
   setFormatToMeta(elements, xml);
   elements.keys = getKeyNodes(xml);
-  console.log(xml.graphml.graph);
-  for (const graph of xml.graphml.graph) {
+  for (const graph of toArray(xml.graphml.graph)) {
     const stateMachine = processGraph(elements, emptyCGMLStateMachine(), graph, false);
     stateMachine.transitions = removeComponentsTransitions(
       stateMachine.transitions,
       elements.meta.id,
     ) as Record<string, CGMLTransition>;
+    elements.stateMachines[graph.id] = stateMachine;
   }
   elements.platform = elements.meta.values['platform'];
   elements.standardVersion = elements.meta.values['standardVersion'];
