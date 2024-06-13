@@ -204,23 +204,8 @@ function getExportNodes(
 }
 
 function getSortedComponentsList(components: { [id: string]: CGMLComponent }): CGMLComponent[] {
-  const sortedComponents: CGMLComponent[] = [];
-  for (const componentId in components) {
-    sortedComponents.push(components[componentId]);
-  }
-
-  return sortedComponents.sort((a, b) => {
-    if (a.order) {
-      if (b.order) {
-        return a.order - b.order;
-      }
-      return a.order;
-    }
-    if (b.order) {
-      return -1;
-    }
-    return NaN;
-  });
+  const sortedComponents: CGMLComponent[] = Object.values(components);
+  return sortedComponents.sort((a, b) => (a?.order ?? 0) - (b?.order ?? 0));
 }
 
 function getComponentStates(components: { [id: string]: CGMLComponent }): ExportNode[] {
@@ -229,7 +214,7 @@ function getComponentStates(components: { [id: string]: CGMLComponent }): Export
   for (const componentId in components) {
     const componentFromObj = components[componentId];
     const component = sortedComponents.find((value) => {
-      return value.id == componentFromObj.id;
+      return value.id === componentFromObj.id;
     });
     if (!component) {
       throw new Error('Internal error! Components id doesnt match!');
