@@ -594,358 +594,362 @@ test('test parsing Arduino multidocument', () => {
   expect(parseCGML(multidocDemo)).toEqual(predicted);
 });
 
-// test('test parsing bearloga', () => {
-//   const bearlogaDemo = readFileSync('demos/autoborder.graphml', 'utf-8');
-//   const predicted: CGMLStateMachine = {
-//     states: {
-//       'n0::n1': {
-//         name: 'Сближение',
-//         bounds: {
-//           x: -525.738953,
-//           y: 609.6686,
-//           width: 468,
-//           height: 170,
-//         },
-//         actions: [
-//           {
-//             trigger: {
-//               event: 'entry',
-//               condition: undefined,
-//               postfix: undefined,
-//             },
-//             action: 'МодульДвижения.ДвигатьсяКЦели()',
-//           },
-//           {
-//             trigger: {
-//               event: 'exit',
-//               condition: undefined,
-//               postfix: undefined,
-//             },
-//             action: undefined,
-//           },
-//         ],
-//         unsupportedDataNodes: [],
-//         parent: 'n0',
-//       },
-//       'n0::n2': {
-//         name: 'Атака',
-//         bounds: {
-//           x: -630.2711,
-//           y: 206.705933,
-//           width: 468,
-//           height: 170,
-//         },
-//         actions: [
-//           {
-//             trigger: {
-//               event: 'entry',
-//               condition: undefined,
-//               postfix: undefined,
-//             },
-//             action: 'ОружиеЦелевое.АтаковатьЦель()',
-//           },
-//           {
-//             trigger: {
-//               event: 'exit',
-//               condition: undefined,
-//               postfix: undefined,
-//             },
-//           },
-//         ],
-//         unsupportedDataNodes: [],
-//         parent: 'n0',
-//       },
-//       n0: {
-//         name: 'Бой',
-//         bounds: {
-//           x: -578.005,
-//           y: 438.187256,
-//           width: 672.532166,
-//           height: 802.962646,
-//         },
-//         actions: [
-//           {
-//             trigger: {
-//               event: 'entry',
-//               condition: undefined,
-//               postfix: undefined,
-//             },
-//           },
-//           {
-//             trigger: {
-//               event: 'exit',
-//               condition: undefined,
-//               postfix: undefined,
-//             },
-//           },
-//         ],
-//         unsupportedDataNodes: [],
-//       },
-//       n3: {
-//         name: 'Скан',
-//         bounds: {
-//           x: -1582.03857,
-//           y: 606.497559,
-//           width: 468,
-//           height: 330,
-//         },
-//         actions: [
-//           {
-//             trigger: {
-//               event: 'entry',
-//               condition: undefined,
-//               postfix: undefined,
-//             },
-//             action: 'Сенсор.ПоискВрагаПоДистанции(мин)',
-//           },
-//           {
-//             trigger: {
-//               event: 'exit',
-//               condition: undefined,
-//               postfix: undefined,
-//             },
-//             action: 'Сенсор.ОстановкаПоиска()',
-//           },
-//         ],
-//         unsupportedDataNodes: [],
-//       },
-//     },
-//     transitions: {
-//       'init-n3': {
-//         id: 'init-n3',
-//         source: 'init',
-//         target: 'n3',
-//         actions: [],
-//         labelPosition: undefined,
-//         pivot: undefined,
-//         unsupportedDataNodes: [],
-//       },
-//       'n0-n3': {
-//         id: 'n0-n3',
-//         source: 'n0',
-//         target: 'n3',
-//         actions: [
-//           {
-//             trigger: {
-//               event: 'АнализаторЦели.ЦельПотеряна',
-//               condition: undefined,
-//               postfix: undefined,
-//             },
-//           },
-//         ],
-//         labelPosition: undefined,
-//         pivot: undefined,
-//         unsupportedDataNodes: [],
-//       },
-//       'n3-n0::n1': {
-//         id: 'n3-n0::n1',
-//         source: 'n3',
-//         target: 'n0::n1',
-//         actions: [
-//           {
-//             trigger: {
-//               event: 'Сенсор.ЦельПолучена',
-//               condition: undefined,
-//               postfix: undefined,
-//             },
-//           },
-//         ],
-//         labelPosition: undefined,
-//         pivot: undefined,
-//         unsupportedDataNodes: [],
-//       },
-//       'n0::n1-n0::n2': {
-//         id: 'n0::n1-n0::n2',
-//         source: 'n0::n1',
-//         target: 'n0::n2',
-//         actions: [
-//           {
-//             trigger: {
-//               event: 'ОружиеЦелевое.ЦельВошлаВЗонуАтаки',
-//               condition: undefined,
-//               postfix: undefined,
-//             },
-//           },
-//         ],
-//         pivot: undefined,
-//         labelPosition: undefined,
-//         unsupportedDataNodes: [],
-//       },
-//       'n0::n2-n0::n1': {
-//         id: 'n0::n2-n0::n1',
-//         source: 'n0::n2',
-//         target: 'n0::n1',
-//         actions: [
-//           {
-//             trigger: {
-//               event: 'ОружиеЦелевое.ЦельВышлаИзЗоныАтаки',
-//               condition: undefined,
-//               postfix: undefined,
-//             },
-//           },
-//         ],
-//         labelPosition: undefined,
-//         pivot: undefined,
-//         unsupportedDataNodes: [],
-//       },
-//     },
-//     initialStates: {
-//       init: {
-//         type: 'initial',
-//         position: {
-//           x: -1482.03857,
-//           y: 606.497559,
-//           width: 20,
-//           height: 20,
-//         },
-//         data: '',
-//       },
-//     },
-//     components: {},
-//     platform: 'BearsTowerDefence',
-//     meta: {
-//       values: {
-//         name: 'Автобортник',
-//         author: 'Матросов В.М.',
-//         contact: 'matrosov@mail.ru',
-//         description:
-//           'Пример описания схемы, \nкоторый может быть многострочным, потому что так удобнее',
-//         target: 'Autoborder',
-//       },
-//       id: 'nMeta',
-//     },
-//     standardVersion: '1.0',
-//     format: 'Cyberiada-GraphML-1.0',
-//     keys: [
-//       {
-//         id: 'gFormat',
-//         for: 'graphml',
-//         'attr.name': 'format',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dName',
-//         for: 'graph',
-//         'attr.name': 'name',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dName',
-//         for: 'node',
-//         'attr.name': 'name',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dStateMachine',
-//         for: 'graph',
-//         'attr.name': 'stateMachine',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dSubmachineState',
-//         for: 'node',
-//         'attr.name': 'submachineState',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dGeometry',
-//         for: 'graph',
-//         'attr.name': 'geometry',
-//       },
-//       {
-//         id: 'dGeometry',
-//         for: 'node',
-//         'attr.name': 'geometry',
-//       },
-//       {
-//         id: 'dGeometry',
-//         for: 'edge',
-//         'attr.name': 'geometry',
-//       },
-//       {
-//         id: 'dSourcePoint',
-//         for: 'edge',
-//         'attr.name': 'sourcePoint',
-//       },
-//       {
-//         id: 'dTargetPoint',
-//         for: 'edge',
-//         'attr.name': 'targetPoint',
-//       },
-//       {
-//         id: 'dLabelGeometry',
-//         for: 'edge',
-//         'attr.name': 'labelGeometry',
-//       },
-//       {
-//         id: 'dNote',
-//         for: 'node',
-//         'attr.name': 'note',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dVertex',
-//         for: 'node',
-//         'attr.name': 'vertex',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dData',
-//         for: 'node',
-//         'attr.name': 'data',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dData',
-//         for: 'edge',
-//         'attr.name': 'data',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dMarkup',
-//         for: 'node',
-//         'attr.name': 'markup',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dColor',
-//         for: 'node',
-//         'attr.name': 'color',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dColor',
-//         for: 'edge',
-//         'attr.name': 'color',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dPivot',
-//         for: 'edge',
-//         'attr.name': 'pivot',
-//         'attr.type': 'string',
-//       },
-//       {
-//         id: 'dChunk',
-//         for: 'edge',
-//         'attr.name': 'chunk',
-//         'attr.type': 'string',
-//       },
-//     ],
-//     notes: {},
-//     choices: {},
-//     terminates: {},
-//     finals: {},
-//     unknownVertexes: {},
-//   };
-//   const parsed = parseCGML(bearlogaDemo);
-//   expect(parsed).toEqual(predicted);
-// });
+test('test parsing bearloga', () => {
+  const bearlogaDemo = readFileSync('demos/autoborder.graphml', 'utf-8');
+  const predicted: CGMLElements = {
+    stateMachines: {
+      G: {
+        states: {
+          'n0::n1': {
+            name: 'Сближение',
+            bounds: {
+              x: -525.738953,
+              y: 609.6686,
+              width: 468,
+              height: 170,
+            },
+            actions: [
+              {
+                trigger: {
+                  event: 'entry',
+                  condition: undefined,
+                  postfix: undefined,
+                },
+                action: 'МодульДвижения.ДвигатьсяКЦели()',
+              },
+              {
+                trigger: {
+                  event: 'exit',
+                  condition: undefined,
+                  postfix: undefined,
+                },
+                action: undefined,
+              },
+            ],
+            unsupportedDataNodes: [],
+            parent: 'n0',
+          },
+          'n0::n2': {
+            name: 'Атака',
+            bounds: {
+              x: -630.2711,
+              y: 206.705933,
+              width: 468,
+              height: 170,
+            },
+            actions: [
+              {
+                trigger: {
+                  event: 'entry',
+                  condition: undefined,
+                  postfix: undefined,
+                },
+                action: 'ОружиеЦелевое.АтаковатьЦель()',
+              },
+              {
+                trigger: {
+                  event: 'exit',
+                  condition: undefined,
+                  postfix: undefined,
+                },
+              },
+            ],
+            unsupportedDataNodes: [],
+            parent: 'n0',
+          },
+          n0: {
+            name: 'Бой',
+            bounds: {
+              x: -578.005,
+              y: 438.187256,
+              width: 672.532166,
+              height: 802.962646,
+            },
+            actions: [
+              {
+                trigger: {
+                  event: 'entry',
+                  condition: undefined,
+                  postfix: undefined,
+                },
+              },
+              {
+                trigger: {
+                  event: 'exit',
+                  condition: undefined,
+                  postfix: undefined,
+                },
+              },
+            ],
+            unsupportedDataNodes: [],
+          },
+          n3: {
+            name: 'Скан',
+            bounds: {
+              x: -1582.03857,
+              y: 606.497559,
+              width: 468,
+              height: 330,
+            },
+            actions: [
+              {
+                trigger: {
+                  event: 'entry',
+                  condition: undefined,
+                  postfix: undefined,
+                },
+                action: 'Сенсор.ПоискВрагаПоДистанции(мин)',
+              },
+              {
+                trigger: {
+                  event: 'exit',
+                  condition: undefined,
+                  postfix: undefined,
+                },
+                action: 'Сенсор.ОстановкаПоиска()',
+              },
+            ],
+            unsupportedDataNodes: [],
+          },
+        },
+        transitions: {
+          'init-n3': {
+            id: 'init-n3',
+            source: 'init',
+            target: 'n3',
+            actions: [],
+            labelPosition: undefined,
+            pivot: undefined,
+            unsupportedDataNodes: [],
+          },
+          'n0-n3': {
+            id: 'n0-n3',
+            source: 'n0',
+            target: 'n3',
+            actions: [
+              {
+                trigger: {
+                  event: 'АнализаторЦели.ЦельПотеряна',
+                  condition: undefined,
+                  postfix: undefined,
+                },
+              },
+            ],
+            labelPosition: undefined,
+            pivot: undefined,
+            unsupportedDataNodes: [],
+          },
+          'n3-n0::n1': {
+            id: 'n3-n0::n1',
+            source: 'n3',
+            target: 'n0::n1',
+            actions: [
+              {
+                trigger: {
+                  event: 'Сенсор.ЦельПолучена',
+                  condition: undefined,
+                  postfix: undefined,
+                },
+              },
+            ],
+            labelPosition: undefined,
+            pivot: undefined,
+            unsupportedDataNodes: [],
+          },
+          'n0::n1-n0::n2': {
+            id: 'n0::n1-n0::n2',
+            source: 'n0::n1',
+            target: 'n0::n2',
+            actions: [
+              {
+                trigger: {
+                  event: 'ОружиеЦелевое.ЦельВошлаВЗонуАтаки',
+                  condition: undefined,
+                  postfix: undefined,
+                },
+              },
+            ],
+            pivot: undefined,
+            labelPosition: undefined,
+            unsupportedDataNodes: [],
+          },
+          'n0::n2-n0::n1': {
+            id: 'n0::n2-n0::n1',
+            source: 'n0::n2',
+            target: 'n0::n1',
+            actions: [
+              {
+                trigger: {
+                  event: 'ОружиеЦелевое.ЦельВышлаИзЗоныАтаки',
+                  condition: undefined,
+                  postfix: undefined,
+                },
+              },
+            ],
+            labelPosition: undefined,
+            pivot: undefined,
+            unsupportedDataNodes: [],
+          },
+        },
+        initialStates: {
+          init: {
+            type: 'initial',
+            position: {
+              x: -1482.03857,
+              y: 606.497559,
+              width: 20,
+              height: 20,
+            },
+            data: '',
+          },
+        },
+        components: {},
+        notes: {},
+        choices: {},
+        terminates: {},
+        finals: {},
+        unknownVertexes: {},
+      },
+    },
+    platform: 'BearsTowerDefence',
+    meta: {
+      values: {
+        name: 'Автобортник',
+        author: 'Матросов В.М.',
+        contact: 'matrosov@mail.ru',
+        description:
+          'Пример описания схемы, \nкоторый может быть многострочным, потому что так удобнее',
+        target: 'Autoborder',
+      },
+      id: 'nMeta',
+    },
+    standardVersion: '1.0',
+    format: 'Cyberiada-GraphML-1.0',
+    keys: [
+      {
+        id: 'gFormat',
+        for: 'graphml',
+        'attr.name': 'format',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dName',
+        for: 'graph',
+        'attr.name': 'name',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dName',
+        for: 'node',
+        'attr.name': 'name',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dStateMachine',
+        for: 'graph',
+        'attr.name': 'stateMachine',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dSubmachineState',
+        for: 'node',
+        'attr.name': 'submachineState',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dGeometry',
+        for: 'graph',
+        'attr.name': 'geometry',
+      },
+      {
+        id: 'dGeometry',
+        for: 'node',
+        'attr.name': 'geometry',
+      },
+      {
+        id: 'dGeometry',
+        for: 'edge',
+        'attr.name': 'geometry',
+      },
+      {
+        id: 'dSourcePoint',
+        for: 'edge',
+        'attr.name': 'sourcePoint',
+      },
+      {
+        id: 'dTargetPoint',
+        for: 'edge',
+        'attr.name': 'targetPoint',
+      },
+      {
+        id: 'dLabelGeometry',
+        for: 'edge',
+        'attr.name': 'labelGeometry',
+      },
+      {
+        id: 'dNote',
+        for: 'node',
+        'attr.name': 'note',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dVertex',
+        for: 'node',
+        'attr.name': 'vertex',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dData',
+        for: 'node',
+        'attr.name': 'data',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dData',
+        for: 'edge',
+        'attr.name': 'data',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dMarkup',
+        for: 'node',
+        'attr.name': 'markup',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dColor',
+        for: 'node',
+        'attr.name': 'color',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dColor',
+        for: 'edge',
+        'attr.name': 'color',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dPivot',
+        for: 'edge',
+        'attr.name': 'pivot',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dChunk',
+        for: 'edge',
+        'attr.name': 'chunk',
+        'attr.type': 'string',
+      },
+    ],
+  };
+  const parsed = parseCGML(bearlogaDemo);
+  expect(parsed).toEqual(predicted);
+});
 
-// test('test parsing scheme with empty state.', () => {
-//   const arduinoDemo: string = readFileSync('demos/with-empty-state.graphml', 'utf-8');
-//   parseCGML(arduinoDemo);
-// });
+test('test parsing scheme with empty state.', () => {
+  const arduinoDemo: string = readFileSync('demos/with-empty-state.graphml', 'utf-8');
+  parseCGML(arduinoDemo);
+});
 
 // test('test parsing arduino with textMode', () => {
 //   const arduinoDemo: string = readFileSync('demos/arduino-blinker.graphml', 'utf-8');
