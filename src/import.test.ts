@@ -115,6 +115,7 @@ test('test parsing arduino', () => {
           cLED1: {
             id: 'LED1',
             type: 'LED',
+            order: 0,
             parameters: {
               name: 'Светодиод',
               description: 'Встроенный в плату светодиод, чтобы им мигать',
@@ -124,6 +125,7 @@ test('test parsing arduino', () => {
           ctimer1: {
             id: 'timer1',
             type: 'Timer',
+            order: 1,
             parameters: {
               name: 'Таймер',
               description: 'Программный таймер.',
@@ -341,6 +343,7 @@ test('test parsing Arduino multidocument', () => {
           cLED1: {
             id: 'LED1',
             type: 'LED',
+            order: 0,
             parameters: {
               name: 'Светодиод',
               description: 'Встроенный в плату светодиод, чтобы им мигать',
@@ -350,6 +353,7 @@ test('test parsing Arduino multidocument', () => {
           ctimer1: {
             id: 'timer1',
             type: 'Timer',
+            order: 1,
             parameters: {
               name: 'Таймер',
               description: 'Программный таймер.',
@@ -479,6 +483,7 @@ test('test parsing Arduino multidocument', () => {
           cLED1: {
             id: 'LED1',
             type: 'LED',
+            order: 0,
             parameters: {
               name: 'Светодиод',
               description: 'Встроенный в плату светодиод, чтобы им мигать',
@@ -488,6 +493,7 @@ test('test parsing Arduino multidocument', () => {
           ctimer1: {
             id: 'timer1',
             type: 'Timer',
+            order: 1,
             parameters: {
               name: 'Таймер',
               description: 'Программный таймер.',
@@ -1047,33 +1053,6 @@ timer1.start(1000)`,
               description: 'Программный таймер.',
             },
           },
-        color: '#F24C3D',
-      },
-    },
-    initialStates: {
-      init: {
-        data: '',
-        type: 'initial',
-      },
-    },
-    components: {
-      cLED1: {
-        id: 'LED1',
-        type: 'LED',
-        order: 0,
-        parameters: {
-          name: 'Светодиод',
-          description: 'Встроенный в плату светодиод, чтобы им мигать',
-          pin: '12',
-        },
-      },
-      ctimer1: {
-        id: 'timer1',
-        type: 'Timer',
-        order: 1,
-        parameters: {
-          name: 'Таймер',
-          description: 'Программный таймер.',
         },
         notes: {
           commentX: {

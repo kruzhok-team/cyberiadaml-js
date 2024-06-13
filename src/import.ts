@@ -14,7 +14,7 @@ import {
   getKeyNodes,
   resetComponentOrder,
 } from './parseFunctions';
-import { CGMLTextStateMachine, CGMLTextTransition } from './types/textImport';
+import { CGMLTextStateMachine } from './types/textImport';
 import {
   createEmptyElements,
   createEmptyTextElements,
@@ -31,7 +31,7 @@ export function parseCGML(graphml: string): CGMLElements {
       return isLeafNode && !isAttribute;
     },
   });
- 
+
   const elements: CGMLElements = createEmptyElements();
 
   const xml = parser.parse(graphml) as CGML;
@@ -39,6 +39,7 @@ export function parseCGML(graphml: string): CGMLElements {
   setFormatToMeta(elements, xml);
   elements.keys = getKeyNodes(xml);
   for (const graph of toArray(xml.graphml.graph)) {
+    resetComponentOrder();
     const stateMachine = processGraph(elements, emptyCGMLStateMachine(), graph, false);
     stateMachine.transitions = removeComponentsTransitions(
       stateMachine.transitions,
@@ -62,14 +63,14 @@ export function parseTextCGML(graphml: string): CGMLTextElements {
       return isLeafNode && !isAttribute;
     },
   });
-  const elements: CGMLTextElements = createEmptyTextElements()
-  resetComponentOrder();
+  const elements: CGMLTextElements = createEmptyTextElements();
 
   const xml = parser.parse(graphml) as CGML;
 
   setFormatToMeta(elements, xml);
   elements.keys = getKeyNodes(xml);
   for (const graph of toArray(xml.graphml.graph)) {
+    resetComponentOrder();
     const stateMachine = processGraph(elements, emptyCGMLStateMachine(), graph, true);
     stateMachine.transitions = removeComponentsTransitions(
       stateMachine.transitions,
