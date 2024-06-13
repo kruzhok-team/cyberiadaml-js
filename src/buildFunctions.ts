@@ -211,16 +211,16 @@ function getSortedComponentsList(components: { [id: string]: CGMLComponent }): C
 function getComponentStates(components: { [id: string]: CGMLComponent }): ExportNode[] {
   const nodes: ExportNode[] = [];
   const sortedComponents = getSortedComponentsList(components);
-  for (const componentId in components) {
-    const componentFromObj = components[componentId];
-    const component = sortedComponents.find((value) => {
-      return value.id === componentFromObj.id;
+  for (const component of sortedComponents) {
+    const componentObj = Object.entries(components).find((value) => {
+      return value[1].id === component.id;
     });
-    if (!component) {
+    if (!componentObj) {
       throw new Error('Internal error! Components id doesnt match!');
     }
+    const componentNodeId = componentObj[0];
     nodes.push({
-      '@id': componentId,
+      '@id': componentNodeId,
       data: [
         {
           '@key': 'dNote',
