@@ -112,6 +112,7 @@ test('test parsing arduino', () => {
       cLED1: {
         id: 'LED1',
         type: 'LED',
+        order: 0,
         parameters: {
           name: 'Светодиод',
           description: 'Встроенный в плату светодиод, чтобы им мигать',
@@ -121,6 +122,7 @@ test('test parsing arduino', () => {
       ctimer1: {
         id: 'timer1',
         type: 'Timer',
+        order: 1,
         parameters: {
           name: 'Таймер',
           description: 'Программный таймер.',
@@ -656,6 +658,7 @@ timer1.start(1000)`,
       cLED1: {
         id: 'LED1',
         type: 'LED',
+        order: 0,
         parameters: {
           name: 'Светодиод',
           description: 'Встроенный в плату светодиод, чтобы им мигать',
@@ -665,6 +668,7 @@ timer1.start(1000)`,
       ctimer1: {
         id: 'timer1',
         type: 'Timer',
+        order: 1,
         parameters: {
           name: 'Таймер',
           description: 'Программный таймер.',

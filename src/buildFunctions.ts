@@ -203,11 +203,22 @@ function getExportNodes(
   return Object.values(nodes);
 }
 
+function getSortedComponentsList(components: { [id: string]: CGMLComponent }): CGMLComponent[] {
+  const sortedComponents: CGMLComponent[] = Object.values(components);
+  return sortedComponents.sort((a, b) => (a?.order ?? 0) - (b?.order ?? 0));
+}
+
 function getComponentStates(components: { [id: string]: CGMLComponent }): ExportNode[] {
   const nodes: ExportNode[] = [];
-
+  const sortedComponents = getSortedComponentsList(components);
   for (const componentId in components) {
-    const component = components[componentId];
+    const componentFromObj = components[componentId];
+    const component = sortedComponents.find((value) => {
+      return value.id === componentFromObj.id;
+    });
+    if (!component) {
+      throw new Error('Internal error! Components id doesnt match!');
+    }
     nodes.push({
       '@id': componentId,
       data: [
