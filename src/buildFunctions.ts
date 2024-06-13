@@ -23,6 +23,7 @@ import {
   CGMLRectangle,
   CGMLTransitionAction,
   CGMLElements,
+  CGMLTextElements,
 } from './types/import';
 import { CGMLTextStateMachine, CGMLTextState, CGMLTextTransition } from './types/textImport';
 import { serialaizeParameters, serializeActions, serializeMeta } from './utils';
@@ -333,7 +334,7 @@ function getNoteNodes(notes: { [id: string]: CGMLNote }): ExportNode[] {
   return nodes;
 }
 
-function getGraphs(elements: CGMLElements, textMode: boolean): ExportGraph[] {
+function getGraphs(elements: CGMLElements | CGMLTextElements, textMode: boolean): ExportGraph[] {
   const graphs: ExportGraph[] = [];
   for (const stateMachineId in elements.stateMachines) {
     const stateMachine = elements.stateMachines[stateMachineId];
@@ -362,7 +363,10 @@ function getGraphs(elements: CGMLElements, textMode: boolean): ExportGraph[] {
   return graphs;
 }
 
-export function templateExportGraphml(elements: CGMLElements, textMode: boolean): string {
+export function templateExportGraphml(
+  elements: CGMLElements | CGMLTextElements,
+  textMode: boolean,
+): string {
   const builder = new XMLBuilder({
     textNodeName: 'content',
     ignoreAttributes: false,

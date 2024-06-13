@@ -5,6 +5,7 @@ import {
   CGMLTransitionAction,
   CGMLTransitionTrigger,
   CGMLElements,
+  CGMLTextElements,
 } from './types/import';
 
 export function parseTrigger(trigger: string, regexes: Array<RegExp>): CGMLTransitionTrigger {
@@ -37,6 +38,20 @@ export function emptyCGMLStateMachine(): CGMLStateMachine {
     choices: {},
     finals: {},
     unknownVertexes: {},
+  };
+}
+
+export function createEmptyTextElements(): CGMLTextElements {
+  return {
+    stateMachines: {},
+    platform: '',
+    meta: {
+      values: {},
+      id: '',
+    },
+    standardVersion: '',
+    format: '',
+    keys: [],
   };
 }
 

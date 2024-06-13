@@ -1,7 +1,7 @@
 import { exportGraphml, exportTextGraphml } from './export';
 import { readFileSync } from 'fs';
-import { parseCGML } from './import';
-import { CGMLElements } from './types/import';
+import { parseCGML, parseTextCGML } from './import';
+import { CGMLElements, CGMLTextElements } from './types/import';
 
 test('test parse-export-parse cycle Bearloga', () => {
   const fileContent: string = readFileSync('demos/autoborder.graphml', 'utf-8');
@@ -35,10 +35,10 @@ test('test parse-export-parse cycle with empty state', () => {
   expect(parsedAgain).toStrictEqual(parsed);
 });
 
-// test('test parse-export-parse cycle ArduinoUno with textMode', () => {
-//   const fileContent: string = readFileSync('demos/arduino-blinker.graphml', 'utf-8');
-//   const parsed: CGMLTextElements = parseTextCGML(fileContent);
-//   const exported: string = exportTextGraphml(parsed);
-//   const parsedAgain: CGMLTextElements = parseTextCGML(exported);
-//   expect(parsedAgain).toStrictEqual(parsed);
-// });
+test('test parse-export-parse cycle ArduinoUno with textMode', () => {
+  const fileContent: string = readFileSync('demos/arduino-blinker.graphml', 'utf-8');
+  const parsed: CGMLTextElements = parseTextCGML(fileContent);
+  const exported: string = exportTextGraphml(parsed);
+  const parsedAgain: CGMLTextElements = parseTextCGML(exported);
+  expect(parsedAgain).toStrictEqual(parsed);
+});

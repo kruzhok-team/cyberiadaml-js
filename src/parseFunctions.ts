@@ -18,6 +18,7 @@ import {
   CGMLVertex,
   CGMLAction,
   CGMLElements,
+  CGMLTextElements,
 } from './types/import';
 import { CGMLTextStateMachine, CGMLTextState, CGMLTextTransition } from './types/textImport';
 import { parseTrigger } from './utils';
@@ -297,7 +298,7 @@ function processTransitions(
 }
 
 // Функция, которая находит формат и присваивают его к Meta
-export function setFormatToMeta(elements: CGMLElements, xml: any) {
+export function setFormatToMeta(elements: CGMLElements | CGMLTextElements, xml: any) {
   for (const node of xml.graphml.data as CGMLDataNode[]) {
     if (isDataKey(node.key)) {
       const func = dataNodeProcess[node.key];
@@ -336,7 +337,7 @@ function createEmptyVertex(): CGMLVertex {
 
 // Обработка нод
 function processNode(
-  elements: CGMLElements,
+  elements: CGMLElements | CGMLTextElements,
   stateMachine: CGMLStateMachine | CGMLTextStateMachine,
   node: CGMLNode,
   textMode: boolean,
@@ -425,7 +426,7 @@ function isTextState(
 }
 
 export function processGraph(
-  elements: CGMLElements,
+  elements: CGMLElements | CGMLTextElements,
   stateMachine: CGMLStateMachine | CGMLTextStateMachine,
   graph: CGMLGraph,
   textMode: boolean,

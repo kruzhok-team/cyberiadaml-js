@@ -88,7 +88,16 @@ export type CGMLComponent = {
 };
 
 export type CGMLElements = {
-  stateMachines: { [id: string]: CGMLStateMachine } | { [id: string]: CGMLTextStateMachine };
+  stateMachines: { [id: string]: CGMLStateMachine };
+  meta: CGMLMeta;
+  standardVersion: string;
+  platform: string;
+  format: string;
+  keys: Array<CGMLKeyNode>;
+};
+
+export type CGMLTextElements = {
+  stateMachines: { [id: string]: CGMLTextStateMachine };
   meta: CGMLMeta;
   standardVersion: string;
   platform: string;
@@ -179,7 +188,7 @@ export const CGMLDataKeys = [
 export type CGMLDataKey = (typeof CGMLDataKeys)[number];
 
 export interface CGMLDataNodeProcessArgs {
-  elements?: CGMLElements;
+  elements?: CGMLElements | CGMLTextElements;
   stateMachine?: CGMLStateMachine | CGMLTextStateMachine;
   meta?: string;
   node: CGMLDataNode;

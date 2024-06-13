@@ -1,6 +1,12 @@
 import { XMLParser } from 'fast-xml-parser';
 
-import { CGMLStateMachine, CGML, CGMLTransition, CGMLElements } from './types/import';
+import {
+  CGMLStateMachine,
+  CGML,
+  CGMLTransition,
+  CGMLElements,
+  CGMLTextElements,
+} from './types/import';
 import {
   setFormatToMeta,
   processGraph,
@@ -8,7 +14,12 @@ import {
   getKeyNodes,
 } from './parseFunctions';
 import { CGMLTextStateMachine, CGMLTextTransition } from './types/textImport';
-import { createEmptyElements, emptyCGMLStateMachine, toArray } from './utils';
+import {
+  createEmptyElements,
+  createEmptyTextElements,
+  emptyCGMLStateMachine,
+  toArray,
+} from './utils';
 
 export function parseCGML(graphml: string): CGMLElements {
   const parser = new XMLParser({
@@ -32,7 +43,7 @@ export function parseCGML(graphml: string): CGMLElements {
       stateMachine.transitions,
       elements.meta.id,
     ) as Record<string, CGMLTransition>;
-    elements.stateMachines[graph.id] = stateMachine;
+    elements.stateMachines[graph.id] = stateMachine as CGMLStateMachine;
   }
   elements.platform = elements.meta.values['platform'];
   elements.standardVersion = elements.meta.values['standardVersion'];
@@ -41,44 +52,33 @@ export function parseCGML(graphml: string): CGMLElements {
   return elements;
 }
 
-export function createEmptyTextElements(): CGMLElements {
-  return {
-    stateMachines: {},
-    platform: '',
-    meta: {
-      values: {},
-      id: '',
+export function parseTextCGML(graphml: string): CGMLTextElements {
+  const parser = new XMLParser({
+    textNodeName: 'content',
+    ignoreAttributes: false,
+    attributeNamePrefix: '',
+    isArray: (_name, _jpath, isLeafNode, isAttribute) => {
+      return isLeafNode && !isAttribute;
     },
-    standardVersion: '',
-    format: '',
-    keys: [],
-  };
+  });
+
+  const elements: CGMLTextElements = createEmptyTextElements();
+
+  const xml = parser.parse(graphml) as CGML;
+
+  setFormatToMeta(elements, xml);
+  elements.keys = getKeyNodes(xml);
+  for (const graph of toArray(xml.graphml.graph)) {
+    const stateMachine = processGraph(elements, emptyCGMLStateMachine(), graph, true);
+    stateMachine.transitions = removeComponentsTransitions(
+      stateMachine.transitions,
+      elements.meta.id,
+    ) as Record<string, CGMLTransition>;
+    elements.stateMachines[graph.id] = stateMachine as CGMLTextStateMachine;
+  }
+  elements.platform = elements.meta.values['platform'];
+  elements.standardVersion = elements.meta.values['standardVersion'];
+  delete elements.meta.values['platform'];
+  delete elements.meta.values['standardVersion'];
+  return elements;
 }
-
-// export function parseTextCGML(graphml: string): CGMLTextStateMachine {
-//   const parser = new XMLParser({
-//     textNodeName: 'content',
-//     ignoreAttributes: false,
-//     attributeNamePrefix: '',
-//     isArray: (_name, _jpath, isLeafNode, isAttribute) => {
-//       return isLeafNode && !isAttribute;
-//     },
-//   });
-
-//   const elements = createEmptyTextElements();
-
-//   const xml = parser.parse(graphml) as CGML;
-
-//   setFormatToMeta(elements, xml);
-//   elements.keys = getKeyNodes(xml);
-//   processGraph(elements, xml.graphml.graph, true);
-//   elements.transitions = removeComponentsTransitions(
-//     elements.transitions,
-//     elements.meta.id,
-//   ) as Record<string, CGMLTextTransition>;
-//   elements.platform = elements.meta.values['platform'];
-//   elements.standardVersion = elements.meta.values['standardVersion'];
-//   delete elements.meta.values['platform'];
-//   delete elements.meta.values['standardVersion'];
-//   return elements;
-// }
