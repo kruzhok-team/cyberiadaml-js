@@ -9,6 +9,7 @@ test('test parsing arduino', () => {
   const predicted: CGMLElements = {
     stateMachines: {
       G: {
+        name: 'Моя любимая машина состояний!',
         states: {
           diod1: {
             name: 'Включен',
@@ -962,6 +963,7 @@ test('test parsing arduino with textMode', () => {
   const predicted: CGMLTextElements = {
     stateMachines: {
       G: {
+        name: 'Моя любимая машина состояний!',
         states: {
           diod1: {
             name: 'Включен',

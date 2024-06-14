@@ -13,6 +13,7 @@ import {
   removeComponentsTransitions,
   getKeyNodes,
   resetComponentOrder,
+  getStateMachineName,
 } from './parseFunctions';
 import { CGMLTextStateMachine } from './types/textImport';
 import {
@@ -22,6 +23,7 @@ import {
   toArray,
 } from './utils';
 
+// TODO: Переделать эти функции на манер экспорта
 export function parseCGML(graphml: string): CGMLElements {
   const parser = new XMLParser({
     textNodeName: 'content',
@@ -41,6 +43,7 @@ export function parseCGML(graphml: string): CGMLElements {
   for (const graph of toArray(xml.graphml.graph)) {
     resetComponentOrder();
     const stateMachine = processGraph(elements, emptyCGMLStateMachine(), graph, false);
+    stateMachine.name = getStateMachineName(graph);
     stateMachine.transitions = removeComponentsTransitions(
       stateMachine.transitions,
       elements.meta.id,
@@ -72,6 +75,7 @@ export function parseTextCGML(graphml: string): CGMLTextElements {
   for (const graph of toArray(xml.graphml.graph)) {
     resetComponentOrder();
     const stateMachine = processGraph(elements, emptyCGMLStateMachine(), graph, true);
+    stateMachine.name = getStateMachineName(graph);
     stateMachine.transitions = removeComponentsTransitions(
       stateMachine.transitions,
       elements.meta.id,

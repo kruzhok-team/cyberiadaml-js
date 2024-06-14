@@ -18,6 +18,7 @@
 
 <graph id="G" edgedefault="directed">
     <data key="dStateMachine"/>
+    <data key="dName"> Моя любимая машина состояний! </data>
     <node id="coreMeta">
         <data key="dNote">formal</data>
         <data key="dName">CGML_META</data>

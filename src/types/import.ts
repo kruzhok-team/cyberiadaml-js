@@ -147,6 +147,7 @@ export type CGMLGraph = {
   edge: Array<CGMLEdge>;
   edgedefault: string;
   id: string;
+  data: CGMLDataNode[];
 };
 
 export type CGMLDataNode = {

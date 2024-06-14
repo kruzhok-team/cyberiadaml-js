@@ -21,7 +21,7 @@ import {
   CGMLTextElements,
 } from './types/import';
 import { CGMLTextStateMachine, CGMLTextState, CGMLTextTransition } from './types/textImport';
-import { parseTrigger } from './utils';
+import { parseTrigger, toArray } from './utils';
 
 export let componentOrder = 0;
 
@@ -241,13 +241,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     };
   },
   dStateMachine(data: CGMLDataNodeProcessArgs) {
-    if (!data.stateMachine) {
-      throw new Error('Internal Error! stateMachine is undefined in dStateMachine processing!');
-    }
-    if (data.stateMachine.name) {
-      throw new Error('Double dStateMachine node!');
-    }
-    data.stateMachine.name = data.node.content;
+    throw new Error('<data key="dStateMachine"> is not on the first level of the graph.');
   },
 };
 
@@ -530,6 +524,29 @@ export function getKeyNodes(xml: CGML): Array<CGMLKeyNode> {
   }
 
   return keyNodes;
+}
+
+export function getStateMachineName(graph: CGMLGraph): string | undefined {
+  if (graph.data === undefined) {
+    throw new Error(`There aren't <data> nodes in the first level graph with id '${graph.id}'`);
+  }
+  let isStateMachine = false;
+  let name: string | undefined = undefined;
+  for (const graphData of graph.data) {
+    if (graphData.key === 'dName') {
+      name = graphData.content;
+      continue;
+    }
+    if (graphData.key === 'dStateMachine') {
+      isStateMachine = true;
+      undefined;
+    }
+  }
+
+  if (!isStateMachine) {
+    throw new Error("First level graph doesn't contain <data> with dStateMachine key!");
+  }
+  return name;
 }
 
 export function resetComponentOrder() {

@@ -25,7 +25,7 @@ import {
   CGMLElements,
   CGMLTextElements,
 } from './types/import';
-import { CGMLTextStateMachine, CGMLTextState, CGMLTextTransition } from './types/textImport';
+import { CGMLTextState, CGMLTextStateMachine, CGMLTextTransition } from './types/textImport';
 import { serialaizeParameters, serializeActions, serializeMeta } from './utils';
 
 function getMetaNode(platform: string, meta: CGMLMeta, standardVersion: string): ExportNode {
@@ -345,12 +345,30 @@ function getNoteNodes(notes: { [id: string]: CGMLNote }): ExportNode[] {
   return nodes;
 }
 
+function getdStateMachineDataNode(): ExportDataNode {
+  return {
+    '@key': 'dStateMachine',
+    content: '',
+  };
+}
+
+function getGraphDataNodes(
+  stateMachine: CGMLStateMachine | CGMLTextStateMachine,
+): ExportDataNode[] {
+  const dataNodes: ExportDataNode[] = [getdStateMachineDataNode()];
+  if (stateMachine.name !== undefined) {
+    dataNodes.push(getNameDataNode(stateMachine.name));
+  }
+  return dataNodes;
+}
+
 function getGraphs(elements: CGMLElements | CGMLTextElements, textMode: boolean): ExportGraph[] {
   const graphs: ExportGraph[] = [];
   for (const stateMachineId in elements.stateMachines) {
     const stateMachine = elements.stateMachines[stateMachineId];
     const graph = {
       '@id': stateMachineId,
+      data: getGraphDataNodes(stateMachine),
       node: [
         ...getExportNodes(
           stateMachine.states,
