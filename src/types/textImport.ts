@@ -1,5 +1,5 @@
-import { CGMLState, CGMLTransition, CGMLElements } from './import';
-export type CGMLTextElements = Omit<Omit<CGMLElements, 'states'>, 'transitions'> & {
+import { CGMLState, CGMLTransition, CGMLStateMachine } from './import';
+export type CGMLTextStateMachine = Omit<Omit<CGMLStateMachine, 'states'>, 'transitions'> & {
   states: { [id: string]: CGMLTextState };
   transitions: { [id: string]: CGMLTextTransition };
 };

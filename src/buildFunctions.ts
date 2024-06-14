@@ -1,9 +1,16 @@
 import { XMLBuilder } from 'fast-xml-parser';
 
-import { ExportCGML, ExportEdge, ExportKeyNode, ExportNode, ExportDataNode } from './types/export';
+import {
+  ExportCGML,
+  ExportEdge,
+  ExportKeyNode,
+  ExportNode,
+  ExportDataNode,
+  ExportGraph,
+} from './types/export';
 import {
   CGMLComponent,
-  CGMLElements,
+  CGMLStateMachine,
   CGMLKeyNode,
   CGMLState,
   CGMLTransition,
@@ -15,8 +22,10 @@ import {
   CGMLPoint,
   CGMLRectangle,
   CGMLTransitionAction,
+  CGMLElements,
+  CGMLTextElements,
 } from './types/import';
-import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './types/textImport';
+import { CGMLTextState, CGMLTextStateMachine, CGMLTextTransition } from './types/textImport';
 import { serialaizeParameters, serializeActions, serializeMeta } from './utils';
 
 function getMetaNode(platform: string, meta: CGMLMeta, standardVersion: string): ExportNode {
@@ -336,6 +345,53 @@ function getNoteNodes(notes: { [id: string]: CGMLNote }): ExportNode[] {
   return nodes;
 }
 
+function getdStateMachineDataNode(): ExportDataNode {
+  return {
+    '@key': 'dStateMachine',
+    content: '',
+  };
+}
+
+function getGraphDataNodes(
+  stateMachine: CGMLStateMachine | CGMLTextStateMachine,
+): ExportDataNode[] {
+  const dataNodes: ExportDataNode[] = [getdStateMachineDataNode()];
+  if (stateMachine.name !== undefined) {
+    dataNodes.push(getNameDataNode(stateMachine.name));
+  }
+  return dataNodes;
+}
+
+function getGraphs(elements: CGMLElements | CGMLTextElements, textMode: boolean): ExportGraph[] {
+  const graphs: ExportGraph[] = [];
+  for (const stateMachineId in elements.stateMachines) {
+    const stateMachine = elements.stateMachines[stateMachineId];
+    const graph = {
+      '@id': stateMachineId,
+      data: getGraphDataNodes(stateMachine),
+      node: [
+        ...getExportNodes(
+          stateMachine.states,
+          stateMachine.initialStates,
+          stateMachine.terminates,
+          stateMachine.finals,
+          stateMachine.choices,
+          textMode,
+        ),
+        ...getComponentStates(stateMachine.components),
+        ...getNoteNodes(stateMachine.notes),
+      ],
+      edge: [...getEdges(stateMachine.transitions, textMode)],
+    };
+    graphs.push(graph);
+  }
+  graphs[0].node = [
+    getMetaNode(elements.platform, elements.meta, elements.standardVersion),
+    ...graphs[0].node,
+  ];
+  return graphs;
+}
+
 export function templateExportGraphml(
   elements: CGMLElements | CGMLTextElements,
   textMode: boolean,
@@ -344,6 +400,7 @@ export function templateExportGraphml(
     textNodeName: 'content',
     ignoreAttributes: false,
     attributeNamePrefix: '@',
+
     format: true,
   });
   const xml: ExportCGML = {
@@ -358,23 +415,7 @@ export function templateExportGraphml(
         content: elements.format,
       },
       key: getExportKeys(elements.keys),
-      graph: {
-        '@id': 'G',
-        node: [
-          getMetaNode(elements.platform, elements.meta, elements.standardVersion),
-          ...getExportNodes(
-            elements.states,
-            elements.initialStates,
-            elements.terminates,
-            elements.finals,
-            elements.choices,
-            textMode,
-          ),
-          ...getComponentStates(elements.components),
-          ...getNoteNodes(elements.notes),
-        ],
-        edge: [...getEdges(elements.transitions, textMode)],
-      },
+      graph: getGraphs(elements, textMode),
     },
   };
   return builder.build(xml);

@@ -60,7 +60,7 @@ export type ExportCGMLGraphmlNode = {
   '@xmlns': string;
   data: ExportDataNode;
   key: ExportKeyNode[];
-  graph: ExportGraph;
+  graph: ExportGraph[];
 };
 
 export type ExportCGML = {

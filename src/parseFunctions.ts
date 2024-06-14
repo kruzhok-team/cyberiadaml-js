@@ -2,7 +2,7 @@ import {
   NoteType,
   CGMLState,
   CGMLTransition,
-  CGMLElements,
+  CGMLStateMachine,
   CGMLDataNodeProcess,
   CGMLDataKey,
   CGMLDataKeys,
@@ -17,9 +17,11 @@ import {
   CGMLNote,
   CGMLVertex,
   CGMLAction,
+  CGMLElements,
+  CGMLTextElements,
 } from './types/import';
-import { CGMLTextElements, CGMLTextState, CGMLTextTransition } from './types/textImport';
-import { parseTrigger } from './utils';
+import { CGMLTextStateMachine, CGMLTextState, CGMLTextTransition } from './types/textImport';
+import { parseTrigger, toArray } from './utils';
 
 export let componentOrder = 0;
 
@@ -72,6 +74,9 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     vertex.type = node.content;
   },
   gFormat({ elements, node }) {
+    if (!elements) {
+      throw new Error('Internal Error! Elements is undefined!');
+    }
     if (elements.format != '') {
       throw new Error(
         `Повторное указание формата! Старое значение: ${elements.format}. Новое значение: ${node.content}`,
@@ -79,7 +84,10 @@ const dataNodeProcess: CGMLDataNodeProcess = {
     }
     elements.format = node.content;
   },
-  dData({ elements, state, parentNode, node, transition, note, textMode }) {
+  dData({ stateMachine, state, parentNode, node, transition, note, textMode }) {
+    if (!stateMachine) {
+      throw new Error('Internal Error! stateMachine is undefined!');
+    }
     if (parentNode !== undefined) {
       if (state !== undefined) {
         if (textMode) {
@@ -94,7 +102,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
       if (transition == undefined) {
         throw new Error('Непредвиденный вызов dData.');
       }
-      if (elements.initialStates[transition.source]) {
+      if (stateMachine.initialStates[transition.source]) {
         if (textMode) {
           transition.actions = node.content;
         } else {
@@ -232,10 +240,13 @@ const dataNodeProcess: CGMLDataNodeProcess = {
       y: y,
     };
   },
+  dStateMachine(data: CGMLDataNodeProcessArgs) {
+    throw new Error('<data key="dStateMachine"> is not on the first level of the graph.');
+  },
 };
 
 function processTransitions(
-  elements: CGMLElements | CGMLTextElements,
+  stateMachine: CGMLStateMachine | CGMLTextStateMachine,
   edges: CGMLEdge[],
   textMode: boolean,
 ) {
@@ -263,13 +274,13 @@ function processTransitions(
         labelPosition: undefined,
       };
     }
-    elements.transitions[edge.id] = transition;
+    stateMachine.transitions[edge.id] = transition;
     for (const dataNodeIndex in edge.data) {
       const dataNode: CGMLDataNode = edge.data[+dataNodeIndex];
       if (isDataKey(dataNode.key)) {
         const func = dataNodeProcess[dataNode.key];
         func({
-          elements: elements,
+          stateMachine: stateMachine,
           node: dataNode,
           parentNode: undefined,
           transition: transition,
@@ -323,6 +334,7 @@ function createEmptyVertex(): CGMLVertex {
 // Обработка нод
 function processNode(
   elements: CGMLElements | CGMLTextElements,
+  stateMachine: CGMLStateMachine | CGMLTextStateMachine,
   node: CGMLNode,
   textMode: boolean,
   parent?: CGMLNode,
@@ -342,7 +354,7 @@ function processNode(
       if (isDataKey(dataNode.key)) {
         const func = dataNodeProcess[dataNode.key];
         func({
-          elements: elements,
+          stateMachine: stateMachine,
           node: dataNode,
           parentNode: node,
           state: state,
@@ -359,7 +371,7 @@ function processNode(
   }
 
   if (node.graph !== undefined) {
-    processGraph(elements, node.graph, textMode, node);
+    processGraph(elements, stateMachine, node.graph, textMode, node);
   }
 
   if (state !== undefined) {
@@ -411,24 +423,26 @@ function isTextState(
 
 export function processGraph(
   elements: CGMLElements | CGMLTextElements,
+  stateMachine: CGMLStateMachine | CGMLTextStateMachine,
   graph: CGMLGraph,
   textMode: boolean,
   parent?: CGMLNode,
-) {
+): CGMLStateMachine | CGMLTextStateMachine {
   for (const idx in graph.node) {
     const node = graph.node[idx];
     const processResult: CGMLState | CGMLTextState | CGMLNote | CGMLVertex = processNode(
       elements,
+      stateMachine,
       node,
       textMode,
       parent,
     );
     if (isState(processResult)) {
-      elements.states[node.id] = processResult;
+      stateMachine.states[node.id] = processResult;
       continue;
     }
     if (isTextState(processResult)) {
-      elements.states[node.id] = processResult;
+      stateMachine.states[node.id] = processResult;
       continue;
     }
     if (isVertex(processResult)) {
@@ -438,31 +452,31 @@ export function processGraph(
       }
       switch (vertex.type) {
         case 'initial':
-          elements.initialStates[node.id] = vertex;
+          stateMachine.initialStates[node.id] = vertex;
           break;
         case 'choice':
-          elements.choices[node.id] = vertex;
+          stateMachine.choices[node.id] = vertex;
           break;
         case 'final':
-          elements.finals[node.id] = vertex;
+          stateMachine.finals[node.id] = vertex;
           break;
         case 'terminate':
-          elements.terminates[node.id] = vertex;
+          stateMachine.terminates[node.id] = vertex;
           break;
         default:
-          elements.unknownVertexes[node.id] = vertex;
+          stateMachine.unknownVertexes[node.id] = vertex;
       }
       continue;
     }
 
     const note = processResult;
     if (note.type == 'informal') {
-      elements.notes[node.id] = note;
+      stateMachine.notes[node.id] = note;
       continue;
     }
     switch (note.name) {
       case 'CGML_COMPONENT':
-        if (elements.components[node.id] !== undefined) {
+        if (stateMachine.components[node.id] !== undefined) {
           throw new Error(`Компонент с идентификатором ${node.id} уже существует!`);
         }
         const componentParameters = parseMeta(note.text);
@@ -470,7 +484,7 @@ export function processGraph(
         const componentType = componentParameters['type'];
         delete componentParameters['id'];
         delete componentParameters['type'];
-        elements.components[node.id] = {
+        stateMachine.components[node.id] = {
           id: componentId,
           type: componentType,
           parameters: componentParameters,
@@ -479,6 +493,9 @@ export function processGraph(
         componentOrder += 1;
         break;
       case 'CGML_META':
+        if (!(Object.values(elements.meta.values).length === 0) && !(elements.meta.id === '')) {
+          throw new Error('Double meta-node!');
+        }
         elements.meta.values = parseMeta(note.text);
         elements.meta.id = node.id;
         break;
@@ -490,8 +507,9 @@ export function processGraph(
   }
 
   if (graph.edge) {
-    processTransitions(elements, graph.edge, textMode);
+    processTransitions(stateMachine, graph.edge, textMode);
   }
+  return stateMachine;
 }
 
 export function getKeyNodes(xml: CGML): Array<CGMLKeyNode> {
@@ -506,6 +524,29 @@ export function getKeyNodes(xml: CGML): Array<CGMLKeyNode> {
   }
 
   return keyNodes;
+}
+
+export function getStateMachineName(graph: CGMLGraph): string | undefined {
+  if (graph.data === undefined) {
+    throw new Error(`There aren't <data> nodes in the first level graph with id '${graph.id}'`);
+  }
+  let isStateMachine = false;
+  let name: string | undefined = undefined;
+  for (const graphData of graph.data) {
+    if (graphData.key === 'dName') {
+      name = graphData.content;
+      continue;
+    }
+    if (graphData.key === 'dStateMachine') {
+      isStateMachine = true;
+      undefined;
+    }
+  }
+
+  if (!isStateMachine) {
+    throw new Error("First level graph doesn't contain <data> with dStateMachine key!");
+  }
+  return name;
 }
 
 export function resetComponentOrder() {
