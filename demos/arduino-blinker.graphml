@@ -62,6 +62,9 @@ name/ Таймер
 description/ Программный таймер.
 
         </data>
+        <data key="dLapkiSchemePosition">x/ 12
+y/ 13
+        </data>
     </node>
 
     <node id="init">
@@ -98,6 +101,9 @@ timer1.start(1000)
         <data key="dGeometry">
             <point x="640" y="114" />
         </data> 
+        <data key="dLapkiSchemePosition">x/ 12
+y/ 13
+        </data>
     </node>
     <edge id="init-edge" source="init" target="diod1"/>
     <edge id="edge0" source="coreMeta" target="ctimer1"> 

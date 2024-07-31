@@ -86,6 +86,7 @@ export type CGMLComponent = {
   type: string;
   parameters: { [id: string]: string };
   order?: number;
+  unsupportedDataNodes: CGMLDataNode[];
 };
 
 export type CGMLElements = {
@@ -127,6 +128,7 @@ export type CGMLNote = {
   text: string;
   type: NoteType;
   data?: string;
+  unsupportedDataNodes: Array<CGMLDataNode>;
 };
 
 export type CGMLNode = {

@@ -7,6 +7,8 @@ import {
   ExportNode,
   ExportDataNode,
   ExportGraph,
+  ExportRect,
+  ExportPoint,
 } from './types/export';
 import {
   CGMLComponent,
@@ -24,6 +26,7 @@ import {
   CGMLTransitionAction,
   CGMLElements,
   CGMLTextElements,
+  CGMLDataNode,
 } from './types/import';
 import { CGMLTextState, CGMLTextStateMachine, CGMLTextTransition } from './types/textImport';
 import { serialaizeParameters, serializeActions, serializeMeta } from './utils';
@@ -98,17 +101,28 @@ function isRect(value: any): value is CGMLRectangle {
   return value.width !== undefined && value.height !== undefined;
 }
 
+function getExportRect(position: CGMLRectangle): ExportRect {
+  return {
+    '@x': position.x,
+    '@y': position.y,
+    '@width': position.width,
+    '@height': position.height,
+  };
+}
+
+function getExportPoint(position: CGMLPoint): ExportPoint {
+  return {
+    '@x': position.x,
+    '@y': position.y,
+  };
+}
+
 function getGeometryDataNode(position: CGMLPoint | CGMLRectangle): ExportDataNode {
   if (isRect(position)) {
     return {
       '@key': 'dGeometry',
       content: '',
-      rect: {
-        '@x': position.x,
-        '@y': position.y,
-        '@width': position.width,
-        '@height': position.height,
-      },
+      rect: getExportRect(position),
     };
   } else {
     return {
@@ -247,11 +261,25 @@ function getComponentStates(components: { [id: string]: CGMLComponent }): Export
             ...component.parameters,
           }),
         },
+        ...getNoteDataNodes(component.unsupportedDataNodes),
       ],
     });
   }
 
   return nodes;
+}
+
+function getNoteDataNodes(dataNodes: CGMLDataNode[]) {
+  const exportNodes: ExportDataNode[] = [];
+  for (const dataNode of dataNodes) {
+    exportNodes.push({
+      '@key': dataNode.key,
+      content: dataNode.content,
+      rect: dataNode.rect ? getExportRect(dataNode.rect[0]) : undefined,
+      point: dataNode.point ? getExportPoint(dataNode.point[0]) : undefined,
+    });
+  }
+  return exportNodes;
 }
 
 function getExportKeys(keys: Array<CGMLKeyNode>): ExportKeyNode[] {
@@ -332,6 +360,7 @@ function getNoteNodes(notes: { [id: string]: CGMLNote }): ExportNode[] {
       '@key': 'dNote',
       content: note.type,
     });
+    node.data.push(...getNoteDataNodes(note.unsupportedDataNodes));
     if (note.name) {
       node.data.push(getNameDataNode(note.name));
     }

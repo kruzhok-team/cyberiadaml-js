@@ -321,6 +321,7 @@ function createEmptyNote(): CGMLNote {
       y: 0,
     },
     text: '',
+    unsupportedDataNodes: [],
   };
 }
 
@@ -347,6 +348,7 @@ function processNode(
   const vertex: CGMLVertex | undefined = node.data?.find((dataNode) => dataNode.key === 'dVertex')
     ? createEmptyVertex()
     : undefined;
+  const unsupportedDataNodes: CGMLDataNode[] = [];
   const state: CGMLState | undefined =
     note === undefined && vertex === undefined ? createEmptyState() : undefined;
   if (node.data !== undefined) {
@@ -362,6 +364,8 @@ function processNode(
           vertex: vertex,
           textMode: textMode,
         });
+      } else {
+        unsupportedDataNodes.push(dataNode);
       }
     }
   }
@@ -375,9 +379,11 @@ function processNode(
   }
 
   if (state !== undefined) {
+    state.unsupportedDataNodes = unsupportedDataNodes;
     return state;
   }
   if (note !== undefined) {
+    note.unsupportedDataNodes = unsupportedDataNodes;
     return note;
   }
   if (vertex !== undefined) {
@@ -489,6 +495,7 @@ export function processGraph(
           type: componentType,
           parameters: componentParameters,
           order: componentOrder,
+          unsupportedDataNodes: note.unsupportedDataNodes,
         };
         componentOrder += 1;
         break;
