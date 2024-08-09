@@ -1,7 +1,5 @@
 import { parseCGML, parseTextCGML } from './import';
 import { readFileSync } from 'fs';
-// import { CGMLStateMachine } from './types/import';
-// import { CGMLTextStateMachine } from './types/textImport';
 import { CGMLElements, CGMLTextElements } from './types/import';
 
 test('test parsing arduino', () => {
@@ -122,6 +120,7 @@ test('test parsing arduino', () => {
               description: 'Встроенный в плату светодиод, чтобы им мигать',
               pin: '12',
             },
+            unsupportedDataNodes: [],
           },
           ctimer1: {
             id: 'timer1',
@@ -131,6 +130,15 @@ test('test parsing arduino', () => {
               name: 'Таймер',
               description: 'Программный таймер.',
             },
+            unsupportedDataNodes: [
+              {
+                content: `x/ 12
+y/ 13`,
+                key: 'dLapkiSchemePosition',
+                rect: undefined,
+                point: undefined,
+              },
+            ],
           },
         },
         notes: {
@@ -142,6 +150,15 @@ test('test parsing arduino', () => {
               y: 114,
             },
             text: 'Включение и выключение лампочки по таймеру!',
+            unsupportedDataNodes: [
+              {
+                content: `x/ 12
+y/ 13`,
+                key: 'dLapkiSchemePosition',
+                rect: undefined,
+                point: undefined,
+              },
+            ],
           },
         },
         choices: {},
@@ -350,6 +367,7 @@ test('test parsing Arduino multidocument', () => {
               description: 'Встроенный в плату светодиод, чтобы им мигать',
               pin: '12',
             },
+            unsupportedDataNodes: [],
           },
           ctimer1: {
             id: 'timer1',
@@ -359,6 +377,7 @@ test('test parsing Arduino multidocument', () => {
               name: 'Таймер',
               description: 'Программный таймер.',
             },
+            unsupportedDataNodes: [],
           },
         },
         notes: {
@@ -369,6 +388,7 @@ test('test parsing Arduino multidocument', () => {
               x: 640,
               y: 114,
             },
+            unsupportedDataNodes: [],
             text: 'Включение и выключение лампочки по таймеру!',
           },
         },
@@ -490,6 +510,7 @@ test('test parsing Arduino multidocument', () => {
               description: 'Встроенный в плату светодиод, чтобы им мигать',
               pin: '12',
             },
+            unsupportedDataNodes: [],
           },
           ctimer1: {
             id: 'timer1',
@@ -499,6 +520,7 @@ test('test parsing Arduino multidocument', () => {
               name: 'Таймер',
               description: 'Программный таймер.',
             },
+            unsupportedDataNodes: [],
           },
         },
         notes: {
@@ -510,6 +532,7 @@ test('test parsing Arduino multidocument', () => {
               y: 114,
             },
             text: 'Включение и выключение лампочки по таймеру!',
+            unsupportedDataNodes: [],
           },
         },
         choices: {},
@@ -1045,6 +1068,7 @@ timer1.start(1000)`,
               description: 'Встроенный в плату светодиод, чтобы им мигать',
               pin: '12',
             },
+            unsupportedDataNodes: [],
           },
           ctimer1: {
             id: 'timer1',
@@ -1054,6 +1078,15 @@ timer1.start(1000)`,
               name: 'Таймер',
               description: 'Программный таймер.',
             },
+            unsupportedDataNodes: [
+              {
+                content: `x/ 12
+y/ 13`,
+                key: 'dLapkiSchemePosition',
+                rect: undefined,
+                point: undefined,
+              },
+            ],
           },
         },
         notes: {
@@ -1064,6 +1097,15 @@ timer1.start(1000)`,
               x: 640,
               y: 114,
             },
+            unsupportedDataNodes: [
+              {
+                content: `x/ 12
+y/ 13`,
+                key: 'dLapkiSchemePosition',
+                rect: undefined,
+                point: undefined,
+              },
+            ],
             text: 'Включение и выключение лампочки по таймеру!',
           },
         },
