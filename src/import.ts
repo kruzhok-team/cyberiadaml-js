@@ -30,7 +30,7 @@ export function parseCGML(graphml: string): CGMLElements {
     ignoreAttributes: false,
     attributeNamePrefix: '',
     isArray: (_name, _jpath, isLeafNode, isAttribute) => {
-      return (_jpath.endsWith('edge') || isLeafNode) && !isAttribute;
+      return (_jpath.endsWith('edge') || _jpath.endsWith('node') || isLeafNode) && !isAttribute;
     },
   });
   const elements: CGMLElements = createEmptyElements();
@@ -62,7 +62,7 @@ export function parseTextCGML(graphml: string): CGMLTextElements {
     ignoreAttributes: false,
     attributeNamePrefix: '',
     isArray: (_name, _jpath, isLeafNode, isAttribute) => {
-      return (_jpath.endsWith('edge') || isLeafNode) && !isAttribute;
+      return (_jpath.endsWith('edge') || _jpath.endsWith('node') || isLeafNode) && !isAttribute;
     },
   });
   const elements: CGMLTextElements = createEmptyTextElements();
