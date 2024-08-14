@@ -309,33 +309,34 @@ function getEdges(
       '@id': transition.id,
       '@source': transition.source,
       '@target': transition.target,
+      data: []
     };
     if (transition.actions.length !== 0) {
-      edge.data = [
+      edge.data.push(
         {
           '@key': 'dData',
           content: textMode
             ? (transition.actions as string)
             : serializeActions(transition.actions as CGMLTransitionAction[]),
         },
-      ];
+      )
     }
     if (transition.color !== undefined) {
-      edge.data?.push({
+      edge.data.push({
         '@key': 'dColor',
         content: transition.color,
       });
     }
     if (transition.position !== undefined) {
-      edge.data?.push(getGeometryDataNode(transition.position));
+      edge.data.push(getGeometryDataNode(transition.position));
     }
 
     if (transition.labelPosition) {
-      edge.data?.push(getLabelPositionNode(transition.labelPosition));
+      edge.data.push(getLabelPositionNode(transition.labelPosition));
     }
 
     for (const dataNode of transition.unsupportedDataNodes) {
-      edge.data?.push({
+      edge.data.push({
         '@key': dataNode.key,
         content: dataNode.content,
       });
