@@ -1,5 +1,6 @@
-import { parseCGML, parseTextCGML } from './import';
 import { readFileSync } from 'fs';
+
+import { parseCGML, parseTextCGML } from './import';
 import { CGMLElements, CGMLTextElements } from './types/import';
 
 test('test parsing arduino', () => {
@@ -54,6 +55,7 @@ test('test parsing arduino', () => {
           'init-edge': {
             id: 'init-edge',
             source: 'init',
+            color: '#F29727',
             target: 'diod1',
             actions: [],
             pivot: undefined,
@@ -1018,6 +1020,7 @@ timer1.start(1000)`,
         transitions: {
           'init-edge': {
             id: 'init-edge',
+            color: '#F29727',
             source: 'init',
             target: 'diod1',
             actions: '',

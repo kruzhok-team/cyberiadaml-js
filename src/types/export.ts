@@ -30,7 +30,7 @@ export type ExportEdge = {
   '@id': string;
   '@source': string;
   '@target': string;
-  data?: Array<ExportDataNode>;
+  data: Array<ExportDataNode>;
 };
 
 export type ExportNote = {
