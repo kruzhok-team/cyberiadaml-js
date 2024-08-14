@@ -1,13 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
 
 import {
-  CGMLStateMachine,
-  CGML,
-  CGMLTransition,
-  CGMLElements,
-  CGMLTextElements,
-} from './types/import';
-import {
   setFormatToMeta,
   processGraph,
   removeComponentsTransitions,
@@ -15,6 +8,13 @@ import {
   resetComponentOrder,
   getStateMachineName,
 } from './parseFunctions';
+import {
+  CGMLStateMachine,
+  CGML,
+  CGMLTransition,
+  CGMLElements,
+  CGMLTextElements,
+} from './types/import';
 import { CGMLTextStateMachine } from './types/textImport';
 import {
   createEmptyElements,
@@ -30,10 +30,9 @@ export function parseCGML(graphml: string): CGMLElements {
     ignoreAttributes: false,
     attributeNamePrefix: '',
     isArray: (_name, _jpath, isLeafNode, isAttribute) => {
-      return isLeafNode && !isAttribute;
+      return (_jpath.endsWith('edge') || isLeafNode) && !isAttribute;
     },
   });
-
   const elements: CGMLElements = createEmptyElements();
 
   const xml = parser.parse(graphml) as CGML;
@@ -63,7 +62,7 @@ export function parseTextCGML(graphml: string): CGMLTextElements {
     ignoreAttributes: false,
     attributeNamePrefix: '',
     isArray: (_name, _jpath, isLeafNode, isAttribute) => {
-      return isLeafNode && !isAttribute;
+      return (_jpath.endsWith('edge') || isLeafNode) && !isAttribute;
     },
   });
   const elements: CGMLTextElements = createEmptyTextElements();
