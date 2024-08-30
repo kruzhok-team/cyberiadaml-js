@@ -1,5 +1,6 @@
-import { exportGraphml, exportTextGraphml } from './export';
 import { readFileSync } from 'fs';
+
+import { exportGraphml, exportTextGraphml } from './export';
 import { parseCGML, parseTextCGML } from './import';
 import { CGMLElements, CGMLTextElements } from './types/import';
 
@@ -40,5 +41,13 @@ test('test parse-export-parse cycle ArduinoUno with textMode', () => {
   const parsed: CGMLTextElements = parseTextCGML(fileContent);
   const exported: string = exportTextGraphml(parsed);
   const parsedAgain: CGMLTextElements = parseTextCGML(exported);
+  expect(parsedAgain).toStrictEqual(parsed);
+});
+
+test('test parse-export-parse cycle, state nested >2', () => {
+  const fileContent: string = readFileSync('demos/nested.graphml', 'utf-8');
+  const parsed: CGMLElements = parseCGML(fileContent);
+  const exported: string = exportGraphml(parsed);
+  const parsedAgain: CGMLElements = parseCGML(exported);
   expect(parsedAgain).toStrictEqual(parsed);
 });
