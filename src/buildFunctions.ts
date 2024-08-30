@@ -163,20 +163,28 @@ function getExportNodes(
   textMode: boolean,
 ): ExportNode[] {
   const nodes: { [id: string]: ExportNode } = {};
-
+  const flattenNodes: { [id: string]: ExportNode } = {};
   const getExportNode = (stateId: string): ExportNode => {
-    if (nodes[stateId]) {
-      return nodes[stateId];
+    if (flattenNodes[stateId]) {
+      return flattenNodes[stateId];
     } else {
-      return stateToExportNode(states[stateId], stateId, textMode);
+      flattenNodes[stateId] = stateToExportNode(states[stateId], stateId, textMode);
+      return flattenNodes[stateId];
     }
   };
 
   const addToParent = (parent: string | undefined, node: ExportNode, id: string) => {
+    flattenNodes[id] = node;
     if (parent) {
       const parentNode: ExportNode = getExportNode(parent);
       if (parentNode.graph !== undefined) {
-        parentNode.graph.node.push(node);
+        const idx = parentNode.graph.node.findIndex((value) => value['@id'] === id);
+        if (idx !== -1) {
+          parentNode.graph.node[idx] = node;
+          return;
+        } else {
+          parentNode.graph.node.push(node);
+        }
       } else {
         parentNode.graph = {
           '@id': parentNode['@id'],
@@ -184,7 +192,12 @@ function getExportNodes(
           edge: [],
         };
       }
-      nodes[parent] = parentNode;
+      const parentState = states[parent];
+      if (parentState.parent) {
+        addToParent(parentState.parent, parentNode, parent);
+      } else {
+        nodes[parent] = parentNode;
+      }
     } else {
       nodes[id] = node;
     }
@@ -309,17 +322,15 @@ function getEdges(
       '@id': transition.id,
       '@source': transition.source,
       '@target': transition.target,
-      data: []
+      data: [],
     };
     if (transition.actions.length !== 0) {
-      edge.data.push(
-        {
-          '@key': 'dData',
-          content: textMode
-            ? (transition.actions as string)
-            : serializeActions(transition.actions as CGMLTransitionAction[]),
-        },
-      )
+      edge.data.push({
+        '@key': 'dData',
+        content: textMode
+          ? (transition.actions as string)
+          : serializeActions(transition.actions as CGMLTransitionAction[]),
+      });
     }
     if (transition.color !== undefined) {
       edge.data.push({

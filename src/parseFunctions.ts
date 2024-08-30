@@ -21,7 +21,7 @@ import {
   CGMLTextElements,
 } from './types/import';
 import { CGMLTextStateMachine, CGMLTextState, CGMLTextTransition } from './types/textImport';
-import { parseTrigger, toArray } from './utils';
+import { parseTrigger } from './utils';
 
 export let componentOrder = 0;
 

@@ -1200,3 +1200,277 @@ y/ 13`,
   };
   expect(parseTextCGML(arduinoDemo)).toEqual(predicted);
 });
+
+test('test parse-export-parse cycle, state nested >2', () => {
+  const fileContent: string = readFileSync('demos/nested.graphml', 'utf-8');
+  const parsed: CGMLElements = parseCGML(fileContent);
+  const predicted: CGMLElements = {
+    stateMachines: {
+      g: {
+        states: {
+          diod1: {
+            name: 'Включен',
+            bounds: {
+              x: 82,
+              y: 57,
+              width: 450,
+              height: 95,
+            },
+            actions: [
+              {
+                trigger: {
+                  event: 'entry',
+                },
+                action: 'LED1.on();\ntimer1.start(1000);',
+              },
+            ],
+            unsupportedDataNodes: [],
+            color: '#FFFFFF',
+          },
+          qoyigesoisdelydcpebg: {
+            name: 'Состояние2',
+            bounds: {
+              x: 100,
+              y: 100,
+              width: 450,
+              height: 85,
+            },
+            actions: [],
+            unsupportedDataNodes: [],
+            parent: 'vgkwfgpvpiijecqqsklc',
+          },
+          vgkwfgpvpiijecqqsklc: {
+            name: 'Состояние',
+            bounds: {
+              x: 100,
+              y: 100,
+              width: 450,
+              height: 85,
+            },
+            actions: [],
+            unsupportedDataNodes: [],
+            parent: 'diod2',
+          },
+          diod2: {
+            name: 'Выключен',
+            bounds: {
+              x: 197,
+              y: 373,
+              width: 450,
+              height: 95,
+            },
+            actions: [
+              {
+                trigger: {
+                  event: 'entry',
+                },
+                action: 'LED1.off();\ntimer1.start(1000);',
+              },
+            ],
+            unsupportedDataNodes: [],
+            color: '#FFFFFF',
+          },
+        },
+        transitions: {
+          'init-edge': {
+            labelPosition: undefined,
+            pivot: undefined,
+            id: 'init-edge',
+            source: 'init',
+            target: 'diod1',
+            actions: [],
+            unsupportedDataNodes: [],
+          },
+          edge3: {
+            pivot: undefined,
+            id: 'edge3',
+            source: 'diod1',
+            target: 'diod2',
+            actions: [
+              {
+                trigger: {
+                  event: 'timer1.timeout',
+                },
+              },
+            ],
+            unsupportedDataNodes: [],
+            labelPosition: {
+              x: 389,
+              y: 193,
+            },
+            color: '#F29727',
+          },
+          edge4: {
+            pivot: undefined,
+            id: 'edge4',
+            source: 'diod2',
+            target: 'diod1',
+            actions: [
+              {
+                trigger: {
+                  event: 'timer1.timeout',
+                },
+              },
+            ],
+            unsupportedDataNodes: [],
+            labelPosition: {
+              x: 81.5,
+              y: 193.46,
+            },
+            color: '#F24C3D',
+          },
+          gcilpjvuetozyivwbibg: {
+            labelPosition: undefined,
+            pivot: undefined,
+            id: 'gcilpjvuetozyivwbibg',
+            source: 'uvzlbsocvdjwydtuzmbl',
+            target: 'vgkwfgpvpiijecqqsklc',
+            actions: [],
+            unsupportedDataNodes: [],
+          },
+          dnvyfmwktbpdumazbihd: {
+            labelPosition: undefined,
+            pivot: undefined,
+            id: 'dnvyfmwktbpdumazbihd',
+            source: 'fzqikhowikmzqsdewfki',
+            target: 'qoyigesoisdelydcpebg',
+            actions: [],
+            unsupportedDataNodes: [],
+          },
+        },
+        components: {
+          cLED1: {
+            id: 'LED1',
+            type: 'LED',
+            parameters: {
+              name: 'Светодиод',
+              description: 'Встроенный в плату светодиод, чтобы им мигать',
+              pin: '12',
+            },
+            order: 0,
+            unsupportedDataNodes: [],
+          },
+          ctimer1: {
+            id: 'timer1',
+            type: 'Timer',
+            parameters: {
+              name: 'Таймер',
+              description: 'Программный таймер.',
+            },
+            order: 1,
+            unsupportedDataNodes: [],
+          },
+        },
+        initialStates: {
+          fzqikhowikmzqsdewfki: {
+            type: 'initial',
+            data: '',
+            position: {
+              x: 0,
+              y: 0,
+              width: -1,
+              height: -1,
+            },
+            parent: 'vgkwfgpvpiijecqqsklc',
+          },
+          uvzlbsocvdjwydtuzmbl: {
+            type: 'initial',
+            data: '',
+            position: {
+              x: 0,
+              y: 0,
+              width: -1,
+              height: -1,
+            },
+            parent: 'diod2',
+          },
+          init: {
+            type: 'initial',
+            data: '',
+            position: {
+              x: 20,
+              y: 30,
+              width: -1,
+              height: -1,
+            },
+          },
+        },
+        notes: {
+          commentX: {
+            name: undefined,
+            type: 'informal',
+            position: {
+              x: 640,
+              y: 114,
+            },
+            text: 'Включение и выключение лампочки по таймеру!',
+            unsupportedDataNodes: [],
+          },
+        },
+        terminates: {},
+        choices: {},
+        finals: {},
+        unknownVertexes: {},
+      },
+    },
+    platform: 'ArduinoUno',
+    meta: {
+      values: {
+        name: 'Arduino Blinker',
+        author: 'Lapki IDE TEAM',
+        description: 'Включение и выключение лампочки по таймеру',
+        platformVersion: '1.0',
+      },
+      id: 'coreMeta',
+    },
+    standardVersion: '1.0',
+    format: 'Cyberiada-GraphML-1.0',
+    keys: [
+      {
+        id: 'dName',
+        for: 'node',
+        'attr.name': 'name',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dData',
+        for: 'node',
+        'attr.name': 'data',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dData',
+        for: 'edge',
+        'attr.name': 'data',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dInitial',
+        for: 'node',
+        'attr.name': 'initial',
+        'attr.type': 'string',
+      },
+      {
+        id: 'dGeometry',
+        for: 'edge',
+      },
+      {
+        id: 'dGeometry',
+        for: 'node',
+      },
+      {
+        id: 'dColor',
+        for: 'edge',
+      },
+      {
+        id: 'dNote',
+        for: 'node',
+      },
+      {
+        id: 'dColor',
+        for: 'node',
+      },
+    ],
+  };
+  expect(parsed).toEqual(predicted);
+});
