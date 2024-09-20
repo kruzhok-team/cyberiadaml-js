@@ -29,6 +29,12 @@ export function toArray<Type>(value: Type | Array<Type>): Array<Type> {
 
 export function emptyCGMLStateMachine(): CGMLStateMachine {
   return {
+    platform: '',
+    standardVersion: '',
+    meta: {
+      id: '',
+      values: {},
+    },
     states: {},
     transitions: {},
     components: {},
@@ -44,12 +50,6 @@ export function emptyCGMLStateMachine(): CGMLStateMachine {
 export function createEmptyTextElements(): CGMLTextElements {
   return {
     stateMachines: {},
-    platform: '',
-    meta: {
-      values: {},
-      id: '',
-    },
-    standardVersion: '',
     format: '',
     keys: [],
   };
@@ -58,12 +58,6 @@ export function createEmptyTextElements(): CGMLTextElements {
 export function createEmptyElements(): CGMLElements {
   return {
     stateMachines: {},
-    platform: '',
-    meta: {
-      values: {},
-      id: '',
-    },
-    standardVersion: '',
     format: '',
     keys: [],
   };
