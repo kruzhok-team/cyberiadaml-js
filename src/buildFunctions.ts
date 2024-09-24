@@ -424,12 +424,12 @@ function getGraphs(elements: CGMLElements | CGMLTextElements, textMode: boolean)
       ],
       edge: [...getEdges(stateMachine.transitions, textMode)],
     };
+    graph.node = [
+      getMetaNode(stateMachine.platform, stateMachine.meta, stateMachine.standardVersion),
+      ...graph.node,
+    ];
     graphs.push(graph);
   }
-  graphs[0].node = [
-    getMetaNode(elements.platform, elements.meta, elements.standardVersion),
-    ...graphs[0].node,
-  ];
   return graphs;
 }
 

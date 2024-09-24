@@ -43,16 +43,16 @@ export function parseCGML(graphml: string): CGMLElements {
     resetComponentOrder();
     const stateMachine = processGraph(elements, emptyCGMLStateMachine(), graph, false);
     stateMachine.name = getStateMachineName(graph);
+    stateMachine.platform = stateMachine.meta.values['platform'];
+    stateMachine.standardVersion = stateMachine.meta.values['standardVersion'];
     stateMachine.transitions = removeComponentsTransitions(
       stateMachine.transitions,
-      elements.meta.id,
+      stateMachine.meta.id,
     ) as Record<string, CGMLTransition>;
+    delete stateMachine.meta.values['platform'];
+    delete stateMachine.meta.values['standardVersion'];
     elements.stateMachines[graph.id] = stateMachine as CGMLStateMachine;
   }
-  elements.platform = elements.meta.values['platform'];
-  elements.standardVersion = elements.meta.values['standardVersion'];
-  delete elements.meta.values['platform'];
-  delete elements.meta.values['standardVersion'];
   return elements;
 }
 
@@ -75,15 +75,15 @@ export function parseTextCGML(graphml: string): CGMLTextElements {
     resetComponentOrder();
     const stateMachine = processGraph(elements, emptyCGMLStateMachine(), graph, true);
     stateMachine.name = getStateMachineName(graph);
+    stateMachine.platform = stateMachine.meta.values['platform'];
+    stateMachine.standardVersion = stateMachine.meta.values['standardVersion'];
     stateMachine.transitions = removeComponentsTransitions(
       stateMachine.transitions,
-      elements.meta.id,
+      stateMachine.meta.id,
     ) as Record<string, CGMLTransition>;
     elements.stateMachines[graph.id] = stateMachine as CGMLTextStateMachine;
+    delete stateMachine.meta.values['platform'];
+    delete stateMachine.meta.values['standardVersion'];
   }
-  elements.platform = elements.meta.values['platform'];
-  elements.standardVersion = elements.meta.values['standardVersion'];
-  delete elements.meta.values['platform'];
-  delete elements.meta.values['standardVersion'];
   return elements;
 }

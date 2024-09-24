@@ -124,6 +124,21 @@ timer1.start(1000)
 
 <graph id="O" edgedefault="directed">
     <data key="dStateMachine"/>
+        <node id="coreMeta">
+        <data key="dNote">formal</data>
+        <data key="dName">CGML_META</data>
+        <data key="dData">platform/ ArduinoUno
+
+standardVersion/ 1.0
+
+name/ Arduino Blinker
+
+author/ Lapki IDE TEAM
+
+description/ Включение и выключение лампочки по таймеру
+
+        </data>
+    </node>
     <node id="cLED1">
         <data key="dNote">formal</data>
         <data key="dName"> CGML_COMPONENT </data>

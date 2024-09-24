@@ -91,24 +91,21 @@ export type CGMLComponent = {
 
 export type CGMLElements = {
   stateMachines: { [id: string]: CGMLStateMachine };
-  meta: CGMLMeta;
-  standardVersion: string;
-  platform: string;
   format: string;
   keys: Array<CGMLKeyNode>;
 };
 
 export type CGMLTextElements = {
   stateMachines: { [id: string]: CGMLTextStateMachine };
-  meta: CGMLMeta;
-  standardVersion: string;
-  platform: string;
   format: string;
   keys: Array<CGMLKeyNode>;
 };
 
 export type CGMLStateMachine = {
   name?: string;
+  meta: CGMLMeta;
+  standardVersion: string;
+  platform: string;
   states: { [id: string]: CGMLState };
   transitions: Record<string, CGMLTransition>;
   components: { [id: string]: CGMLComponent };

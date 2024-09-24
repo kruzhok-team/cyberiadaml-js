@@ -500,11 +500,14 @@ export function processGraph(
         componentOrder += 1;
         break;
       case 'CGML_META':
-        if (!(Object.values(elements.meta.values).length === 0) && !(elements.meta.id === '')) {
+        if (
+          !(Object.values(stateMachine.meta.values).length === 0) &&
+          !(stateMachine.meta.id === '')
+        ) {
           throw new Error('Double meta-node!');
         }
-        elements.meta.values = parseMeta(note.text);
-        elements.meta.id = node.id;
+        stateMachine.meta.values = parseMeta(note.text);
+        stateMachine.meta.id = node.id;
         break;
       default:
         throw new Error(

@@ -167,17 +167,17 @@ y/ 13`,
         terminates: {},
         finals: {},
         unknownVertexes: {},
+        standardVersion: '1.0',
+        platform: 'ArduinoUno',
+        meta: {
+          values: {
+            name: 'Arduino Blinker',
+            author: 'Lapki IDE TEAM',
+            description: 'Включение и выключение лампочки по таймеру',
+          },
+          id: 'coreMeta',
+        },
       },
-    },
-    standardVersion: '1.0',
-    platform: 'ArduinoUno',
-    meta: {
-      values: {
-        name: 'Arduino Blinker',
-        author: 'Lapki IDE TEAM',
-        description: 'Включение и выключение лампочки по таймеру',
-      },
-      id: 'coreMeta',
     },
     format: 'Cyberiada-GraphML-1.0',
     keys: [
@@ -257,6 +257,16 @@ test('test parsing Arduino multidocument', () => {
   const predicted: CGMLElements = {
     stateMachines: {
       G: {
+        standardVersion: '1.0',
+        platform: 'ArduinoUno',
+        meta: {
+          values: {
+            name: 'Arduino Blinker',
+            author: 'Lapki IDE TEAM',
+            description: 'Включение и выключение лампочки по таймеру',
+          },
+          id: 'coreMeta',
+        },
         states: {
           diod1: {
             name: 'Включен',
@@ -400,6 +410,16 @@ test('test parsing Arduino multidocument', () => {
         unknownVertexes: {},
       },
       O: {
+        standardVersion: '1.0',
+        platform: 'ArduinoUno',
+        meta: {
+          values: {
+            name: 'Arduino Blinker',
+            author: 'Lapki IDE TEAM',
+            description: 'Включение и выключение лампочки по таймеру',
+          },
+          id: 'coreMeta',
+        },
         states: {
           diod1: {
             name: 'Включен',
@@ -543,16 +563,6 @@ test('test parsing Arduino multidocument', () => {
         unknownVertexes: {},
       },
     },
-    standardVersion: '1.0',
-    platform: 'ArduinoUno',
-    meta: {
-      values: {
-        name: 'Arduino Blinker',
-        author: 'Lapki IDE TEAM',
-        description: 'Включение и выключение лампочки по таймеру',
-      },
-      id: 'coreMeta',
-    },
     format: 'Cyberiada-GraphML-1.0',
     keys: [
       {
@@ -631,6 +641,19 @@ test('test parsing bearloga', () => {
   const predicted: CGMLElements = {
     stateMachines: {
       G: {
+        platform: 'BearsTowerDefence',
+        meta: {
+          values: {
+            name: 'Автобортник',
+            author: 'Матросов В.М.',
+            contact: 'matrosov@mail.ru',
+            description:
+              'Пример описания схемы, \nкоторый может быть многострочным, потому что так удобнее',
+            target: 'Autoborder',
+          },
+          id: 'nMeta',
+        },
+        standardVersion: '1.0',
         states: {
           'n0::n1': {
             name: 'Сближение',
@@ -843,19 +866,6 @@ test('test parsing bearloga', () => {
         unknownVertexes: {},
       },
     },
-    platform: 'BearsTowerDefence',
-    meta: {
-      values: {
-        name: 'Автобортник',
-        author: 'Матросов В.М.',
-        contact: 'matrosov@mail.ru',
-        description:
-          'Пример описания схемы, \nкоторый может быть многострочным, потому что так удобнее',
-        target: 'Autoborder',
-      },
-      id: 'nMeta',
-    },
-    standardVersion: '1.0',
     format: 'Cyberiada-GraphML-1.0',
     keys: [
       {
@@ -1116,17 +1126,17 @@ y/ 13`,
         terminates: {},
         finals: {},
         unknownVertexes: {},
+        standardVersion: '1.0',
+        platform: 'ArduinoUno',
+        meta: {
+          values: {
+            name: 'Arduino Blinker',
+            author: 'Lapki IDE TEAM',
+            description: 'Включение и выключение лампочки по таймеру',
+          },
+          id: 'coreMeta',
+        },
       },
-    },
-    standardVersion: '1.0',
-    platform: 'ArduinoUno',
-    meta: {
-      values: {
-        name: 'Arduino Blinker',
-        author: 'Lapki IDE TEAM',
-        description: 'Включение и выключение лампочки по таймеру',
-      },
-      id: 'coreMeta',
     },
     format: 'Cyberiada-GraphML-1.0',
     keys: [
@@ -1411,19 +1421,19 @@ test('test parse-export-parse cycle, state nested >2', () => {
         choices: {},
         finals: {},
         unknownVertexes: {},
+        platform: 'ArduinoUno',
+        meta: {
+          values: {
+            name: 'Arduino Blinker',
+            author: 'Lapki IDE TEAM',
+            description: 'Включение и выключение лампочки по таймеру',
+            platformVersion: '1.0',
+          },
+          id: 'coreMeta',
+        },
+        standardVersion: '1.0',
       },
     },
-    platform: 'ArduinoUno',
-    meta: {
-      values: {
-        name: 'Arduino Blinker',
-        author: 'Lapki IDE TEAM',
-        description: 'Включение и выключение лампочки по таймеру',
-        platformVersion: '1.0',
-      },
-      id: 'coreMeta',
-    },
-    standardVersion: '1.0',
     format: 'Cyberiada-GraphML-1.0',
     keys: [
       {
