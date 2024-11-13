@@ -420,6 +420,14 @@ test('test parsing Arduino multidocument', () => {
           },
           id: 'coreMeta',
         },
+        position: {
+          x: 10,
+          y: 10,
+        },
+        dimensions: {
+          width: 10,
+          height: 10,
+        },
         states: {
           diod1: {
             name: 'Включен',

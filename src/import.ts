@@ -7,6 +7,7 @@ import {
   getKeyNodes,
   resetComponentOrder,
   getStateMachineName,
+  getStateMachineDataNode,
 } from './parseFunctions';
 import {
   CGMLStateMachine,
@@ -14,6 +15,8 @@ import {
   CGMLTransition,
   CGMLElements,
   CGMLTextElements,
+  CGMLDataNode,
+  CGMLRectangle,
 } from './types/import';
 import { CGMLTextStateMachine } from './types/textImport';
 import {
@@ -43,6 +46,31 @@ export function parseCGML(graphml: string): CGMLElements {
     resetComponentOrder();
     const stateMachine = processGraph(elements, emptyCGMLStateMachine(), graph, false);
     stateMachine.name = getStateMachineName(graph);
+    const stateMachineRect = getStateMachineDataNode<CGMLRectangle | undefined>(
+      graph,
+      'dGeometry',
+      (node: CGMLDataNode) => {
+        if (node.rect && node.rect.length > 0) {
+          const rect = node.rect[0];
+          return {
+            x: +rect.x,
+            y: +rect.y,
+            width: +rect.width,
+            height: +rect.height,
+          };
+        }
+      },
+    );
+    if (stateMachineRect) {
+      stateMachine.position = {
+        x: stateMachineRect.x,
+        y: stateMachineRect.y,
+      };
+      stateMachine.dimensions = {
+        width: stateMachineRect.width,
+        height: stateMachineRect.height,
+      };
+    }
     stateMachine.platform = stateMachine.meta.values['platform'];
     stateMachine.standardVersion = stateMachine.meta.values['standardVersion'];
     stateMachine.transitions = removeComponentsTransitions(
@@ -75,6 +103,31 @@ export function parseTextCGML(graphml: string): CGMLTextElements {
     resetComponentOrder();
     const stateMachine = processGraph(elements, emptyCGMLStateMachine(), graph, true);
     stateMachine.name = getStateMachineName(graph);
+    const stateMachineRect = getStateMachineDataNode<CGMLRectangle | undefined>(
+      graph,
+      'dGeometry',
+      (node: CGMLDataNode) => {
+        if (node.rect && node.rect.length > 0) {
+          const rect = node.rect[0];
+          return {
+            x: +rect.x,
+            y: +rect.y,
+            width: +rect.width,
+            height: +rect.height,
+          };
+        }
+      },
+    );
+    if (stateMachineRect) {
+      stateMachine.position = {
+        x: stateMachineRect.x,
+        y: stateMachineRect.y,
+      };
+      stateMachine.dimensions = {
+        width: stateMachineRect.width,
+        height: stateMachineRect.height,
+      };
+    }
     stateMachine.platform = stateMachine.meta.values['platform'];
     stateMachine.standardVersion = stateMachine.meta.values['standardVersion'];
     stateMachine.transitions = removeComponentsTransitions(
