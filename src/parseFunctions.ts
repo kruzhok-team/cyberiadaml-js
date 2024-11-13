@@ -536,6 +536,21 @@ export function getKeyNodes(xml: CGML): Array<CGMLKeyNode> {
   return keyNodes;
 }
 
+export function getStateMachineDataNode<T>(
+  graph: CGMLGraph,
+  key: CGMLDataKey,
+  getData: (node: CGMLDataNode) => T,
+): T | undefined {
+  if (graph.data === undefined) {
+    return;
+  }
+  for (const graphData of graph.data) {
+    if (graphData.key === key) {
+      return getData(graphData);
+    }
+  }
+}
+
 export function getStateMachineName(graph: CGMLGraph): string | undefined {
   if (graph.data === undefined) {
     throw new Error(`There aren't <data> nodes in the first level graph with id '${graph.id}'`);

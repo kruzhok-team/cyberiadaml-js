@@ -124,7 +124,10 @@ timer1.start(1000)
 
 <graph id="O" edgedefault="directed">
     <data key="dStateMachine"/>
-        <node id="coreMeta">
+    <data key="dGeometry">
+        <rect x="10" y="10" width="10" height="10" />
+    </data> 
+    <node id="coreMeta">
         <data key="dNote">formal</data>
         <data key="dName">CGML_META</data>
         <data key="dData">platform/ ArduinoUno

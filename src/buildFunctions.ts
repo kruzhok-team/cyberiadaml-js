@@ -400,6 +400,14 @@ function getGraphDataNodes(
   if (stateMachine.name !== undefined) {
     dataNodes.push(getNameDataNode(stateMachine.name));
   }
+  if (stateMachine.position && stateMachine.dimensions) {
+    dataNodes.push(
+      getGeometryDataNode({
+        ...stateMachine.position,
+        ...stateMachine.dimensions,
+      }),
+    );
+  }
   return dataNodes;
 }
 

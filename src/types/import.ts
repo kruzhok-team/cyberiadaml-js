@@ -101,6 +101,11 @@ export type CGMLTextElements = {
   keys: Array<CGMLKeyNode>;
 };
 
+export type CGMLDimensions = {
+  width: number;
+  height: number;
+};
+
 export type CGMLStateMachine = {
   name?: string;
   meta: CGMLMeta;
@@ -115,6 +120,8 @@ export type CGMLStateMachine = {
   choices: { [id: string]: CGMLVertex };
   terminates: { [id: string]: CGMLVertex };
   unknownVertexes: { [id: string]: CGMLVertex };
+  position?: CGMLPoint;
+  dimensions?: CGMLDimensions;
 };
 
 export type NoteType = 'formal' | 'informal';
