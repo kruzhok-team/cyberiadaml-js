@@ -644,6 +644,17 @@ test('test parsing Arduino multidocument', () => {
   expect(parseCGML(multidocDemo)).toEqual(predicted);
 });
 
+describe('cyberiada schemes', () => {
+  it.each([
+    ['demos/20-cyb-geometry.test-input.graphml'],
+    ['demos/21-cyb-geometry2.test-input.graphml'],
+    ['demos/23-cyb-autoborder.test-input.graphml'],
+  ])(`parsing demo %i`, (path) => {
+    const scheme = readFileSync(path, 'utf-8');
+    parseCGML(scheme);
+  });
+});
+
 test('test parsing bearloga', () => {
   const bearlogaDemo = readFileSync('demos/autoborder.graphml', 'utf-8');
   const predicted: CGMLElements = {
