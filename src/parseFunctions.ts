@@ -510,9 +510,6 @@ export function processGraph(
         stateMachine.meta.id = node.id;
         break;
       default:
-        console.log(node);
-        console.log(processResult);
-        console.log(isVertex(processResult));
         throw new Error(
           `Неизвестный тип мета-информации ${note.text}. Ожидается CGML_META или CGML_COMPONENT.`,
         );
