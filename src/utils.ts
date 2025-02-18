@@ -72,12 +72,15 @@ export function serialaizeParameters(parameters: { [id: string]: string }): stri
   return strParameters;
 }
 
-export function serializeMeta(meta: CGMLMeta, platform: string, standardVersion: string): string {
-  return serialaizeParameters({
-    platform: platform,
+export function serializeMeta(meta: CGMLMeta, standardVersion: string, platform?: string): string {
+  const parameters: { [id: string]: string } = {
     standardVersion: standardVersion,
     ...meta.values,
-  });
+  };
+  if (platform) {
+    parameters['platform'] = platform;
+  }
+  return serialaizeParameters(parameters);
 }
 
 export function serializeActions(actions: Array<CGMLAction> | Array<CGMLTransitionAction>): string {

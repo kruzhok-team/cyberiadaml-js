@@ -71,7 +71,7 @@ export function parseCGML(graphml: string): CGMLElements {
         height: stateMachineRect.height,
       };
     }
-    stateMachine.platform = stateMachine.meta.values['platform'];
+    stateMachine.platform = stateMachine.meta.values['platform'] ?? undefined;
     stateMachine.standardVersion = stateMachine.meta.values['standardVersion'];
     stateMachine.transitions = removeComponentsTransitions(
       stateMachine.transitions,

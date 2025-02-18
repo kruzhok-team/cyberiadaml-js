@@ -137,7 +137,7 @@ const dataNodeProcess: CGMLDataNodeProcess = {
       return;
     }
     if (data.vertex !== undefined) {
-      data.vertex.name = data.node.content;
+      data.vertex.name = data.node.content ?? '';
       return;
     }
   },
@@ -242,6 +242,26 @@ const dataNodeProcess: CGMLDataNodeProcess = {
   },
   dStateMachine(data: CGMLDataNodeProcessArgs) {
     throw new Error('<data key="dStateMachine"> is not on the first level of the graph.');
+  },
+  dTargetPoint({ transition, node }: CGMLDataNodeProcessArgs) {
+    if (!transition) {
+      throw new Error('Использование dTargetPoint вне перехода!');
+    }
+
+    if (node.point === undefined) {
+      throw new Error('Нет дочернего <point> у <data> с ключом dTargetPoint');
+    }
+    transition.targetPoint = node.point[0];
+  },
+  dSourcePoint({ transition, node }: CGMLDataNodeProcessArgs) {
+    if (!transition) {
+      throw new Error('Использование dSourcePoint вне перехода!');
+    }
+
+    if (node.point === undefined) {
+      throw new Error('Нет дочернего <point> у <data> с ключом dSourcePoint');
+    }
+    transition.sourcePoint = node.point[0];
   },
 };
 

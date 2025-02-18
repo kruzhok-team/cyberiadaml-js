@@ -39,11 +39,6 @@ export type CGMLState = {
   color?: string;
 };
 
-export type CGMLInitialState = {
-  parent?: string;
-  position?: CGMLPoint;
-};
-
 export type CGMLTransition = {
   id: string;
   source: string;
@@ -51,6 +46,8 @@ export type CGMLTransition = {
   color?: string;
   position?: CGMLPoint;
   labelPosition: CGMLPoint | undefined;
+  sourcePoint?: CGMLPoint;
+  targetPoint?: CGMLPoint;
   actions: Array<CGMLTransitionAction>;
   unsupportedDataNodes: Array<CGMLDataNode>;
   pivot: string | undefined;
@@ -111,7 +108,7 @@ export type CGMLStateMachine = {
   name?: string;
   meta: CGMLMeta;
   standardVersion: string;
-  platform: string;
+  platform?: string;
   states: { [id: string]: CGMLState };
   transitions: Record<string, CGMLTransition>;
   components: { [id: string]: CGMLComponent };
@@ -192,6 +189,8 @@ export const CGMLDataKeys = [
   'dPivot',
   'dLabelGeometry',
   'dStateMachine',
+  'dTargetPoint',
+  'dSourcePoint',
 ] as const;
 
 export type CGMLDataKey = (typeof CGMLDataKeys)[number];
