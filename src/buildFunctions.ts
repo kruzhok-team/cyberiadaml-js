@@ -16,7 +16,6 @@ import {
   CGMLKeyNode,
   CGMLState,
   CGMLTransition,
-  CGMLInitialState,
   CGMLNote,
   CGMLMeta,
   CGMLAction,
@@ -31,7 +30,7 @@ import {
 import { CGMLTextState, CGMLTextStateMachine, CGMLTextTransition } from './types/textImport';
 import { serialaizeParameters, serializeActions, serializeMeta } from './utils';
 
-function getMetaNode(platform: string, meta: CGMLMeta, standardVersion: string): ExportNode {
+function getMetaNode(meta: CGMLMeta, standardVersion: string, platform?: string): ExportNode {
   return {
     '@id': meta.id,
     data: [
@@ -45,7 +44,7 @@ function getMetaNode(platform: string, meta: CGMLMeta, standardVersion: string):
       },
       {
         '@key': 'dData',
-        content: serializeMeta(meta, platform, standardVersion),
+        content: serializeMeta(meta, standardVersion, platform),
       },
     ],
   };
@@ -154,9 +153,32 @@ function getNameDataNode(data: string): ExportDataNode {
   };
 }
 
+function getDataNode(data: string): ExportDataNode {
+  return {
+    '@key': 'dData',
+    content: data,
+  };
+}
+
+function getTargetPointDataNode(point: CGMLPoint): ExportDataNode {
+  return {
+    '@key': 'dTargetPoint',
+    point: getExportPoint(point),
+    content: '',
+  };
+}
+
+function getSourcePointDataNode(point: CGMLPoint): ExportDataNode {
+  return {
+    '@key': 'dSourcePoint',
+    point: getExportPoint(point),
+    content: '',
+  };
+}
+
 function getExportNodes(
   states: { [id: string]: CGMLState | CGMLTextState },
-  initialStates: { [id: string]: CGMLInitialState },
+  initialStates: { [id: string]: CGMLVertex },
   terminates: { [id: string]: CGMLVertex },
   finals: { [id: string]: CGMLVertex },
   choices: { [id: string]: CGMLVertex },
@@ -209,18 +231,7 @@ function getExportNodes(
     addToParent(state.parent, node, stateId);
   }
 
-  for (const initialId in initialStates) {
-    const initial = initialStates[initialId];
-    const initialNode: ExportNode = {
-      '@id': initialId,
-      data: [getVertexDataNode('initial')],
-    };
-    if (initial.position) {
-      initialNode.data.push(getGeometryDataNode(initial.position));
-    }
-    addToParent(initial.parent, initialNode, initialId);
-  }
-  const vertexes = { ...terminates, ...finals, ...choices };
+  const vertexes = { ...terminates, ...finals, ...choices, ...initialStates };
 
   for (const vertexId in vertexes) {
     const vertex = vertexes[vertexId];
@@ -232,7 +243,10 @@ function getExportNodes(
       vertexNode.data.push(getGeometryDataNode(vertex.position));
     }
     if (vertex.data) {
-      vertexNode.data.push(getNameDataNode(vertex.data));
+      vertexNode.data.push(getDataNode(vertex.data));
+    }
+    if (vertex.name !== undefined) {
+      vertexNode.data.push(getNameDataNode(vertex.name));
     }
     addToParent(vertex.parent, vertexNode, vertexId);
   }
@@ -346,6 +360,14 @@ function getEdges(
       edge.data.push(getLabelPositionNode(transition.labelPosition));
     }
 
+    if (transition.sourcePoint) {
+      edge.data.push(getSourcePointDataNode(transition.sourcePoint));
+    }
+
+    if (transition.targetPoint) {
+      edge.data.push(getTargetPointDataNode(transition.targetPoint));
+    }
+
     for (const dataNode of transition.unsupportedDataNodes) {
       edge.data.push({
         '@key': dataNode.key,
@@ -433,7 +455,7 @@ function getGraphs(elements: CGMLElements | CGMLTextElements, textMode: boolean)
       edge: [...getEdges(stateMachine.transitions, textMode)],
     };
     graph.node = [
-      getMetaNode(stateMachine.platform, stateMachine.meta, stateMachine.standardVersion),
+      getMetaNode(stateMachine.meta, stateMachine.standardVersion, stateMachine.platform),
       ...graph.node,
     ];
     graphs.push(graph);
