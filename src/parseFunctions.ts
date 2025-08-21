@@ -553,6 +553,9 @@ export function processGraph(
 
 export function getKeyNodes(xml: CGML): Array<CGMLKeyNode> {
   const keyNodes: Array<CGMLKeyNode> = [];
+  if (xml.graphml.key === undefined) {
+    return keyNodes;
+  }
   for (const node of xml.graphml.key) {
     keyNodes.push({
       id: node.id,
