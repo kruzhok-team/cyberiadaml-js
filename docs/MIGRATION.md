@@ -41,7 +41,7 @@ documents.
 | duplicate edge ids in a machine | one transition lost | the later ones as `<id>#<N>` |
 | `CGMLVertex.data`, `CGMLTransition.pivot` | | deprecated: `data` is ignored, a transition with `pivot` is written as a comment link |
 | actions | `postfix` `propagate` / `block` | also `defer`; a completion transition has no trigger; `else` guard |
-| keys | `getKeys()` gives the full list | give only the declarations of own keys (`dLapkiSchemePosition`, `dLapkiNoteFormat`) or none |
+| keys | `getKeys()` gives the full list | the list may stay: the standard keys in use get the appendix Б declarations, of the others only those in use are written; own keys without a declaration get one |
 | regions | children of a state, region lost | `CGMLState.regions`, the child's `region` |
 | comment links | edges in `transitions` (`pivot`) | `stateMachines[id].links` |
 | errors | `Error` with a message | `CGMLError` with `findings`; `parseCGML(text, { strict: true })` rejects every deviation |

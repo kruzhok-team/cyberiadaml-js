@@ -23,6 +23,7 @@ Changed:
   alias of `serializeParameters`, which ends without an empty line.
 - the licence field of `package.json` is LGPL-3.0-or-later, as the `LICENSE` file;
   `@types/jest` is a development dependency.
+- the CI builds the package and runs eslint.
 
 Removed:
 - the `fast-xml-parser` dependency; the 1.x XML-layer types (`CGML`, `CGMLGraph`, `CGMLNode`,

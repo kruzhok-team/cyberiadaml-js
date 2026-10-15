@@ -25,3 +25,4 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run typecheck
+    - run: npx eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts
