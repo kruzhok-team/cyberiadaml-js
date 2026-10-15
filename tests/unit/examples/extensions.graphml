@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+  <data key="gFormat">Cyberiada-GraphML-1.0</data>
+  <key id="gFormat" for="graphml" attr.name="format" attr.type="string"/>
+  <key id="dName" for="graph" attr.name="name" attr.type="string"/>
+  <key id="dName" for="node" attr.name="name" attr.type="string"/>
+  <key id="dStateMachine" for="graph" attr.name="stateMachine"/>
+  <key id="dFormalName" for="graph" attr.name="formalName" attr.type="string"/>
+  <key id="dFormalName" for="node" attr.name="formalName" attr.type="string"/>
+  <key id="dNote" for="node" attr.name="note" attr.type="string"/>
+  <key id="dVertex" for="node" attr.name="vertex" attr.type="string"/>
+  <key id="dCollapsed" for="node" attr.name="collapsed"/>
+  <key id="dSubmachineState" for="node" attr.name="submachineState" attr.type="string"/>
+  <key id="dData" for="node" attr.name="data" attr.type="string"/>
+  <key id="dData" for="edge" attr.name="data" attr.type="string"/>
+  <key id="dPivot" for="edge" attr.name="pivot" attr.type="string"/>
+  <key id="dChunk" for="edge" attr.name="chunk" attr.type="string"/>
+  <graph id="M1" edgedefault="directed">
+    <data key="dStateMachine"/>
+    <data key="dName">Контроллер</data>
+    <data key="dFormalName">Controller</data>
+    <node id="nMeta">
+      <data key="dNote">formal</data>
+      <data key="dName">CGML_META</data>
+      <data key="dData">standardVersion/ 1.0
+
+markupLanguage/ html</data>
+    </node>
+    <node id="cInfo">
+      <data key="dNote">informal</data>
+      <data key="dData">See "docs"</data>
+    </node>
+    <node id="init">
+      <data key="dVertex">initial</data>
+    </node>
+    <node id="s0">
+      <data key="dName">Wait</data>
+      <data key="dFormalName">wait_state</data>
+      <data key="dCollapsed"/>
+      <graph id="s0:" edgedefault="directed">
+        <data key="dRegion"/>
+        <node id="s0w">
+          <data key="dName">Inner</data>
+        </node>
+      </graph>
+    </node>
+    <node id="ch0">
+      <data key="dVertex">choice</data>
+    </node>
+    <node id="sub0">
+      <data key="dSubmachineState">M2</data>
+      <data key="dName">Nested</data>
+    </node>
+    <edge id="init-s0#1" source="init" target="s0"/>
+    <edge id="s0-ch0#1" source="s0" target="ch0">
+      <data key="dData">GO/</data>
+    </edge>
+    <edge id="ch0-s0#1" source="ch0" target="s0">
+      <data key="dData">[x \[0\] &gt; 5]/ retry()</data>
+    </edge>
+    <edge id="ch0-sub0#1" source="ch0" target="sub0">
+      <data key="dData">[else]/ enter()</data>
+    </edge>
+    <edge id="cInfo-s0#1" source="cInfo" target="s0">
+      <data key="dPivot">dName</data>
+      <data key="dChunk">Wait</data>
+    </edge>
+  </graph>
+  <graph id="M2" edgedefault="directed">
+    <data key="dStateMachine"/>
+    <data key="dName">Nested worker</data>
+    <node id="m2init">
+      <data key="dVertex">initial</data>
+    </node>
+    <node id="m2s0">
+      <data key="dName">Run</data>
+    </node>
+    <edge id="m2init-m2s0#1" source="m2init" target="m2s0"/>
+  </graph>
+</graphml>
