@@ -117,16 +117,26 @@ Model classes (`instanceof` tells the node kinds apart); every element has `id`,
   gone); `CGMLKeyNode` - `id`, `for`, `attr.name?`, `attr.type?`;
 * `CGMLPoint`, `CGMLRectangle`.
 
-`unsupportedDataNodes` holds every `data` item of an element the model does not type: the
-extension keys and, until 2.1 types them, the standard ones — `dFormalName`, `dCollapsed`,
-`dMarkup`, `dSubmachineState` (a submachine state is a state with it, its entry and exit points
-are `unknownVertexes`), `dColor` of vertices and comments, a label rect. `exportGraphml` puts them
-back where the standard wants them. A private Lapki key whose text is `x/ <x>` and `y/ <y>`
+`unsupportedDataNodes` holds the `data` items of an element the model does not type: the
+extension keys, and the geometry of the metadata node and of component comments; `exportGraphml`
+puts them back in place. A private Lapki key whose text is `x/ <x>` and `y/ <y>`
 (`dLapkiSchemePosition`, dialect D-5) also comes with that `point`; written from the point.
 
-Planned for 2.1 (additive, optional): `CGMLSubmachineState` and its entry/exit points,
-`CGMLState.collapsed`, `formalName` on machines, regions and nodes, `CGMLNote.markup`, the label
-rect, link targets on transitions.
+### The 2.1 fields
+
+The elements of the extension profiles are typed (2.0 gave them among the data):
+
+| type | fields |
+|---|---|
+| `CGMLStateMachine` | `formalName?`; `entryPoints?`, `exitPoints?` - records of `CGMLVertex`, the points of states and submachine states (2.0: in `unknownVertexes`) |
+| `CGMLState` | `submachine?` (the id of the referenced machine: a submachine state), `collapsed?`, `formalName?` |
+| `CGMLRegion` | `formalName?` |
+| `CGMLVertex` | `formalName?`, `color?` |
+| `CGMLNote` | `formalName?`, `markup?`, `color?` |
+| `CGMLTransition` | `labelPosition` a point or a rect |
+| `CGMLCommentLink` | `polyline?`, `sourcePoint?`, `targetPoint?`; the `target` may name a transition |
+
+The writer still maps the standard keys a 2.0 caller gives as data; the typed fields win.
 
 No longer exported: the shapes of the 1.x XML layer — `CGML`, `CGMLGraphmlNode`, `CGMLGraph`,
 `CGMLNode`, `CGMLEdge`, `CGMLDataNodeProcess`, `CGMLDataNodeProcessArgs`, `XMLProperies` — and

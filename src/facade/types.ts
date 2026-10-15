@@ -64,6 +64,7 @@ export type CGMLKeyNode = {
 export type CGMLRegion = {
   id: string;
   name?: string;
+  formalName?: string;
   geometry?: CGMLRectangle;
   unsupportedDataNodes: Array<CGMLDataNode>;
 };
@@ -77,6 +78,9 @@ export type CGMLState = {
   unsupportedDataNodes: Array<CGMLDataNode>;
   color?: string;
   regions?: Array<CGMLRegion>;
+  submachine?: string; // the id of the referenced machine: a submachine state (2.1)
+  collapsed?: boolean; // 2.1
+  formalName?: string; // 2.1
 };
 
 /** @deprecated the same as CGMLState */
@@ -89,6 +93,8 @@ export type CGMLVertex = {
   name?: string;
   position?: CGMLPoint | CGMLRectangle;
   unsupportedDataNodes?: Array<CGMLDataNode>;
+  formalName?: string; // 2.1
+  color?: string; // 2.1
   /** @deprecated not read, not written */
   data?: string;
 };
@@ -103,6 +109,9 @@ export type CGMLNote = {
   parent?: string;
   region?: string;
   unsupportedDataNodes: Array<CGMLDataNode>;
+  formalName?: string; // 2.1
+  markup?: string; // 2.1
+  color?: string; // 2.1
   /** @deprecated not read, not written */
   data?: string;
 };
@@ -122,7 +131,7 @@ export type CGMLTransition = {
   color?: string;
   position?: CGMLPoint; // the first point of the polyline
   polyline?: Array<CGMLPoint>;
-  labelPosition?: CGMLPoint;
+  labelPosition?: CGMLPoint | CGMLRectangle; // a rect since 2.1
   sourcePoint?: CGMLPoint;
   targetPoint?: CGMLPoint;
   actions: Array<CGMLTransitionAction>;
@@ -137,6 +146,9 @@ export type CGMLCommentLink = {
   target: string;
   pivot?: string; // dData, dName or empty
   chunk?: string;
+  polyline?: Array<CGMLPoint>; // 2.1
+  sourcePoint?: CGMLPoint; // 2.1
+  targetPoint?: CGMLPoint; // 2.1
   unsupportedDataNodes: Array<CGMLDataNode>;
 };
 
@@ -165,6 +177,9 @@ export type CGMLStateMachine = {
   shallowHistory: { [id: string]: CGMLVertex };
   deepHistory: { [id: string]: CGMLVertex };
   unknownVertexes: { [id: string]: CGMLVertex };
+  entryPoints?: { [id: string]: CGMLVertex }; // 2.1, before in unknownVertexes
+  exitPoints?: { [id: string]: CGMLVertex }; // 2.1
+  formalName?: string; // 2.1
   unsupportedDataNodes?: Array<CGMLDataNode>;
 };
 

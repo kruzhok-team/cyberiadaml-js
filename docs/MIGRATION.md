@@ -50,3 +50,16 @@ documents.
 
 `serialaizeParameters` remains as a deprecated alias of `serializeParameters`, which no longer
 ends the text with an empty line.
+
+## From 2.0 to 2.1
+
+The elements of the extension profiles get typed fields (`API.md`, "The 2.1 fields"):
+
+| | 2.0 | 2.1 |
+|---|---|---|
+| entry and exit points | `unknownVertexes` | `entryPoints`, `exitPoints` |
+| `dSubmachineState`, `dCollapsed`, `dFormalName`, `dMarkup`, `dColor` of vertices and comments | in `unsupportedDataNodes` | `submachine`, `collapsed`, `formalName`, `markup`, `color` |
+| a label rect | in `unsupportedDataNodes` | `labelPosition` with `width` and `height` |
+| the geometry of a comment link | in `unsupportedDataNodes` | `polyline`, `sourcePoint`, `targetPoint` |
+
+Code that wrote these keys as data keeps working: the writer maps them.

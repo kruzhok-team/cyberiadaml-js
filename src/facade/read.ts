@@ -49,17 +49,35 @@ const VERTEX_FIELDS: { [kind: string]: keyof CGMLStateMachine } = {
   terminate: 'terminates',
   shallowHistory: 'shallowHistory',
   deepHistory: 'deepHistory',
+  entryPoint: 'entryPoints',
+  exitPoint: 'exitPoints',
 };
 
 // the data keys the 2.0 model types; every other item goes to unsupportedDataNodes
-const MACHINE_KEYS = ['dStateMachine', 'dName', 'dGeometry'];
-const REGION_KEYS = ['dRegion', 'dName', 'dGeometry'];
-const STATE_KEYS = ['dName', 'dGeometry', 'dData', 'dColor'];
-const VERTEX_KEYS = ['dVertex', 'dName', 'dGeometry'];
-const NOTE_KEYS = ['dNote', 'dName', 'dGeometry', 'dData'];
+const MACHINE_KEYS = ['dStateMachine', 'dName', 'dGeometry', 'dFormalName'];
+const REGION_KEYS = ['dRegion', 'dName', 'dGeometry', 'dFormalName'];
+const STATE_KEYS = [
+  'dName',
+  'dGeometry',
+  'dData',
+  'dColor',
+  'dSubmachineState',
+  'dCollapsed',
+  'dFormalName',
+];
+const VERTEX_KEYS = ['dVertex', 'dName', 'dGeometry', 'dColor', 'dFormalName'];
+const NOTE_KEYS = ['dNote', 'dName', 'dGeometry', 'dData', 'dMarkup', 'dColor', 'dFormalName'];
 const COMPONENT_KEYS = ['dNote', 'dName', 'dData'];
 const META_KEYS = ['dNote', 'dName', 'dData'];
-const LINK_KEYS = ['dPivot', 'dChunk'];
+const TRANSITION_KEYS = [
+  'dData',
+  'dColor',
+  'dGeometry',
+  'dLabelGeometry',
+  'dSourcePoint',
+  'dTargetPoint',
+];
+const LINK_KEYS = ['dPivot', 'dChunk', 'dGeometry', 'dSourcePoint', 'dTargetPoint'];
 const PRIVATE_PREFIX = 'dLapki';
 
 type Shape = core.Point | core.Rect | null;
@@ -179,8 +197,13 @@ class MachineReader {
       shallowHistory: {},
       deepHistory: {},
       unknownVertexes: {},
+      entryPoints: {},
+      exitPoints: {},
       unsupportedDataNodes: unsupported(machine.elem, MACHINE_KEYS),
     };
+    if (machine.formalName !== null) {
+      this.sm.formalName = machine.formalName;
+    }
     if (platform === undefined) {
       delete this.sm.platform;
     }
@@ -235,6 +258,12 @@ class MachineReader {
       if (position) {
         vertex.position = position;
       }
+      if (node.formalName !== null) {
+        vertex.formalName = node.formalName;
+      }
+      if (node.color !== null) {
+        vertex.color = node.color;
+      }
       const field = VERTEX_FIELDS[kind] ?? 'unknownVertexes';
       (this.sm[field] as { [id: string]: CGMLVertex })[id] = vertex;
     } else {
@@ -254,10 +283,20 @@ class MachineReader {
       if (node.color !== null) {
         record.color = node.color;
       }
+      if (node instanceof core.SubmachineState) {
+        record.submachine = node.ref ?? '';
+      }
+      if (state?.collapsed) {
+        record.collapsed = true;
+      }
+      if (node.formalName !== null) {
+        record.formalName = node.formalName;
+      }
       if (node.regions.length) {
         record.regions = node.regions.map((r) => ({
           id: r.id ?? '',
           ...(r.name !== null ? { name: r.name } : {}),
+          ...(r.formalName !== null ? { formalName: r.formalName } : {}),
           ...(r.geometry instanceof core.Rect ? { geometry: rect(r.geometry) } : {}),
           unsupportedDataNodes: unsupported(r.elem, REGION_KEYS),
         }));
@@ -303,17 +342,21 @@ class MachineReader {
     if (position) {
       note.position = position;
     }
+    for (const field of ['formalName', 'markup', 'color'] as const) {
+      if (node[field] !== null) {
+        note[field] = node[field]!;
+      }
+    }
   }
 
   transition(edge: core.Transition): void {
-    const typed = ['dData', 'dColor', 'dGeometry'];
     const id = this.edgeId(edge.id, this.sm.transitions);
     const record = (this.sm.transitions[id] = {
       id,
       source: this.id(edge.source),
       target: this.id(edge.target),
       actions: this.initialBehaviour(edge) ?? edge.blocks.map(blockAction),
-      unsupportedDataNodes: [] as CGMLDataNode[],
+      unsupportedDataNodes: unsupported(edge.elem, TRANSITION_KEYS),
     } as CGMLStateMachine['transitions'][string]);
     if (edge.color !== null) {
       record.color = edge.color;
@@ -322,19 +365,16 @@ class MachineReader {
       record.polyline = edge.polyline.map(point);
       record.position = record.polyline[0];
     }
-    if (edge.labelGeometry instanceof core.Point) {
-      record.labelPosition = point(edge.labelGeometry);
-      typed.push('dLabelGeometry');
+    const label = shape(edge.labelGeometry);
+    if (label) {
+      record.labelPosition = label;
     }
     if (edge.sourcePoint !== null) {
       record.sourcePoint = point(edge.sourcePoint);
-      typed.push('dSourcePoint');
     }
     if (edge.targetPoint !== null) {
       record.targetPoint = point(edge.targetPoint);
-      typed.push('dTargetPoint');
     }
-    record.unsupportedDataNodes = unsupported(edge.elem, typed);
   }
 
   // 1.x read the text of a transition from an initial pseudostate as its behaviour: a lone
@@ -371,6 +411,15 @@ class MachineReader {
     }
     if (edge.chunk !== null) {
       links[id].chunk = edge.chunk;
+    }
+    if (edge.polyline.length) {
+      links[id].polyline = edge.polyline.map(point);
+    }
+    if (edge.sourcePoint !== null) {
+      links[id].sourcePoint = point(edge.sourcePoint);
+    }
+    if (edge.targetPoint !== null) {
+      links[id].targetPoint = point(edge.targetPoint);
     }
   }
 }

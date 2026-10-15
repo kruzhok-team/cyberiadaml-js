@@ -1,5 +1,17 @@
 # cyberiadaml-js project changelog
 
+## Version 2.1.0 (unreleased)
+
+Added:
+- the 2.1 fields for the elements of the extension profiles: `entryPoints` and `exitPoints`,
+  the `submachine` reference, `collapsed`, `formalName` of machines, states, regions, vertices
+  and comments, the `markup` and `color` of comments, vertex colours, a label rect in
+  `labelPosition`, the geometry of comment links.
+
+Changed:
+- entry and exit points are no longer in `unknownVertexes`; the standard keys of the extension
+  profiles are no longer among `unsupportedDataNodes` (the writer still maps them).
+
 ## Version 2.0.0 (unreleased)
 
 Added:

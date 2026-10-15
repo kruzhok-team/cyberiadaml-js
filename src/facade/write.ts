@@ -23,6 +23,7 @@
 import { serializeActions } from './actions';
 import {
   CGMLAction,
+  CGMLCommentLink,
   CGMLDataNode,
   CGMLElements,
   CGMLKeyNode,
@@ -60,6 +61,8 @@ const VERTEX_FIELDS: Array<[keyof CGMLStateMachine, string | null]> = [
   ['terminates', 'terminate'],
   ['shallowHistory', 'shallowHistory'],
   ['deepHistory', 'deepHistory'],
+  ['entryPoints', 'entryPoint'],
+  ['exitPoints', 'exitPoint'],
   ['unknownVertexes', null],
 ];
 
@@ -200,12 +203,22 @@ function apply(item: Item, nodes: CGMLDataNode[] | undefined): void {
   }
 }
 
+/** Set the typed fields over what apply() took from the data. */
+function typed<T extends object>(item: T, fields: Partial<T>): void {
+  for (const [name, value] of Object.entries(fields)) {
+    if (value !== undefined && value !== null && value !== false) {
+      (item as Record<string, unknown>)[name] = value;
+    }
+  }
+}
+
 function region(value: CGMLRegion): core.Region {
   const result = new core.Region(value.id || null, null, {
     name: value.name ?? null,
     geometry: rectOf(value.geometry),
   });
   apply(result, value.unsupportedDataNodes);
+  typed(result, { formalName: value.formalName });
   return result;
 }
 
@@ -226,6 +239,7 @@ class MachineWriter {
       );
     }
     apply(this.machine, sm.unsupportedDataNodes);
+    typed(this.machine, { formalName: sm.formalName });
     if (meta !== null) {
       this.machine.children.push(meta);
     }
@@ -250,24 +264,33 @@ class MachineWriter {
         geometry: rectOf(state.bounds),
         color: state.color ?? null,
       };
-      const node: Container = refs.length
-        ? new core.SubmachineState(stateId, null, { ...common, ref: refs[0].content })
-        : new core.State(stateId, null, { ...common, data: behaviour(state.actions) });
+      const ref = state.submachine ?? refs[0]?.content;
+      const node: Container =
+        ref !== undefined
+          ? new core.SubmachineState(stateId, null, { ...common, ref })
+          : new core.State(stateId, null, { ...common, data: behaviour(state.actions) });
       apply(
         node,
         state.unsupportedDataNodes.filter((d) => d.key !== 'dSubmachineState'),
       );
+      typed<Container>(node, { formalName: state.formalName });
+      if (node instanceof core.State) {
+        typed(node, { collapsed: state.collapsed });
+      }
       node.regions = (state.regions ?? []).map(region);
       this.add(node, state.parent, state.region);
     }
     for (const [field, kind] of VERTEX_FIELDS) {
-      for (const [vertexId, vertex] of Object.entries(sm[field] as { [id: string]: CGMLVertex })) {
+      for (const [vertexId, vertex] of Object.entries(
+        (sm[field] ?? {}) as { [id: string]: CGMLVertex },
+      )) {
         const node = new core.Vertex(vertexId, null, {
           kind: kind ?? vertex.type,
           name: vertex.name ?? null,
           geometry: geometry(vertex.position),
         });
         apply(node, vertex.unsupportedDataNodes);
+        typed(node, { formalName: vertex.formalName, color: vertex.color });
         this.add(node, vertex.parent, vertex.region);
       }
     }
@@ -279,6 +302,7 @@ class MachineWriter {
         body: note.text,
       });
       apply(comment, note.unsupportedDataNodes);
+      typed(comment, { formalName: note.formalName, markup: note.markup, color: note.color });
       this.add(comment, note.parent, note.region);
     }
     this.place();
@@ -286,14 +310,7 @@ class MachineWriter {
       sm.transitions as { [id: string]: CGMLTransition | CGMLTextTransition },
     )) {
       if (transition.pivot !== undefined) {
-        this.link(
-          transition.id,
-          transition.source,
-          transition.target,
-          transition.pivot,
-          undefined,
-          transition.unsupportedDataNodes,
-        );
+        this.link(transition);
         continue;
       }
       const polyline = transition.polyline ?? (transition.position ? [transition.position] : []);
@@ -302,7 +319,7 @@ class MachineWriter {
         target: transition.target,
         data: behaviour(transition.actions),
         polyline: polyline.map((p) => new core.Point(p.x, p.y)),
-        labelGeometry: pointOf(transition.labelPosition),
+        labelGeometry: geometry(transition.labelPosition),
         sourcePoint: pointOf(transition.sourcePoint),
         targetPoint: pointOf(transition.targetPoint),
         color: transition.color ?? null,
@@ -311,14 +328,7 @@ class MachineWriter {
       this.machine.transitions.push(edge);
     }
     for (const link of Object.values(sm.links ?? {})) {
-      this.link(
-        link.id,
-        link.source,
-        link.target,
-        link.pivot,
-        link.chunk,
-        link.unsupportedDataNodes,
-      );
+      this.link(link);
     }
   }
 
@@ -347,21 +357,21 @@ class MachineWriter {
     }
   }
 
-  link(
-    id: string,
-    source: string,
-    target: string,
-    pivot: string | undefined,
-    chunk: string | undefined,
-    data: CGMLDataNode[],
-  ): void {
-    const link = new core.CommentLink(id, null, {
-      source,
-      target,
-      pivot: pivot ?? null,
-      chunk: chunk ?? null,
+  link(value: CGMLCommentLink | CGMLTransition | CGMLTextTransition): void {
+    const link = new core.CommentLink(value.id, null, {
+      source: value.source,
+      target: value.target,
+      pivot: value.pivot ?? null,
     });
-    apply(link, data);
+    apply(link, value.unsupportedDataNodes);
+    if (!('actions' in value)) {
+      typed(link, {
+        chunk: value.chunk,
+        polyline: value.polyline?.map((p) => new core.Point(p.x, p.y)),
+        sourcePoint: pointOf(value.sourcePoint),
+        targetPoint: pointOf(value.targetPoint),
+      });
+    }
     this.machine.links.push(link);
   }
 }
@@ -439,7 +449,7 @@ function metadata(elements: CGMLElements | CGMLTextElements): [string, Array<[st
         first.states,
         first.components,
         first.notes,
-        ...VERTEX_FIELDS.map(([field]) => first[field] as object),
+        ...VERTEX_FIELDS.map(([field]) => (first[field] ?? {}) as object),
       ].flatMap((records) => Object.keys(records)),
     );
     if (!id || taken.has(id)) {
