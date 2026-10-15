@@ -137,11 +137,30 @@ ids — with what the standard needs and the 1.x model could not hold:
 - `write()` reads its output back in the strict mode: a model that breaks a MUST rule raises
   `CGMLError` with those findings.
 
-The facade adds what 1.x callers expect: the metadata from the first machine's `meta`,
-`platform` and `standardVersion` when the document metadata is empty; components as
-`CGML_COMPONENT <id>` comments in `order`; an extension key with a single `point` child written
-as the text `x/ <x>` and `y/ <y>` (the D-5 form); ids repeated in a later machine written as
-`<machine id>::<id>`.
+The facade adds what 1.x callers expect.
+
+Reading (`facade/read.ts`):
+
+- the ids per machine as written: the D-7f renames are undone, a D-7a edge rename is undone
+  unless the id is taken in that machine;
+- a private Lapki key whose text is `x/ <x>` and `y/ <y>` (D-5) also gets that `point`;
+- in the permissive mode, a transition from an initial pseudostate whose text is a lone trigger
+  (no `/`, guard or postfix) keeps the 1.x reading: the text is its behaviour.
+
+Writing (`facade/write.ts`):
+
+- the metadata from `CGMLElements.meta`, else from the first machine's `meta`, `platform` and
+  `standardVersion` (lapki-client gives `coreMeta` in every machine); one node, the given id;
+- components as `CGML_COMPONENT <id>` comments in `order`, the body written from the parameters;
+- the standard keys among `unsupportedDataNodes` mapped onto the core fields (`dFormalName`,
+  `dCollapsed`, `dMarkup`, `dColor`, `dSubmachineState`, a label rect, …), the others written as
+  extensions; a private Lapki key with a single `point` written as the text `x/ <x>` and `y/ <y>`;
+- the key declarations: appendix Б for the standard keys in use and the caller's declarations of
+  its own keys in use — a 1.x key list (`dInitial`, declarations without `attr.name`) does no
+  harm;
+- ids repeated in a later machine written as `<machine id>::<id>`, edge ids as `<id>#<N>`, the
+  way D-7f and D-7a read them;
+- a parent that is not a state is refused with `CGMLError`.
 
 ## Code layout
 
@@ -154,7 +173,11 @@ src/
     dialect.ts tagtree.ts model.ts checks_l3.ts checks_l4.ts
     actions.ts meta.ts keys.ts findings.ts rules.ts requirements.ts
     reader.ts writer.ts dump.ts
-  facade/             parseCGML, exportGraphml, the 2.0 types (round 5)
+  facade/             the 2.0 interface
+    types.ts          the 2.0 types
+    read.ts write.ts  parseCGML, exportGraphml over the core
+    actions.ts        the behaviour text of the 2.0 actions
+  utils.ts            the 1.x helpers
 tests/                see TESTING.md
 tools/                the example snapshot and the contract writer
 ```

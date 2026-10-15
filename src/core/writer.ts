@@ -408,6 +408,13 @@ class Writer {
   }
 }
 
+/** The (key, for) pairs a write of the document uses, in the order of use. */
+export function usedKeys(document: Document): Array<[string, string]> {
+  const writer = new Writer(document);
+  writer.write();
+  return writer.used;
+}
+
 /** Return the document text without the check of write(). */
 export function render(document: Document): string {
   return new Writer(document).write();

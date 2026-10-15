@@ -21,6 +21,8 @@ documents.
 | region graph id | the parent node id | the region id, or `<state id>::region` |
 | `graph` | no `edgedefault` | `edgedefault="directed"` |
 | `dLapkiSchemePosition` | `<point>` child | text `x/ <x>` and `y/ <y>`, declared key |
+| an id repeated in a later machine | written again (the document is not valid) | `<machine id>::<id>`, an edge `<id>#<N>` |
+| a transition from an initial pseudostate | its action as the whole text | `/` and the action |
 
 ## What the caller changes
 
@@ -32,7 +34,12 @@ documents.
 | other formal comments | rejected with an exception | read as notes of type `formal` |
 | `CGMLVertex.position` | a rect of `-1` for a point | a point for the point kinds |
 | `CGMLComponent.id` | the `id/` parameter | the name suffix; `order` stays the document order |
-| `dLapkiSchemePosition` | read from `point` | read the text with `parseParameters()`; old documents come back in the same text form |
+| `dLapkiSchemePosition` | read from `point` | `point` is still given, from the text `x/ <x>` and `y/ <y>`; nothing to change |
+| names and texts | trimmed | as written |
+| machine name | absent without `dName` | the graph id (dialect D-8b) |
+| ids repeated in a later machine | kept | kept when read; after the first save they come back as `<machine id>::<id>` and `<id>#<N>` |
+| duplicate edge ids in a machine | one transition lost | the later ones as `<id>#<N>` |
+| `CGMLVertex.data`, `CGMLTransition.pivot` | | deprecated: `data` is ignored, a transition with `pivot` is written as a comment link |
 | actions | `postfix` `propagate` / `block` | also `defer`; a completion transition has no trigger; `else` guard |
 | keys | `getKeys()` gives the full list | give only the declarations of own keys (`dLapkiSchemePosition`, `dLapkiNoteFormat`) or none |
 | regions | children of a state, region lost | `CGMLState.regions`, the child's `region` |

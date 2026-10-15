@@ -28,11 +28,12 @@ documents of other checkouts are kept as snapshots with their revision.
 | `tests/unit/` | the core: behaviour grammar (§6.8), parameters (§6.9), the XML reader, the L1-L4 checks, the dialect pass, the model, the writer | small inline documents; the unit tests of `cgmlval` and `cyberiadaml_py.core` ported |
 | `tests/conformance/` | the standard examples | positive: `core.read` strict, `core.dump` equals `.expected.txt`; `core.write`, strict re-read, same dump. Negative: strict read throws `CGMLError` with the requirement id of the example; permissive read reports, rejects or repairs it |
 | `tests/dialect/` | the Lapki corpus | permissive `core.read`: dump equals `.expected.txt` (an invalid document: its `errors`), repair findings equal `.repairs.txt`; strict read throws; the written document reads in strict mode |
-| `tests/lapki/` | the lapki-client contract (round 5, with the 2.0 interface) | on the Lapki corpus and the lapki-client templates: the fields `GraphmlParser.ts` reads (machine `platform`, `meta.values`, components with `id`, `type`, `order`, `parameters.name`, states with `bounds`, `parent`, parsed actions, vertices, notes, transitions) |
+| `tests/facade/` | the 2.0 interface | every positive example read strictly by `parseCGML` and written by `exportGraphml` gives its expected dump (component bodies without trailing empty lines); every valid Lapki document is written as its expected standard document; the lapki-client builder input, regions, links, the text model, the helpers |
+| `tests/lapki/` | the lapki-client contract | the fields `GraphmlParser.ts` reads (machine `platform`, `meta.values`, components with `id`, `type`, `order`, `parameters`, the scheme position, states with `bounds`, `parent`, actions, vertices, notes, transitions) for the Lapki corpus and `demos/`, recorded in `lapki-client-view.json`; the same view after a write. `README.md` lists the reviewed differences from 1.2.4 |
 
-The 1.x tests (`src/import.test.ts`, `src/export.test.ts`) compare models after a round trip and
-cannot see what the reader drops; they move to `tests/lapki/` as model checks of the `demos/`
-documents, the round trip itself is checked by the dumps.
+The 1.x tests (`src/import.test.ts`, `src/export.test.ts`) compared models after a round trip and
+could not see what the reader dropped; the `demos/` documents are in the lapki-client view now, the
+round trip is checked by the dumps.
 
 ## Examples
 

@@ -35,8 +35,5 @@
     "ts-jest": "^29.1.2",
     "tsup": "^8.0.2",
     "typescript": "^5.3.3"
-  },
-  "dependencies": {
-    "fast-xml-parser": "^4.3.4"
   }
 }

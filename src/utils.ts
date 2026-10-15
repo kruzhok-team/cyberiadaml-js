@@ -1,12 +1,13 @@
+import { parse as parseMetaText } from './core/meta';
 import {
-  CGMLAction,
   CGMLStateMachine,
   CGMLMeta,
-  CGMLTransitionAction,
   CGMLTransitionTrigger,
   CGMLElements,
   CGMLTextElements,
-} from './types/import';
+} from './facade/types';
+
+export { serializeActions } from './facade/actions';
 
 export function parseTrigger(trigger: string, regexes: Array<RegExp>): CGMLTransitionTrigger {
   for (const regex of regexes) {
@@ -17,7 +18,7 @@ export function parseTrigger(trigger: string, regexes: Array<RegExp>): CGMLTrans
     return {
       event: regExec.groups['trigger'],
       condition: regExec.groups['condition'],
-      postfix: regExec.groups['postfix'],
+      postfix: regExec.groups['postfix'] as CGMLTransitionTrigger['postfix'],
     };
   }
   throw new Error('No reg!');
@@ -39,6 +40,7 @@ export function emptyCGMLStateMachine(): CGMLStateMachine {
     },
     states: {},
     transitions: {},
+    links: {},
     components: {},
     initialStates: {},
     notes: {},
@@ -54,6 +56,8 @@ export function createEmptyTextElements(): CGMLTextElements {
     stateMachines: {},
     format: '',
     keys: [],
+    meta: { id: '', values: {} },
+    findings: [],
   };
 }
 
@@ -62,17 +66,29 @@ export function createEmptyElements(): CGMLElements {
     stateMachines: {},
     format: '',
     keys: [],
+    meta: { id: '', values: {} },
+    findings: [],
   };
 }
 
-export function serialaizeParameters(parameters: { [id: string]: string }): string {
-  let strParameters = '';
-  for (const parameterName in parameters) {
-    const value = parameters[parameterName];
-    strParameters += `${parameterName}/ ${value}\n\n`;
+// The parameter list of 6.9: name/ value items separated by an empty line.
+export function parseParameters(text: string): { [id: string]: string } {
+  const [params] = parseMetaText(text);
+  const parameters: { [id: string]: string } = {};
+  for (const param of params) {
+    parameters[param.name.trim()] = param.value.trim();
   }
-  return strParameters;
+  return parameters;
 }
+
+export function serializeParameters(parameters: { [id: string]: string }): string {
+  return Object.entries(parameters)
+    .map(([name, value]) => `${name}/ ${value}`)
+    .join('\n\n');
+}
+
+/** @deprecated use serializeParameters */
+export const serialaizeParameters = serializeParameters;
 
 export function serializeMeta(meta: CGMLMeta, standardVersion: string, platform?: string): string {
   const parameters: { [id: string]: string } = {
@@ -82,28 +98,5 @@ export function serializeMeta(meta: CGMLMeta, standardVersion: string, platform?
   if (platform) {
     parameters['platform'] = platform;
   }
-  return serialaizeParameters(parameters);
-}
-
-export function serializeActions(actions: Array<CGMLAction> | Array<CGMLTransitionAction>): string {
-  let strActions = '';
-  for (const action of actions) {
-    if (action.trigger?.event) {
-      strActions += `${action.trigger.event}`;
-    }
-    if (action.trigger?.condition) {
-      strActions += `[${action.trigger.condition}]`;
-    }
-    if (action.trigger?.postfix) {
-      strActions += ' ' + action.trigger.postfix;
-    }
-    strActions += '/\n';
-    if (action.action) {
-      strActions += action.action;
-      strActions += '\n';
-    }
-    strActions += '\n';
-  }
-
-  return strActions;
+  return serializeParameters(parameters);
 }
