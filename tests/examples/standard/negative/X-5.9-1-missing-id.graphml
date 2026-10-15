@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+  <data key="gFormat">Cyberiada-GraphML-1.0</data>
+  <key id="gFormat" for="graphml" attr.name="format" attr.type="string"/>
+  <key id="dName" for="graph" attr.name="name" attr.type="string"/>
+  <key id="dName" for="node" attr.name="name" attr.type="string"/>
+  <key id="dStateMachine" for="graph" attr.name="stateMachine"/>
+  <key id="dRegion" for="graph" attr.name="region"/>
+  <key id="dSubmachineState" for="node" attr.name="submachineState" attr.type="string"/>
+  <key id="dGeometry" for="graph" attr.name="geometry"/>
+  <key id="dGeometry" for="node" attr.name="geometry"/>
+  <key id="dGeometry" for="edge" attr.name="geometry"/>
+  <key id="dSourcePoint" for="edge" attr.name="sourcePoint"/>
+  <key id="dTargetPoint" for="edge" attr.name="targetPoint"/>
+  <key id="dLabelGeometry" for="edge" attr.name="labelGeometry"/>
+  <key id="dNote" for="node" attr.name="note" attr.type="string"/>
+  <key id="dVertex" for="node" attr.name="vertex" attr.type="string"/>
+  <key id="dData" for="node" attr.name="data" attr.type="string"/>
+  <key id="dData" for="edge" attr.name="data" attr.type="string"/>
+  <key id="dPivot" for="edge" attr.name="pivot" attr.type="string"/>
+  <key id="dChunk" for="edge" attr.name="chunk" attr.type="string"/>
+  <key id="dCollapsed" for="node" attr.name="collapsed"/>
+  <key id="dMarkup" for="node" attr.name="markup" attr.type="string"/>
+  <key id="dColor" for="node" attr.name="color" attr.type="string"/>
+  <key id="dColor" for="edge" attr.name="color" attr.type="string"/>
+  <key id="dFormalName" for="graph" attr.name="formalName" attr.type="string"/>
+  <key id="dFormalName" for="node" attr.name="formalName" attr.type="string"/>
+  <graph id="G" edgedefault="directed">
+    <data key="dStateMachine"/>
+    <data key="dName">Minimal</data>
+    <node id="nMeta">
+      <data key="dNote">formal</data>
+      <data key="dName">CGML_META</data>
+      <data key="dData">standardVersion/ 1.0</data>
+    </node>
+    <node id="init">
+      <data key="dVertex">initial</data>
+    </node>
+    <node>
+      <data key="dName">Idle</data>
+    </node>
+    <edge id="init-n0#1" source="init" target="n0"/>
+  </graph>
+</graphml>

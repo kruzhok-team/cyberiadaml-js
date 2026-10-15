@@ -37,6 +37,44 @@ Kept from 1.x: `createEmptyElements()`, `createEmptyTextElements()`, `emptyCGMLS
 * `CGMLFinding` - `rule`, `req` (`CGML-<clause>-<n>` or `LAPKI-D<n>`), `layer` (0 for the dialect
   pass, 1-4), `severity` (`ERROR` | `WARNING` | `INFO`), `message`, `line?`, `column?`, `path?`.
 
+## The Core
+
+    import { core } from '@kruzhok-team/cyberiadaml-js';
+
+The standard-compliant core under the 2.0 interface, the same as `cyberiadaml_py.core` with the
+names in camelCase.
+
+* `core.read(data: string | Uint8Array, options?: { strict?: boolean }): core.Document` - reads a
+  document. Strict: no dialect repairs, any ERROR finding throws. Permissive (default): dialect
+  repairs, only fatal findings throw. Throws `core.CGMLError`.
+* `core.write(document: core.Document): string` - writes a standard document; throws
+  `core.CGMLError` when the result breaks a MUST rule (the output is read back strictly).
+* `core.dump(document: core.Document): string` - the canonical dump of the validator
+  specification §7.
+* `core.FORMAT_STANDARD`, `core.FORMAT_LAPKI`; `core.ERROR`, `core.WARNING`, `core.INFO`.
+* `core.CGMLError extends Error` - `findings: core.Finding[]`; `core.Finding` - `rule`, `req`,
+  `layer`, `severity`, `message`, `line?`, `column?`, `path?`.
+
+Model classes (`instanceof` tells the node kinds apart); every element has `id`, `elem`, `parent`,
+`line` and `extensions: core.Extension[]`:
+
+* `Document` - `format`, `label`, `keys: KeyDecl[]`, `metaComment`, `metaId`, `metaParams:
+  Param[]`, `metaErrors`, `geometryMode`, `machines: StateMachine[]`, `findings`,
+  `extensionGraphs`, `originalIds: Map<string, string>`; `param(name)`, `transitionOrder()`,
+  `eventPropagation()`, `markupLanguage()`;
+* `StateMachine` - `name`, `formalName`, `geometry`, `marker`, `children`, `transitions`,
+  `links`, `params`;
+* `Region` - `name`, `formalName`, `geometry`, `children`;
+* `Node` - `name`, `formalName`, `geometry`, `color`, the base of `State` (`data`, `blocks`,
+  `blockErrors`, `regions`, `collapsed`), `SubmachineState` (`ref`, `regions`), `Vertex`
+  (`kind`) and `Comment` (`kind`, `body`, `markup`, `component()`);
+* `Transition` - `source`, `target`, `data`, `blocks`, `blockErrors`, `polyline`, `sourcePoint`,
+  `targetPoint`, `labelGeometry`, `color`; `CommentLink` - `source`, `target`, `pivot`, `chunk`,
+  `polyline`, `sourcePoint`, `targetPoint`;
+* `Block` - `kind`, `trigger`, `param`, `guard`, `behaviour`, `verbatim`; `Param` - `name`,
+  `value`, `line`; `KeyDecl` - `id`, `forKind`, `attrName`, `attrType`; `Extension` - `key`,
+  `text`, `elem`; `Point`, `Rect`.
+
 ## Types
 
 * `CGMLElements` - `format`, `keys: CGMLKeyNode[]`, `meta: CGMLMeta` (the document metadata),

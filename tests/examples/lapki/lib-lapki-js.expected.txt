@@ -1,0 +1,32 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+state-machine "M1":
+  name: "Main"
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  vertex "init" initial:
+    geometry: point -60.50 20.00
+  state "n0":
+    name: "Work"
+    action entry:
+      do: "start()"
+    geometry: rect 0.00 0.00 400.00 300.00
+    region "n0::region":
+      state "n0::n1":
+        name: "Step"
+        geometry: rect 20.00 60.00 200.00 100.00
+  comment "note" informal:
+    markup: "plain"
+    body: "A note."
+    geometry: rect 500.00 0.00 0.00 0.00
+  transition "init-n0": "init" -> "n0"
+state-machine "M2":
+  name: "Second"
+  state "m2s":
+    name: "Idle"
+    geometry: rect 0.00 0.00 200.00 100.00

@@ -1,0 +1,37 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "name": "cycle_composite"
+state-machine "G":
+  name: "cycle_composite"
+  vertex "nInit" initial:
+  comment "nMeta" formal:
+    name: "CGML_META"
+  comment "nModules" informal:
+    markup: "plain"
+    body: "ROS2 HSM Modules\n\nDebug\nTimer"
+  state "nOuter":
+    name: "outer"
+    region "nOuter:":
+      state "nIn":
+        name: "inside"
+        action entry:
+          do: "Debug.println('inside')"
+      state "nOut":
+        name: "outside"
+        action entry:
+          do: "Debug.println('outside')"
+      vertex "nOuterInit" initial:
+  comment "nParams" informal:
+    markup: "plain"
+    body: "Global Parameters\n\nVersion: 1.0.0\nAuthor: Alexey Fedoseev\nAuthor e-mail: aleksey@fedoseev.net\nLicense: LGPL 3.0"
+  transition "e2": "nIn" -> "nOut"
+    action event "TIMER_TICK":
+  transition "e0": "nInit" -> "nOuter"
+  transition "e3": "nOut" -> "nIn"
+    action event "TIMER_TICK_1S":
+  transition "e1": "nOuterInit" -> "nIn"

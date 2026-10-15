@@ -1,0 +1,21 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+state-machine "M1":
+  name: "First machine"
+  vertex "m1i" initial:
+  state "m1s":
+    name: "Idle"
+  comment "nMeta" formal:
+    name: "CGML_META"
+  transition "m1i-m1s#1": "m1i" -> "m1s"
+state-machine "M2":
+  name: "Second machine"
+  vertex "m2i" initial:
+  state "m2s":
+    name: "Idle"
+  transition "m2i-m2s#1": "m2i" -> "m2s"

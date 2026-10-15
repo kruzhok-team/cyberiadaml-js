@@ -1,0 +1,54 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "description": "Включение и выключение лампочки по таймеру"
+  param "name": "Arduino-Blinker"
+  param "platform": "ArduinoUno"
+  param "platformVersion": "1.0"
+state-machine "G":
+  name: "G"
+  comment "cLED1" formal:
+    name: "CGML_COMPONENT LED1"
+    body: "type/ LED\n\nname/ Светодиод\n\ndescription/ Встроенный в плату светодиод, чтобы им мигать\n\npin/ 12"
+  comment "cQHsmSerial" formal:
+    name: "CGML_COMPONENT QHsmSerial"
+    body: "type/ QHsmSerial\n\nbaud/ 9600"
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  comment "ctimer1" formal:
+    name: "CGML_COMPONENT timer1"
+    body: "type/ Timer"
+  comment "ctimer2" formal:
+    name: "CGML_COMPONENT timer2"
+    body: "type/ Timer"
+  state "diod1":
+    name: "Включен"
+    action entry:
+      do: "LED1.on();"
+      do: "timer1.start(1000);"
+    action event "timer2.timeout" propagate:
+      do: "QHsmSerial::println(\"Propagate\");"
+    geometry: rect 9.00 194.81 450.00 95.00
+  state "diod2":
+    name: "Выключен"
+    action entry:
+      do: "LED1.off();"
+      do: "timer1.start(1000);"
+    action event "timer2.timeout" block:
+      do: "QHsmSerial::println(\"Blocked\");"
+    geometry: rect 9.00 194.81 450.00 95.00
+  vertex "mqnudktinpiciufanqnn" initial:
+    geometry: point -91.00 94.81
+  transition "edge2": "diod1" -> "diod2"
+    action event "timer1.timeout":
+    label-geometry: point 321.15 564.96
+    color: "#F29727"
+  transition "edge3": "diod2" -> "diod1"
+    action event "timer1.timeout":
+    label-geometry: point 321.15 564.96
+    color: "#F24C3D"
+  transition "edge1": "mqnudktinpiciufanqnn" -> "diod1"

@@ -1,0 +1,55 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "author": "Матросов В.М."
+  param "contact": "matrosov@mail.ru"
+  param "description": "Пример описания схемы, \nкоторый может быть многострочным, потому что так удобнее"
+  param "name": "Автобортник"
+  param "platform": "BearsTowerDefence"
+  param "target": "Autoborder"
+state-machine "G":
+  name: "G"
+  vertex "init" initial:
+    geometry: rect -1482.04 606.50 20.00 20.00
+  state "n0":
+    name: "Бой"
+    action entry:
+    action exit:
+    geometry: rect -578.00 438.19 672.53 802.96
+    region "n0::":
+      state "n0::n1":
+        name: "Сближение"
+        action entry:
+          do: "МодульДвижения.ДвигатьсяКЦели()"
+        action exit:
+        geometry: rect -525.74 609.67 468.00 170.00
+      state "n0::n2":
+        name: "Атака"
+        action entry:
+          do: "ОружиеЦелевое.АтаковатьЦель()"
+        action exit:
+        geometry: rect -630.27 206.71 468.00 170.00
+  state "n3":
+    name: "Скан"
+    action entry:
+      do: "Сенсор.ПоискВрагаПоДистанции(мин)"
+    action exit:
+      do: "Сенсор.ОстановкаПоиска()"
+    geometry: rect -1582.04 606.50 468.00 330.00
+  comment "nMeta" formal:
+    name: "CGML_META"
+  transition "init-n3": "init" -> "n3"
+  transition "n0-n3": "n0" -> "n3"
+    action event "АнализаторЦели.ЦельУничтожена":
+  transition "n0-n3#1": "n0" -> "n3"
+    action event "АнализаторЦели.ЦельПотеряна":
+  transition "n0::n1-n0::n2": "n0::n1" -> "n0::n2"
+    action event "ОружиеЦелевое.ЦельВошлаВЗонуАтаки":
+  transition "n0::n2-n0::n1": "n0::n2" -> "n0::n1"
+    action event "ОружиеЦелевое.ЦельВышлаИзЗоныАтаки":
+  transition "n3-n0::n1": "n3" -> "n0::n1"
+    action event "Сенсор.ЦельПолучена":

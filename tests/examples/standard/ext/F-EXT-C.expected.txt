@@ -1,0 +1,45 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+state-machine "M1":
+  name: "Completeness"
+  state "c0":
+    name: "Collapsed composite"
+    collapsed
+    region "c0:":
+      vertex "crinit" initial:
+      state "cs1":
+        name: "Inner"
+      vertex "sh0" shallowHistory:
+  comment "cN" informal:
+    markup: "plain"
+    body: "This transition starts the work."
+  vertex "dh0" deepHistory:
+  vertex "ep0" entryPoint:
+    name: "In"
+  vertex "init" initial:
+  state "n0":
+    name: "Idle"
+  comment "nMeta" formal:
+    name: "CGML_META"
+  submachine "sub0" ref "M2":
+    name: "Nested job"
+  vertex "xp0" exitPoint:
+    name: "Out"
+  transition "c0-sub0#1": "c0" -> "sub0"
+    action event "DELEGATE":
+  transition "crinit-cs1#1": "crinit" -> "cs1"
+  transition "init-n0#1": "init" -> "n0"
+  transition "n0-c0#1": "n0" -> "c0"
+    action event "WORK":
+  comment-link "cN-t#1": "cN" -> "n0-c0#1" pivot "dData" chunk "WORK"
+state-machine "M2":
+  name: "Worker"
+  vertex "m2i" initial:
+  state "m2s":
+    name: "Run"
+  transition "m2i-m2s#1": "m2i" -> "m2s"

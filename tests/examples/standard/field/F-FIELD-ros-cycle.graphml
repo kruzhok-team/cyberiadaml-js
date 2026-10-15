@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+  <data key="gFormat">Cyberiada-GraphML-1.0</data>
+  <key id="gFormat" for="graphml" attr.name="format" attr.type="string"/>
+  <key id="dName" for="graph" attr.name="name" attr.type="string"/>
+  <key id="dName" for="node" attr.name="name" attr.type="string"/>
+  <key id="dStateMachine" for="graph" attr.name="stateMachine" attr.type="string"/>
+  <key id="dNote" for="node" attr.name="note" attr.type="string"/>
+  <key id="dVertex" for="node" attr.name="vertex" attr.type="string"/>
+  <key id="dData" for="node" attr.name="data" attr.type="string"/>
+  <key id="dData" for="edge" attr.name="data" attr.type="string"/>
+  <graph id="G" edgedefault="directed">
+    <data key="dStateMachine"/>
+    <data key="dName">cycle_composite</data>
+    <node id="nMeta">
+      <data key="dNote">formal</data>
+      <data key="dName">CGML_META</data>
+      <data key="dData">standardVersion/ 1.0
+
+name/ cycle_composite
+</data>
+    </node>
+    <node id="nParams">
+      <data key="dNote">informal</data>
+      <data key="dData">Global Parameters
+
+Version: 1.0.0
+Author: Alexey Fedoseev
+Author e-mail: aleksey@fedoseev.net
+License: LGPL 3.0</data>
+    </node>
+    <node id="nModules">
+      <data key="dNote">informal</data>
+      <data key="dData">ROS2 HSM Modules
+
+Debug
+Timer</data>
+    </node>
+    <node id="nInit">
+      <data key="dVertex">initial</data>
+      <data key="dName"></data>
+    </node>
+    <node id="nOuter">
+      <data key="dName">outer</data>
+      <graph id="nOuter:" edgedefault="directed">
+        <node id="nOuterInit">
+          <data key="dVertex">initial</data>
+          <data key="dName"></data>
+        </node>
+        <node id="nIn">
+          <data key="dName">inside</data>
+          <data key="dData">entry/
+Debug.println('inside')</data>
+        </node>
+        <node id="nOut">
+          <data key="dName">outside</data>
+          <data key="dData">entry/
+Debug.println('outside')</data>
+        </node>
+      </graph>
+    </node>
+    <edge id="e0" source="nInit" target="nOuter"/>
+    <edge id="e1" source="nOuterInit" target="nIn"/>
+    <edge id="e2" source="nIn" target="nOut">
+      <data key="dData">TIMER_TICK/</data>
+    </edge>
+    <edge id="e3" source="nOut" target="nIn">
+      <data key="dData">TIMER_TICK_1S/</data>
+    </edge>
+  </graph>
+</graphml>

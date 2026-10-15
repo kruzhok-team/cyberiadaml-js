@@ -1,0 +1,116 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "lapkiVisual": "true"
+  param "platform": "tjc-ms1-lmp-a3"
+  param "platformVersion": "1.0"
+state-machine "MS1Lamp2":
+  name: "Ведомый"
+  geometry: rect 0.00 0.00 450.00 100.00
+  comment "cLED4" formal:
+    name: "CGML_COMPONENT LED4"
+    body: "type/ LED\n\npin/ 1\n\nlabel/ кра\n\nlabelColor/ #ff0000\n\nname/ Красный"
+  comment "cLED5" formal:
+    name: "CGML_COMPONENT LED5"
+    body: "type/ LED\n\npin/ 2\n\nlabelColor/ #d4b00c\n\nlabel/ ЖЕЛ\n\nname/ Желтый"
+  comment "cLED6" formal:
+    name: "CGML_COMPONENT LED6"
+    body: "type/ LED\n\npin/ 3\n\nlabelColor/ #06ff1a\n\nlabel/ ЗЕЛ\n\nname/ Зеленый"
+  comment "cSimpleBus1" formal:
+    name: "CGML_COMPONENT SimpleBus1"
+    body: "type/ SimpleBus"
+  comment "cTimer3" formal:
+    name: "CGML_COMPONENT Timer3"
+    body: "type/ Timer\n\nlabel/ миг\n\nname/ ТаймерМигания"
+  comment "cTimer4" formal:
+    name: "CGML_COMPONENT Timer4"
+    body: "type/ Timer\n\nlabel/ фаз\n\nname/ ТаймерФазы"
+  comment "cTimer5" formal:
+    name: "CGML_COMPONENT Timer5"
+    body: "type/ Timer\n\nlabel/ ИНИ\n\nname/ ТаймерИнициализации"
+  comment "cTimer6" formal:
+    name: "CGML_COMPONENT Timer6"
+    body: "type/ Timer\n\nname/ ТаймерОдногоМигания"
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  state "hsmpputdwnjmzdqxinim":
+    name: "Движение запрещено"
+    action entry:
+      do: "Timer4.start(5000);"
+      do: "LED4.on();"
+      do: "LED5.off();"
+      do: "LED6.off();"
+    geometry: rect 1673.31 698.97 450.00 100.00
+    color: "#FFFFFF"
+    region "hsmpputdwnjmzdqxinim::region":
+      vertex "bhmiedzjveueqgwinwuz" initial:
+        geometry: point 73.28 184.56
+      state "dzollqabgoewhabzmipn":
+        name: "Ожидание"
+        action entry:
+          do: "Timer3.start(4000);"
+        geometry: rect 272.92 225.24 450.00 100.00
+        color: "#FFFFFF"
+      state "vsmpqwtqfmuevclepulj":
+        name: "Мигание"
+        action entry:
+          do: "Timer6.start(200);"
+        geometry: rect 235.88 466.41 450.00 100.00
+        color: "#FFFFFF"
+        region "vsmpqwtqfmuevclepulj::region":
+          state "ahexalelxhoofddposct":
+            name: "Выключен"
+            action entry:
+              do: "LED4.on();"
+            geometry: rect 111.78 380.38 450.00 100.00
+            color: "#FFFFFF"
+          state "kbluidupkjmazlyheuya":
+            name: "Включен"
+            action entry:
+              do: "LED4.off();"
+            geometry: rect 115.00 135.00 450.00 100.00
+            color: "#FFFFFF"
+          vertex "zfzwdiytawsfztqfubwt" initial:
+            geometry: point 15.00 115.00
+  vertex "kajqhcjqaiwlztifaxsu" initial:
+    geometry: point 740.91 1439.67
+  state "oddqthooagtamsqcubxc":
+    name: "Внимание, скоро загорится зеленый"
+    action entry:
+      do: "LED4.off();"
+      do: "LED5.on();"
+      do: "LED6.off();"
+      do: "Timer4.start(1000);"
+    geometry: rect 934.05 671.83 450.00 100.00
+    color: "#FFFFFF"
+  state "zjejixbfnljnbxalwltt":
+    name: "Внимание, скоро загорится красный"
+    action entry:
+      do: "LED4.off();"
+      do: "LED5.on();"
+      do: "LED6.off();"
+      do: "Timer4.start(1000);"
+    geometry: rect 904.76 1620.65 450.00 100.00
+    color: "#FFFFFF"
+  transition "sbkumpidmszygjwgwqpd": "ahexalelxhoofddposct" -> "kbluidupkjmazlyheuya"
+    action event "Timer6.timeout":
+    label-geometry: point 2165.92 1456.48
+  transition "xqbiatgqjkqjmzumvfaq": "bhmiedzjveueqgwinwuz" -> "dzollqabgoewhabzmipn"
+  transition "jssyktgxceaehimyvgqs": "dzollqabgoewhabzmipn" -> "vsmpqwtqfmuevclepulj"
+    action event "Timer3.timeout":
+    label-geometry: point 1995.81 1058.92
+  transition "sbbpgmdklgznovcxaelg": "hsmpputdwnjmzdqxinim" -> "oddqthooagtamsqcubxc"
+    action event "Timer4.timeout":
+    label-geometry: point 1469.71 663.11
+  transition "fbpylcsyhhycdsabhogg": "kajqhcjqaiwlztifaxsu" -> "zjejixbfnljnbxalwltt"
+  transition "uwzdcnvvhfncqlajheey": "kbluidupkjmazlyheuya" -> "ahexalelxhoofddposct"
+    action event "Timer6.timeout":
+    label-geometry: point 1941.12 1432.28
+  transition "mbfkzqdaelwtwnuwqmhi": "zfzwdiytawsfztqfubwt" -> "kbluidupkjmazlyheuya"
+  transition "kzzyvbsitmamyqdwjjfi": "zjejixbfnljnbxalwltt" -> "hsmpputdwnjmzdqxinim"
+    action event "Timer4.timeout":
+    label-geometry: point 1408.37 1359.86

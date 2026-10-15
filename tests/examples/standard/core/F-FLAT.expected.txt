@@ -1,0 +1,23 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+state-machine "G":
+  name: "Flattened"
+  vertex "init" initial:
+  state "n0":
+    name: "Top"
+  state "n0::n1":
+    name: "Inner one"
+  state "n0::n2":
+    name: "Inner two"
+  comment "nMeta" formal:
+    name: "CGML_META"
+  transition "init-n0#1": "init" -> "n0"
+  transition "n0-n0::n1#1": "n0" -> "n0::n1"
+  transition "n0::n1-n0::n2#1": "n0::n1" -> "n0::n2"
+    action event "TICK":
+      do: "step()"

@@ -1,0 +1,35 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+state-machine "G1":
+  name: "First"
+  vertex "ainit" initial:
+  state "an0":
+    name: "Idle"
+  state "an1":
+    name: "Working"
+  comment "cTimerA" formal:
+    name: "CGML_COMPONENT timer1"
+    body: "type/ Timer"
+  comment "nMeta" formal:
+    name: "CGML_META"
+  transition "ainit-an0": "ainit" -> "an0"
+  transition "an0-an1": "an0" -> "an1"
+    action event "timer1.TIMEOUT":
+state-machine "G2":
+  name: "Second"
+  vertex "binit" initial:
+  state "bn0":
+    name: "Idle"
+  state "bn1":
+    name: "Working"
+  comment "cTimerB" formal:
+    name: "CGML_COMPONENT timer1"
+    body: "type/ Timer"
+  transition "binit-bn0": "binit" -> "bn0"
+  transition "bn0-bn1": "bn0" -> "bn1"
+    action event "timer1.TIMEOUT":

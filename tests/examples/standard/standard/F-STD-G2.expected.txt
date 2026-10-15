@@ -1,0 +1,57 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: short
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "author": "Матросов В.М."
+  param "contact": "matrosov@mail.ru"
+  param "description": "Пример описания схемы, который может быть многострочным,\nпотому что так удобнее"
+  param "geometry": "short"
+  param "name": "Стандартный пылесос"
+  param "platform": "BerlogaAcademyHoover"
+  param "target": "Hoover"
+state-machine "G":
+  name: "Робот-пылесос"
+  vertex "init" initial:
+    geometry: point 200.00 100.00
+  state "n0":
+    name: "Уборка мусора"
+    geometry: rect 800.00 0.00 0.00 0.00
+    region "n0:":
+      state "n0::n1":
+        name: "Сближение"
+        action entry:
+          do: "МодульДвижения.ДвигатьсяКЦели()"
+        geometry: rect 50.00 100.00 0.00 0.00
+      state "n0::n2":
+        name: "Уборка"
+        action entry:
+          do: "Пылесос.УбратьЦель()"
+        geometry: rect 50.00 550.00 0.00 0.00
+  state "n3":
+    name: "Скан"
+    action entry:
+      do: "Сенсор.ПоискЦелиПоДистанции(мин)"
+    action exit:
+      do: "Сенсор.ОстановкаПоиска()"
+    geometry: rect 0.00 300.00 0.00 0.00
+  comment "nMeta" formal:
+    name: "CGML_META"
+  transition "init-n3": "init" -> "n3"
+  transition "n0-n3": "n0" -> "n3"
+    action event "АнализаторЦели.ЦельУстранена":
+    label-geometry: point -300.00 700.00
+  transition "n0-n3-2": "n0" -> "n3"
+    action event "АнализаторЦели.ЦельПотеряна":
+    label-geometry: point -400.00 600.00
+  transition "n0::n1-n0::n2": "n0::n1" -> "n0::n2"
+    action event "Пылесос.ЦельВошлаВЗонуДействия":
+    label-geometry: point 50.00 400.00
+  transition "n0::n2-n0::n1": "n0::n2" -> "n0::n1"
+    action event "Пылесос.ЦельВышлаИзЗоныДействия":
+    label-geometry: point 350.00 -200.00
+  transition "n3-n0::n1": "n3" -> "n0::n1"
+    action event "Сенсор.ЦельПолучена":
+    label-geometry: point 600.00 0.00

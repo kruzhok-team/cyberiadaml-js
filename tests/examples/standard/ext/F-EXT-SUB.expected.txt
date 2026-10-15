@@ -1,0 +1,33 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+state-machine "M1":
+  name: "Caller"
+  vertex "init" initial:
+  comment "nMeta" formal:
+    name: "CGML_META"
+  state "s1":
+    name: "After"
+  submachine "sub0" ref "M2":
+    name: "Nested job"
+    region "sub0:":
+      vertex "sub0::en" entryPoint:
+        name: "Start"
+      vertex "sub0::ex" exitPoint:
+        name: "Done"
+  transition "init-sub0#1": "init" -> "sub0::en"
+  transition "sub0-s1#1": "sub0::ex" -> "s1"
+state-machine "M2":
+  name: "Worker"
+  vertex "m2en" entryPoint:
+    name: "Start"
+  vertex "m2ex" exitPoint:
+    name: "Done"
+  state "m2s":
+    name: "Run"
+  transition "m2en-m2s#1": "m2en" -> "m2s"
+  transition "m2s-m2ex#1": "m2s" -> "m2ex"

@@ -1,0 +1,68 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "author": "Матросов В.М."
+  param "contact": "matrosov@mail.ru"
+  param "description": "Пример описания схемы, \nкоторый может быть многострочным, потому что так удобнее"
+  param "name": "Автобортник"
+  param "platform": "BearlogaDefend-Autoborder"
+  param "platformVersion": "1.0"
+  param "target": "Autoborder"
+state-machine "g":
+  name: "g"
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  vertex "init" initial:
+    geometry: point -1480.50 448.68
+  state "n0":
+    name: "Бой"
+    action entry:
+    action exit:
+    geometry: rect -815.84 505.14 672.53 145.00
+    color: "#FFFFFF"
+    region "n0::region":
+      state "n0::n1":
+        name: "Сближение"
+        action entry:
+          do: "МодульДвижения.ДвигатьсяКЦели()"
+        action exit:
+        geometry: rect 78.66 22.91 468.00 145.00
+        color: "#FFFFFF"
+      state "n0::n2":
+        name: "Атака"
+        action entry:
+          do: "ОружиеЦелевое.АтаковатьЦель()"
+        geometry: rect 74.25 304.09 468.00 95.00
+        color: "#FFFFFF"
+  state "n3":
+    name: "Скан"
+    action entry:
+      do: "Сенсор.ПоискВрагаПоДистанции(мин)"
+    action exit:
+      do: "Сенсор.ОстановкаПоиска()"
+    geometry: rect -1536.79 516.75 468.00 145.00
+    color: "#FFFFFF"
+  transition "init-n3": "init" -> "n3"
+  transition "lnjmwqsafxzhjthzfyly": "n0" -> "n3"
+    action event "АнализаторЦели.ЦельУничтожена":
+    label-geometry: point -998.57 650.44
+  transition "n0-n3": "n0" -> "n3"
+    action event "АнализаторЦели.ЦельПотеряна":
+    label-geometry: point -1002.35 550.21
+    color: "#3b1a08"
+  transition "n0::n1-n0::n2": "n0::n1" -> "n0::n2"
+    action event "ОружиеЦелевое.ЦельВошлаВЗонуАтаки":
+    label-geometry: point 120.15 204.25
+    color: "#3fe09a"
+  transition "n0::n2-n0::n1": "n0::n2" -> "n0::n1"
+    action event "ОружиеЦелевое.ЦельВышлаИзЗоныАтаки":
+    label-geometry: point 337.45 205.30
+    color: "#554a3b"
+  transition "n3-n0::n1": "n3" -> "n0::n1"
+    action event "Сенсор.ЦельПолучена":
+    label-geometry: point -1201.40 737.53
+    color: "#531a77"

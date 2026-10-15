@@ -1,0 +1,15 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+state-machine "G":
+  name: "Escaping"
+  vertex "init" initial:
+  state "n0":
+    name: "Idle > Ready"
+  comment "nMeta" formal:
+    name: "CGML_META"
+  transition "init-n0#1": "init" -> "n0"

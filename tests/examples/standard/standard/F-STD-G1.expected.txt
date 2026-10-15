@@ -1,0 +1,11 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+state-machine "g":
+  name: "State Machine"
+  comment "nMeta" formal:
+    name: "CGML_META"

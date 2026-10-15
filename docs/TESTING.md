@@ -25,10 +25,10 @@ documents of other checkouts are kept as snapshots with their revision.
 
 | directory | what | how |
 |---|---|---|
-| `tests/unit/` | behaviour grammar (§6.8), parameters (§6.9), ids, key declarations, writer order, findings | small inline documents |
-| `tests/conformance/` | the standard examples | positive: strict read, `dumpCGML` equals `.expected.txt`; write, strict re-read, same dump. Negative: strict read throws `CGMLError` with the requirement id of the example |
-| `tests/dialect/` | the Lapki corpus | permissive read: dump equals `.expected.txt`, repair findings equal `.repairs.txt`; strict read throws; the written document reads in strict mode |
-| `tests/lapki/` | the lapki-client contract | on the Lapki corpus and the lapki-client templates: the fields `GraphmlParser.ts` reads (machine `platform`, `meta.values`, components with `id`, `type`, `order`, `parameters.name`, states with `bounds`, `parent`, parsed actions, vertices, notes, transitions) |
+| `tests/unit/` | the core: behaviour grammar (§6.8), parameters (§6.9), the XML reader, the L1-L4 checks, the dialect pass, the model, the writer | small inline documents; the unit tests of `cgmlval` and `cyberiadaml_py.core` ported |
+| `tests/conformance/` | the standard examples | positive: `core.read` strict, `core.dump` equals `.expected.txt`; `core.write`, strict re-read, same dump. Negative: strict read throws `CGMLError` with the requirement id of the example; permissive read reports, rejects or repairs it |
+| `tests/dialect/` | the Lapki corpus | permissive `core.read`: dump equals `.expected.txt` (an invalid document: its `errors`), repair findings equal `.repairs.txt`; strict read throws; the written document reads in strict mode |
+| `tests/lapki/` | the lapki-client contract (round 5, with the 2.0 interface) | on the Lapki corpus and the lapki-client templates: the fields `GraphmlParser.ts` reads (machine `platform`, `meta.values`, components with `id`, `type`, `order`, `parameters.name`, states with `bounds`, `parent`, parsed actions, vertices, notes, transitions) |
 
 The 1.x tests (`src/import.test.ts`, `src/export.test.ts`) compare models after a round trip and
 cannot see what the reader drops; they move to `tests/lapki/` as model checks of the `demos/`

@@ -1,0 +1,56 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "platform": "ArduinoUno"
+  param "platformVersion": "1.0"
+state-machine "Ga":
+  name: "Ga"
+  comment "cQHsmSerial" formal:
+    name: "CGML_COMPONENT QHsmSerial"
+    body: "type/ QHsmSerial\n\nbaud/ 9600"
+  comment "cTimer1" formal:
+    name: "CGML_COMPONENT Timer1"
+    body: "type/ Timer"
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  state "gvuxfwblozjgixwcmvkw":
+    name: "Состояние"
+    action entry:
+      do: "Timer1.start(5000);"
+      do: "QHsmSerial::println(\"Вошли во второе состояние\");"
+    geometry: rect 60.06 709.34 450.00 95.00
+    color: "#FFFFFF"
+  vertex "mqnudktinpiciufanqnn" initial:
+    geometry: point -91.00 94.81
+  state "ytpqqvuajpnczvfnuquc":
+    name: "Главное состояние"
+    action entry:
+      do: "Timer1.start(5000);"
+      do: "QHsmSerial::println(\"Вошли в главное состояние\");"
+    geometry: rect 9.00 194.81 450.00 95.00
+    color: "#FFFFFF"
+    region "ytpqqvuajpnczvfnuquc::region":
+      vertex "ipujuzkssjjanlpuhxdk" initial:
+        geometry: point 0.00 0.00
+      state "vmbpwwemcyqyywuqbiby":
+        name: "Подсостояние"
+        action entry:
+          do: "QHsmSerial::println(\"Вошли в подсостояние\");"
+        geometry: rect 100.00 100.00 450.00 95.00
+        color: "#FFFFFF"
+  transition "fwquhlcpeketzecywgte": "gvuxfwblozjgixwcmvkw" -> "ytpqqvuajpnczvfnuquc"
+    action event "Timer1.timeout":
+    label-geometry: point 321.15 564.96
+    color: "#FFFFFF"
+  transition "lvgfxuugwxdkcxhdkqyb": "ipujuzkssjjanlpuhxdk" -> "vmbpwwemcyqyywuqbiby"
+    action event "QHsmSerial::println(\"Дочернее начальное состояние!\");":
+  transition "flfmuxehplsazwkjbbvx": "mqnudktinpiciufanqnn" -> "ytpqqvuajpnczvfnuquc"
+    action event "QHsmSerial::println(\"Глобальное начальное состояние!\");":
+  transition "ibbzkehwwxzoxplaedsw": "ytpqqvuajpnczvfnuquc" -> "gvuxfwblozjgixwcmvkw"
+    action event "Timer1.timeout":
+    label-geometry: point 74.26 565.79
+    color: "#FFFFFF"

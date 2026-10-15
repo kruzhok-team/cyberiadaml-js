@@ -1,0 +1,45 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "lapkiVisual": "true"
+  param "platform": "BearlogaDefend-Generator"
+  param "platformVersion": "1.0"
+state-machine "G":
+  name: "G"
+  geometry: rect 0.00 0.00 450.00 100.00
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  vertex "mswgbcyelqyffwfwasgk" initial:
+    geometry: point -863.00 -634.00
+  state "n0":
+    name: "Скан"
+    action entry:
+      do: "Scaner.FindAllyByDps(max)"
+    action exit:
+      do: "Scaner.Stop()"
+    geometry: rect -763.00 -534.00 413.00 288.00
+  state "n1":
+    name: "Помощь"
+    action entry:
+      do: "Navigation.MoveToTarget()"
+      do: "Charger.Activate()"
+    action exit:
+      do: "Charger.Stop()"
+    geometry: rect -819.00 -145.00 590.00 288.00
+  transition "bxfdlbipnbvesljeotsn": "mswgbcyelqyffwfwasgk" -> "n0"
+  transition "xvluqmhseqkkyeaxkcyj": "n0" -> "n1"
+    action event "Scaner.TargetAcquired":
+    label-geometry: point -796.00 -296.00
+    color: "#E14EF7"
+  transition "twqibasoeijydkzdqlfx": "n1" -> "n0"
+    action event "TargetAnalyser.Destroyed":
+    label-geometry: point -623.00 -301.00
+    color: "#11A454"
+  transition "vcgcszmklkoewwekoipi": "n1" -> "n0"
+    action event "Charger.TargetLeftZone":
+    label-geometry: point -442.00 -301.00
+    color: "#89F026"

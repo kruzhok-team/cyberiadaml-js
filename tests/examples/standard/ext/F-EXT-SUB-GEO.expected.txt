@@ -1,0 +1,34 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: short
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "geometry": "short"
+state-machine "M1":
+  name: "Caller"
+  geometry: rect 0.00 0.00 600.00 300.00
+  comment "nMeta" formal:
+    name: "CGML_META"
+    geometry: rect 0.00 0.00 120.00 40.00
+  submachine "sub0" ref "M2":
+    name: "Nested job"
+    geometry: rect 10.00 50.00 500.00 250.00
+    region "sub0:":
+      vertex "sub0::en" entryPoint:
+        name: "Start"
+        geometry: point 0.00 200.00
+      vertex "sub0::ex" exitPoint:
+        name: "Done"
+        geometry: point 500.00 50.00
+state-machine "M2":
+  name: "Worker"
+  geometry: rect 0.00 350.00 200.00 120.00
+  vertex "m2en" entryPoint:
+    name: "Start"
+  vertex "m2ex" exitPoint:
+    name: "Done"
+  state "m2s":
+    name: "Run"
+    geometry: rect 10.00 10.00 100.00 60.00

@@ -1,0 +1,26 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "markupLanguage": "html"
+state-machine "G":
+  name: "Display named"
+  comment "cDoc" informal:
+    markup: "markdown"
+    body: "The *idle* state."
+  comment "cPlain" informal:
+    markup: "html"
+    body: "Uses the <b>default</b> markup."
+  vertex "init" initial:
+  state "n0":
+    name: "Idle"
+    color: "red"
+  comment "nMeta" formal:
+    name: "CGML_META"
+  transition "init-n0#1": "init" -> "n0"
+  transition "n0-n0#1": "n0" -> "n0"
+    action event "PING":
+    color: "SteelBlue"

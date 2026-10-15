@@ -1,0 +1,28 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: short
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "geometry": "short"
+state-machine "G":
+  name: "Region geometry"
+  geometry: rect 0.00 0.00 400.00 300.00
+  vertex "init" initial:
+    geometry: point 30.00 80.00
+  state "n0":
+    name: "Composite"
+    geometry: rect 60.00 60.00 300.00 200.00
+    region "n0:":
+      geometry: rect 10.00 30.00 280.00 160.00
+      state "r0":
+        name: "Inner"
+        geometry: rect 60.00 20.00 120.00 60.00
+      vertex "rinit" initial:
+        geometry: point 30.00 40.50
+  comment "nMeta" formal:
+    name: "CGML_META"
+    geometry: rect 10.00 10.00 120.00 40.00
+  transition "init-n0#1": "init" -> "n0"
+  transition "rinit-r0#1": "rinit" -> "r0"

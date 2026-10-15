@@ -1,0 +1,23 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+state-machine "G":
+  name: "Commented"
+  comment "cNote" informal:
+    markup: "plain"
+    body: "The idle state waits for events."
+  comment "cSpec" formal:
+    name: "REQUIREMENTS"
+    body: "traceId/ REQ-42"
+  vertex "init" initial:
+  state "n0":
+    name: "Idle"
+  comment "nMeta" formal:
+    name: "CGML_META"
+  transition "init-n0#1": "init" -> "n0"
+  comment-link "cNote-n0#1": "cNote" -> "n0" pivot "dName" chunk "Idle"
+  comment-link "cSpec-n0#1": "cSpec" -> "n0" pivot "dName" chunk "Idle"

@@ -1,0 +1,45 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+state-machine "G":
+  name: "Label forms"
+  vertex "init" initial:
+  state "n0":
+    name: "Idle"
+  state "n1":
+    name: "Scan"
+    action entry:
+      do: "Сенсор.ПоискЦелиПоДистанции(мин)"
+    action event "Сенсор.ЦельПолучена" guard "Счетчик.ТекущееЗначениеСчетчика >= 2":
+      do: "МодульДвижения.ЗадатьКоординатуВверх(34)"
+    action exit:
+      do: "Сенсор.ОстановкаПоиска"
+  state "n2":
+    name: "Done"
+    action event "":
+      do: "act()"
+    action event "TIMEOUT" defer guard "armed":
+  comment "nMeta" formal:
+    name: "CGML_META"
+  transition "init-n0#1": "init" -> "n0"
+  transition "n0-n0#1": "n0" -> "n0"
+    action event "TICK" guard "armed":
+  transition "n0-n1#1": "n0" -> "n1"
+    action event "GO":
+  transition "n1-n0#1": "n1" -> "n0"
+    action event "STOP" block guard "ready":
+      do: "halt()"
+  transition "n1-n2#1": "n1" -> "n2"
+    action event "Сенсор.ЦельПолучена" guard "Счетчик.ТекущееЗначениеСчетчика >= 2":
+  transition "n2-n0#1": "n2" -> "n0"
+    action event "RESET" propagate guard "count == 0":
+  transition "n2-n1#1": "n2" -> "n1"
+    action event "TIMEOUT" guard "armed":
+      do: "rearm()"
+  transition "n2-n2#1": "n2" -> "n2"
+    action event "":
+      do: "finish()"
