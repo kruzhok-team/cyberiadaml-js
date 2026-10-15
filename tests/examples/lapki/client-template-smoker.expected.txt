@@ -1,0 +1,64 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "lapkiVisual": "true"
+  param "platform": "BearlogaDefend-Smoker"
+  param "platformVersion": "1.0"
+state-machine "G":
+  name: "G"
+  geometry: rect 0.00 0.00 450.00 100.00
+  vertex "aixcxljxoczsfvsinzuq" initial:
+    geometry: point -851.00 -58.00
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  state "n0":
+    name: "Скан"
+    action entry:
+      do: "Scaner.FindRivalByDistance(min)"
+    action exit:
+      do: "Scaner.Stop()"
+    geometry: rect -751.00 42.00 413.00 288.00
+  state "n1":
+    name: "Бой"
+    action entry:
+    action exit:
+    geometry: rect -34.00 246.00 519.00 830.00
+    region "n1::region":
+      state "n1::n2":
+        name: "Сближение"
+        action entry:
+          do: "Navigation.MoveToTarget()"
+        action exit:
+          do: "Navigation.Stop()"
+        geometry: rect 62.00 169.00 413.00 288.00
+      state "n1::n3":
+        name: "Атака"
+        action entry:
+          do: "MassWeapon.Activate()"
+        action exit:
+        geometry: rect 66.00 472.00 413.00 208.00
+  transition "utxpzkhxadcevlemcmtt": "aixcxljxoczsfvsinzuq" -> "n0"
+  transition "zawbqjiekdxmthgidvyh": "n0" -> "n1::n2"
+    action event "Scaner.TargetAcquired":
+    label-geometry: point -369.00 199.00
+    color: "#EF59B8"
+  transition "qhtlqalmgumwmivnzjhj": "n1" -> "n0"
+    action event "TargetAnalyser.Lost":
+    label-geometry: point -163.00 69.00
+    color: "#4E942E"
+  transition "zgveyytwyfmsfkpjlkdu": "n1" -> "n0"
+    action event "TargetAnalyser.Destroyed":
+    label-geometry: point -500.00 443.00
+    color: "#B09546"
+  transition "wklogclhnimeuxaypuen": "n1::n2" -> "n1::n3"
+    action event "MassWeapon.TargetEnteredRange":
+    label-geometry: point 38.00 614.00
+    color: "#043CD9"
+  transition "edtgubimgntwbipbqtyl": "n1::n3" -> "n1::n2"
+    action event "MassWeapon.TargetLeftRange":
+    label-geometry: point 313.00 614.00
+    color: "#412AD8"

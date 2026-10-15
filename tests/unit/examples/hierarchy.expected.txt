@@ -1,0 +1,47 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: full
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "geometry": "full"
+state-machine "G":
+  name: "Traffic light"
+  geometry: rect 0.00 0.00 400.00 300.00
+  vertex "init" initial:
+    geometry: point 10.00 10.00
+  state "n0":
+    name: "Working"
+    action entry:
+      do: "switchOn()"
+    action exit:
+      do: "switchOff()"
+    geometry: rect 40.00 40.00 320.00 220.00
+    color: "#336699"
+    region "n0:":
+      name: "lights"
+      geometry: rect 50.00 60.00 300.00 190.00
+      state "n1":
+        name: "Red"
+        geometry: rect 70.00 90.00 100.00 50.00
+      state "n2":
+        name: "Green"
+        geometry: rect 220.00 90.00 100.00 50.00
+      vertex "rinit" initial:
+        geometry: point 60.00 70.00
+  comment "nMeta" formal:
+    name: "CGML_META"
+  transition "init-n0#1": "init" -> "n0"
+  transition "n1-n2#1": "n1" -> "n2"
+    action event "TICK" guard "red_done":
+      do: "setGreen()"
+    polyline: point 175.00 100.00 point 200.00 95.50
+    source-point: point 170.00 110.00
+    target-point: point 220.00 110.00
+    label-geometry: point 185.00 80.00
+    color: "#00AA00"
+  transition "n2-n1#1": "n2" -> "n1"
+    action event "TICK":
+      do: "setRed()"
+  transition "rinit-n1#1": "rinit" -> "n1"

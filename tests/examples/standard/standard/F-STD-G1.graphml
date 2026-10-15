@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+
+  <data key="gFormat">Cyberiada-GraphML-1.0</data>
+
+  <key id="gFormat" for="graphml" attr.name="format" attr.type="string"/>
+  <key id="dName" for="graph" attr.name="name" attr.type="string"/>
+  <key id="dName" for="node" attr.name="name" attr.type="string"/>
+  <key id="dStateMachine" for="graph" attr.name="stateMachine" attr.type="string"/>
+  <key id="dNote" for="node" attr.name="note" attr.type="string"/>
+  <key id="dData" for="node" attr.name="data" attr.type="string"/>
+
+  <graph id="g" edgedefault="directed">
+    <data key="dStateMachine"/>
+    <data key="dName">State Machine</data>
+    <node id="nMeta">
+      <data key="dNote">formal</data>
+      <data key="dName">CGML_META</data>
+      <data key="dData">standardVersion/1.0</data>
+    </node>
+  </graph>
+
+</graphml>

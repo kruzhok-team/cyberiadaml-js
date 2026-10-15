@@ -1,0 +1,58 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "platform": "ArduinoUno"
+  param "platformVersion": "1.0"
+state-machine "Ga":
+  name: "Ga"
+  comment "cCounter1" formal:
+    name: "CGML_COMPONENT Counter1"
+    body: "type/ Counter"
+  comment "cTimer1" formal:
+    name: "CGML_COMPONENT Timer1"
+    body: "type/ Timer"
+  comment "cTimer2" formal:
+    name: "CGML_COMPONENT Timer2"
+    body: "type/ Timer"
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  vertex "iphiwozkkmlvmyszkbwf" choice:
+    geometry: rect 251.81 388.64 0.00 0.00
+  vertex "jvlpndkeqwdhdljynyqb" initial:
+    geometry: point -12.09 -31.25
+  vertex "osxuhjnsvmtycunuoddd" choice:
+    geometry: rect 536.81 475.64 0.00 0.00
+  state "tiwpygboomipgwdemmne":
+    name: "Состояние"
+    action entry:
+      do: "Timer1.start(1000);"
+      do: "Timer2.start(5000);"
+    action event "Timer1.timeout":
+      do: "Counter1.add(1);"
+    geometry: rect 45.91 72.75 450.00 145.00
+    color: "#FFFFFF"
+  transition "xpzajsxtjmigohkaeglz": "iphiwozkkmlvmyszkbwf" -> "osxuhjnsvmtycunuoddd"
+    action event "" guard "Counter1.value > 4":
+    label-geometry: point 520.81 274.14
+    color: "#FFFFFF"
+  transition "ilvgyjqoobfpkegukizt": "iphiwozkkmlvmyszkbwf" -> "tiwpygboomipgwdemmne"
+    action event "" guard "Counter1.value <= 4":
+    label-geometry: point 234.86 281.20
+    color: "#FFFFFF"
+  transition "zuhjwxoyzoucjitmcbpi": "jvlpndkeqwdhdljynyqb" -> "tiwpygboomipgwdemmne"
+  transition "izqvsnumhhqujqpcgdbd": "osxuhjnsvmtycunuoddd" -> "tiwpygboomipgwdemmne"
+    action event "" guard "Counter1.value < 6":
+    label-geometry: point 391.36 667.20
+    color: "#FFFFFF"
+  transition "qdsvbhnlvtczyelioaug": "osxuhjnsvmtycunuoddd" -> "tiwpygboomipgwdemmne"
+    action event "" guard "Counter1.value >= 6":
+    label-geometry: point 731.36 124.20
+    color: "#FFFFFF"
+  transition "iezxawquipspksxupxue": "tiwpygboomipgwdemmne" -> "iphiwozkkmlvmyszkbwf"
+    action event "Timer2.timeout":
+    label-geometry: point -18.14 304.70
+    color: "#FFFFFF"

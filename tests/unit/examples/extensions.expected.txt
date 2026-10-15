@@ -1,0 +1,43 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "markupLanguage": "html"
+state-machine "M1":
+  name: "Контроллер"
+  formal-name: "Controller"
+  comment "cInfo" informal:
+    markup: "html"
+    body: "See \"docs\""
+  vertex "ch0" choice:
+  vertex "init" initial:
+  comment "nMeta" formal:
+    name: "CGML_META"
+  state "s0":
+    name: "Wait"
+    formal-name: "wait_state"
+    collapsed
+    region "s0:":
+      state "s0w":
+        name: "Inner"
+  submachine "sub0" ref "M2":
+    name: "Nested"
+  transition "ch0-s0#1": "ch0" -> "s0"
+    action event "" guard "x \\[0\\] > 5":
+      do: "retry()"
+  transition "ch0-sub0#1": "ch0" -> "sub0"
+    action event "" guard "else":
+      do: "enter()"
+  transition "init-s0#1": "init" -> "s0"
+  transition "s0-ch0#1": "s0" -> "ch0"
+    action event "GO":
+  comment-link "cInfo-s0#1": "cInfo" -> "s0" pivot "dName" chunk "Wait"
+state-machine "M2":
+  name: "Nested worker"
+  vertex "m2init" initial:
+  state "m2s0":
+    name: "Run"
+  transition "m2init-m2s0#1": "m2init" -> "m2s0"

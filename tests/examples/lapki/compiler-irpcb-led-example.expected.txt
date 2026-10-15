@@ -1,0 +1,37 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "lapkiVisual": "true"
+  param "platform": "IRPCB"
+  param "platformVersion": "1.0"
+state-machine "Machine1":
+  name: "Machine1"
+  geometry: rect 0.00 0.00 450.00 100.00
+  comment "cLed1" formal:
+    name: "CGML_COMPONENT Led1"
+    body: "type/ Led\n\nКонтакт/ LED_PWM4"
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  state "mgaljvhjtpapgzwigdbg":
+    name: "Выключается"
+    action entry:
+      do: "Led1.fadeOut(1500);"
+    geometry: rect -30.52 370.53 450.00 100.00
+  vertex "msufiqwdptomgutgmasb" initial:
+    geometry: point -134.76 70.26
+  state "ztcldydpeocjcqgglcab":
+    name: "Включается"
+    action entry:
+      do: "Led1.fadeIn(1500);"
+    geometry: rect -34.76 86.26 450.00 100.00
+  transition "vjkyzsxwseivvcamhslw": "mgaljvhjtpapgzwigdbg" -> "ztcldydpeocjcqgglcab"
+    action event "Led1.isReady":
+    label-geometry: point -20.64 242.40
+  transition "zsmkbqvfpanquvbdvffz": "msufiqwdptomgutgmasb" -> "ztcldydpeocjcqgglcab"
+  transition "pllxilqdfuslideziwqt": "ztcldydpeocjcqgglcab" -> "mgaljvhjtpapgzwigdbg"
+    action event "Led1.isReady":
+    label-geometry: point 249.36 237.90

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+  <data key="gFormat">Cyberiada-GraphML-1.0</data>
+  <key id="gFormat" for="graphml" attr.name="format" attr.type="string"/>
+  <key id="dName" for="graph" attr.name="name" attr.type="string"/>
+  <key id="dName" for="node" attr.name="name" attr.type="string"/>
+  <key id="dStateMachine" for="graph" attr.name="stateMachine"/>
+  <key id="dRegion" for="graph" attr.name="region"/>
+  <key id="dGeometry" for="graph" attr.name="geometry"/>
+  <key id="dGeometry" for="node" attr.name="geometry"/>
+  <key id="dGeometry" for="edge" attr.name="geometry"/>
+  <key id="dSourcePoint" for="edge" attr.name="sourcePoint"/>
+  <key id="dTargetPoint" for="edge" attr.name="targetPoint"/>
+  <key id="dLabelGeometry" for="edge" attr.name="labelGeometry"/>
+  <key id="dColor" for="node" attr.name="color" attr.type="string"/>
+  <key id="dColor" for="edge" attr.name="color" attr.type="string"/>
+  <key id="dNote" for="node" attr.name="note" attr.type="string"/>
+  <key id="dVertex" for="node" attr.name="vertex" attr.type="string"/>
+  <key id="dData" for="node" attr.name="data" attr.type="string"/>
+  <key id="dData" for="edge" attr.name="data" attr.type="string"/>
+  <graph id="G" edgedefault="directed">
+    <data key="dStateMachine"/>
+    <data key="dName">Traffic light</data>
+    <data key="dGeometry">
+      <rect x="0" y="0" width="400" height="300"/>
+    </data>
+    <node id="nMeta">
+      <data key="dNote">formal</data>
+      <data key="dName">CGML_META</data>
+      <data key="dData">standardVersion/ 1.0
+
+geometry/ full</data>
+    </node>
+    <node id="init">
+      <data key="dVertex">initial</data>
+      <data key="dGeometry">
+        <point x="10" y="10"/>
+      </data>
+    </node>
+    <node id="n0">
+      <data key="dName">Working</data>
+      <data key="dData">entry/
+switchOn()
+
+exit/
+switchOff()</data>
+      <data key="dGeometry">
+        <rect x="40" y="40" width="320" height="220"/>
+      </data>
+      <data key="dColor">#336699</data>
+      <graph id="n0:">
+        <data key="dRegion"/>
+        <data key="dName">lights</data>
+        <data key="dGeometry">
+          <rect x="50" y="60" width="300" height="190"/>
+        </data>
+        <node id="rinit">
+          <data key="dVertex">initial</data>
+          <data key="dGeometry">
+            <point x="60" y="70"/>
+          </data>
+        </node>
+        <node id="n1">
+          <data key="dName">Red</data>
+          <data key="dGeometry">
+            <rect x="70" y="90" width="100" height="50"/>
+          </data>
+        </node>
+        <node id="n2">
+          <data key="dName">Green</data>
+          <data key="dGeometry">
+            <rect x="220" y="90" width="100" height="50"/>
+          </data>
+        </node>
+      </graph>
+    </node>
+    <edge id="init-n0#1" source="init" target="n0"/>
+    <edge id="rinit-n1#1" source="rinit" target="n1"/>
+    <edge id="n1-n2#1" source="n1" target="n2">
+      <data key="dData">TICK [red_done]/ setGreen()</data>
+      <data key="dGeometry">
+        <point x="175" y="100"/>
+        <point x="200" y="95.5"/>
+      </data>
+      <data key="dSourcePoint">
+        <point x="170" y="110"/>
+      </data>
+      <data key="dTargetPoint">
+        <point x="220" y="110"/>
+      </data>
+      <data key="dLabelGeometry">
+        <point x="185" y="80"/>
+      </data>
+      <data key="dColor">#00AA00</data>
+    </edge>
+    <edge id="n2-n1#1" source="n2" target="n1">
+      <data key="dData">TICK/ setRed()</data>
+    </edge>
+  </graph>
+</graphml>

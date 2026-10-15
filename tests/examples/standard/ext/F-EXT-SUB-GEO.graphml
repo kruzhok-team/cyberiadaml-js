@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+  <data key="gFormat">Cyberiada-GraphML-1.0</data>
+  <key id="gFormat" for="graphml" attr.name="format" attr.type="string"/>
+  <key id="dName" for="graph" attr.name="name" attr.type="string"/>
+  <key id="dName" for="node" attr.name="name" attr.type="string"/>
+  <key id="dStateMachine" for="graph" attr.name="stateMachine"/>
+  <key id="dRegion" for="graph" attr.name="region"/>
+  <key id="dSubmachineState" for="node" attr.name="submachineState" attr.type="string"/>
+  <key id="dGeometry" for="graph" attr.name="geometry"/>
+  <key id="dGeometry" for="node" attr.name="geometry"/>
+  <key id="dGeometry" for="edge" attr.name="geometry"/>
+  <key id="dNote" for="node" attr.name="note" attr.type="string"/>
+  <key id="dVertex" for="node" attr.name="vertex" attr.type="string"/>
+  <key id="dData" for="node" attr.name="data" attr.type="string"/>
+  <key id="dData" for="edge" attr.name="data" attr.type="string"/>
+  <graph id="M1" edgedefault="directed">
+    <data key="dStateMachine"/>
+    <data key="dName">Caller</data>
+    <data key="dGeometry">
+      <rect x="0" y="0" width="600" height="300"/>
+    </data>
+    <node id="nMeta">
+      <data key="dNote">formal</data>
+      <data key="dName">CGML_META</data>
+      <data key="dData">standardVersion/ 1.0
+
+geometry/ short</data>
+      <data key="dGeometry">
+        <rect x="0" y="0" width="120" height="40"/>
+      </data>
+    </node>
+    <node id="sub0">
+      <data key="dSubmachineState">M2</data>
+      <data key="dName">Nested job</data>
+      <data key="dGeometry">
+        <rect x="10" y="50" width="500" height="250"/>
+      </data>
+      <graph id="sub0:">
+        <node id="sub0::en">
+          <data key="dVertex">entryPoint</data>
+          <data key="dName">Start</data>
+          <data key="dGeometry">
+            <point x="0" y="200"/>
+          </data>
+        </node>
+        <node id="sub0::ex">
+          <data key="dVertex">exitPoint</data>
+          <data key="dName">Done</data>
+          <data key="dGeometry">
+            <point x="500" y="50"/>
+          </data>
+        </node>
+      </graph>
+    </node>
+  </graph>
+  <graph id="M2" edgedefault="directed">
+    <data key="dStateMachine"/>
+    <data key="dName">Worker</data>
+    <data key="dGeometry">
+      <rect x="0" y="350" width="200" height="120"/>
+    </data>
+    <node id="m2en">
+      <data key="dVertex">entryPoint</data>
+      <data key="dName">Start</data>
+    </node>
+    <node id="m2ex">
+      <data key="dVertex">exitPoint</data>
+      <data key="dName">Done</data>
+    </node>
+    <node id="m2s">
+      <data key="dName">Run</data>
+      <data key="dGeometry">
+        <rect x="10" y="10" width="100" height="60"/>
+      </data>
+    </node>
+  </graph>
+</graphml>

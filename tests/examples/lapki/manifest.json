@@ -1,0 +1,302 @@
+{
+  "documents": {
+    "client-template-blinker": {
+      "repository": "lapki-client",
+      "path": "resources/templates/Arduino Uno/Мигалка.graphml",
+      "revision": "1206d7340fc4cb47d4e7a2c16f0e07f2dbf2d928",
+      "also": [],
+      "status": "valid"
+    },
+    "client-template-autoborder": {
+      "repository": "lapki-client",
+      "path": "resources/templates/Защита пасеки/Автобортник.graphml",
+      "revision": "1206d7340fc4cb47d4e7a2c16f0e07f2dbf2d928",
+      "also": [],
+      "status": "valid"
+    },
+    "client-template-generator": {
+      "repository": "lapki-client",
+      "path": "resources/templates/Защита пасеки/Генератор.graphml",
+      "revision": "1206d7340fc4cb47d4e7a2c16f0e07f2dbf2d928",
+      "also": [],
+      "status": "valid"
+    },
+    "client-template-smoker": {
+      "repository": "lapki-client",
+      "path": "resources/templates/Защита пасеки/Дымарь.graphml",
+      "revision": "1206d7340fc4cb47d4e7a2c16f0e07f2dbf2d928",
+      "also": [],
+      "status": "valid"
+    },
+    "client-template-stapler": {
+      "repository": "lapki-client",
+      "path": "resources/templates/Защита пасеки/Степлер.graphml",
+      "revision": "1206d7340fc4cb47d4e7a2c16f0e07f2dbf2d928",
+      "also": [],
+      "status": "valid"
+    },
+    "client-demo-blinker": {
+      "repository": "lapki-client",
+      "path": "demos/blinker.graphml",
+      "revision": "1206d7340fc4cb47d4e7a2c16f0e07f2dbf2d928",
+      "also": [],
+      "status": "valid"
+    },
+    "client-demo-autoborder": {
+      "repository": "lapki-client",
+      "path": "demos/CyberiadaSchemas/CyberiadaFormat-Autoborder.graphml",
+      "revision": "1206d7340fc4cb47d4e7a2c16f0e07f2dbf2d928",
+      "also": [],
+      "status": "valid"
+    },
+    "client-demo-cyberiada-blinker": {
+      "repository": "lapki-client",
+      "path": "demos/CyberiadaSchemas/CyberiadaFormat-Blinker.graphml",
+      "revision": "1206d7340fc4cb47d4e7a2c16f0e07f2dbf2d928",
+      "also": [],
+      "status": "valid"
+    },
+    "client-demo-tjc-ms1-blinker": {
+      "repository": "lapki-client",
+      "path": "demos/CyberiadaSchemas/tjc-ms1-blinker.graphml",
+      "revision": "1206d7340fc4cb47d4e7a2c16f0e07f2dbf2d928",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-cyberiadaformat-blinker": {
+      "repository": "lapki-compiler",
+      "path": "examples/CyberiadaFormat-Blinker.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-irpcb-led-example": {
+      "repository": "lapki-compiler",
+      "path": "examples/IRPCB_LED_EXAMPLE.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-choices": {
+      "repository": "lapki-compiler",
+      "path": "examples/choices.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-initial-states": {
+      "repository": "lapki-compiler",
+      "path": "examples/initial_states.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-ms-button-all": {
+      "repository": "lapki-compiler",
+      "path": "examples/ms-button-all.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-ms-lmp-all": {
+      "repository": "lapki-compiler",
+      "path": "examples/ms-lmp-all.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-ms-main-all": {
+      "repository": "lapki-compiler",
+      "path": "examples/ms-main-all.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-ms-mtrx-all": {
+      "repository": "lapki-compiler",
+      "path": "examples/ms-mtrx-all.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-ms1-btn": {
+      "repository": "lapki-compiler",
+      "path": "examples/ms1-btn.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-ms1-lmp": {
+      "repository": "lapki-compiler",
+      "path": "examples/ms1-lmp.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-ms1-main": {
+      "repository": "lapki-compiler",
+      "path": "examples/ms1-main.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-ms1-mtrx": {
+      "repository": "lapki-compiler",
+      "path": "examples/ms1-mtrx.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-test-cyberbear": {
+      "repository": "lapki-compiler",
+      "path": "examples/test_cyberbear.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "invalid",
+      "errors": [
+        "CGML-6.2-3"
+      ]
+    },
+    "compiler-test-initial-states": {
+      "repository": "lapki-compiler",
+      "path": "examples/test_initial_states.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-test-parent-transitions": {
+      "repository": "lapki-compiler",
+      "path": "examples/test_parent_transitions.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-test-shallow-history": {
+      "repository": "lapki-compiler",
+      "path": "examples/test_shallow_history.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-two-blinkers": {
+      "repository": "lapki-compiler",
+      "path": "examples/two-blinkers.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-two-choices": {
+      "repository": "lapki-compiler",
+      "path": "examples/two_choices.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-with-final": {
+      "repository": "lapki-compiler",
+      "path": "examples/with-final.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-with-optional-parameter": {
+      "repository": "lapki-compiler",
+      "path": "examples/with-optional-parameter.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "compiler-with-propagate-block": {
+      "repository": "lapki-compiler",
+      "path": "examples/with-propagate-block.graphml",
+      "revision": "c0e235f364f21b1a7ba8dbb598ef0bc983511af6",
+      "also": [],
+      "status": "valid"
+    },
+    "py-demo-autoborder": {
+      "repository": "cyberiadaml-py",
+      "path": "demos/CyberiadaFormat-Autoborder.graphml",
+      "revision": "aad6787d020c1b4c0e4a6ae2661097ab9cf59154",
+      "also": [
+        {
+          "repository": "cyberiadaml-js",
+          "path": "demos/autoborder.graphml",
+          "revision": "d17b81f7c43e961539d3c5d03319fa4da8cdc4ec"
+        }
+      ],
+      "status": "valid"
+    },
+    "py-demo-blinker": {
+      "repository": "cyberiadaml-py",
+      "path": "demos/CyberiadaFormat-Blinker.graphml",
+      "revision": "aad6787d020c1b4c0e4a6ae2661097ab9cf59154",
+      "also": [],
+      "status": "valid"
+    },
+    "py-demo-two-blinkers": {
+      "repository": "cyberiadaml-py",
+      "path": "demos/two-blinkers.graphml",
+      "revision": "aad6787d020c1b4c0e4a6ae2661097ab9cf59154",
+      "also": [],
+      "status": "invalid",
+      "errors": [
+        "CGML-6.8-4-1"
+      ]
+    },
+    "py-demo-shallow-history": {
+      "repository": "cyberiadaml-py",
+      "path": "demos/with-shallow-history.graphml",
+      "revision": "aad6787d020c1b4c0e4a6ae2661097ab9cf59154",
+      "also": [],
+      "status": "valid"
+    },
+    "js-demo-arduino-blinker": {
+      "repository": "cyberiadaml-js",
+      "path": "demos/arduino-blinker.graphml",
+      "revision": "d17b81f7c43e961539d3c5d03319fa4da8cdc4ec",
+      "also": [],
+      "status": "invalid",
+      "errors": [
+        "CGML-6.8-4-1"
+      ]
+    },
+    "js-demo-nested": {
+      "repository": "cyberiadaml-js",
+      "path": "demos/nested.graphml",
+      "revision": "d17b81f7c43e961539d3c5d03319fa4da8cdc4ec",
+      "also": [],
+      "status": "valid"
+    },
+    "js-demo-two-blinkers": {
+      "repository": "cyberiadaml-js",
+      "path": "demos/two-blinkers.graphml",
+      "revision": "d17b81f7c43e961539d3c5d03319fa4da8cdc4ec",
+      "also": [],
+      "status": "invalid",
+      "errors": [
+        "CGML-6.8-4-1"
+      ]
+    },
+    "js-demo-empty-state": {
+      "repository": "cyberiadaml-js",
+      "path": "demos/with-empty-state.graphml",
+      "revision": "d17b81f7c43e961539d3c5d03319fa4da8cdc4ec",
+      "also": [],
+      "status": "valid"
+    },
+    "js-demo-local-history": {
+      "repository": "cyberiadaml-js",
+      "path": "demos/with_local_history.graphml",
+      "revision": "d17b81f7c43e961539d3c5d03319fa4da8cdc4ec",
+      "also": [],
+      "status": "valid"
+    },
+    "lib-lapki-js": {
+      "repository": "libcyberiadaml",
+      "path": "tests/diagrams/lapki-js.graphml",
+      "revision": "91bc761064eb9a7aaf236e8e96032f075813db39",
+      "also": [],
+      "status": "valid"
+    }
+  }
+}

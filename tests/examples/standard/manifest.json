@@ -1,0 +1,528 @@
+{
+  "fixtures": {
+    "core/F-MIN": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-5.1-1",
+        "CGML-5.1-2",
+        "CGML-5.4-1",
+        "CGML-5.4-2",
+        "CGML-5.5-1",
+        "CGML-5.6-1",
+        "CGML-5.6-2",
+        "CGML-5.6-3",
+        "CGML-5.7-1",
+        "CGML-5.7-2",
+        "CGML-5.8-1",
+        "CGML-5.9-1",
+        "CGML-6.1-1",
+        "CGML-6.1-2",
+        "CGML-6.1-4",
+        "CGML-6.4-1",
+        "CGML-6.4-2",
+        "CGML-6.9-1",
+        "CGML-6.9-2",
+        "CGML-6.9-3",
+        "CGML-appendix-A-1",
+        "CGML-appendix-B-1"
+      ]
+    },
+    "core/F-EMPTY-SM": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.1-2",
+        "CGML-6.9-1",
+        "CGML-6.9-2",
+        "CGML-6.9-3",
+        "CGML-6.4-4-2"
+      ]
+    },
+    "core/F-TWO": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-5.2-1",
+        "CGML-5.8-3",
+        "CGML-6.2-3",
+        "CGML-6.8-1",
+        "CGML-6.8-2",
+        "CGML-6.8-3",
+        "CGML-6.8-4",
+        "CGML-6.8-7"
+      ]
+    },
+    "core/F-HIER": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-5.7-3",
+        "CGML-6.2-3",
+        "CGML-6.5-1",
+        "CGML-6.5-2",
+        "CGML-6.5-8"
+      ]
+    },
+    "core/F-REGIONS": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.5-2",
+        "CGML-6.5-5",
+        "CGML-8.3-5"
+      ]
+    },
+    "core/F-REGIONS-IDS": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.5-5",
+        "CGML-5.9-3"
+      ]
+    },
+    "core/F-MULTI": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-5.6-2",
+        "CGML-5.9-4",
+        "CGML-6.1-2",
+        "CGML-6.9-1"
+      ]
+    },
+    "core/F-FLAT": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-5.8-2",
+        "CGML-5.9-2",
+        "CGML-5.9-3"
+      ]
+    },
+    "core/F-CMT": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.6-1",
+        "CGML-6.7-1",
+        "CGML-6.7-2"
+      ]
+    },
+    "geometry/F-GEO-S": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.9-4-1",
+        "CGML-7.1-1",
+        "CGML-7.2-1-1",
+        "CGML-7.2-1-2",
+        "CGML-7.2-1-3",
+        "CGML-7.2-2"
+      ]
+    },
+    "geometry/F-GEO-F": {
+      "profile": "EXT-DISPLAY",
+      "requirements": [
+        "CGML-6.3-5",
+        "CGML-6.9-4-1",
+        "CGML-7.1-1",
+        "CGML-7.2-1-5",
+        "CGML-7.2-1-6",
+        "CGML-7.2-2"
+      ]
+    },
+    "ext/F-EXT-C": {
+      "profile": "EXT-COMPLETENESS",
+      "requirements": [
+        "CGML-6.7-2",
+        "CGML-8.5-2"
+      ]
+    },
+    "ext/F-EXT-SUB": {
+      "profile": "EXT-COMPLETENESS",
+      "requirements": [
+        "CGML-8.1-2",
+        "CGML-8.3-1",
+        "CGML-8.3-2",
+        "CGML-8.1-4",
+        "CGML-8.3-4"
+      ]
+    },
+    "ext/F-EXT-SUB-GEO": {
+      "profile": "EXT-COMPLETENESS",
+      "requirements": [
+        "CGML-6.4-3",
+        "CGML-7.1-1",
+        "CGML-7.2-1-1",
+        "CGML-7.2-1-2",
+        "CGML-7.2-1-3",
+        "CGML-7.2-2",
+        "CGML-8.1-2",
+        "CGML-8.3-1",
+        "CGML-8.3-2",
+        "CGML-8.3-3"
+      ]
+    },
+    "ext/F-EXT-D": {
+      "profile": "EXT-DISPLAY",
+      "requirements": [
+        "CGML-6.9-4-6",
+        "CGML-9.2-1",
+        "CGML-9.3-1"
+      ]
+    },
+    "ext/F-EXT-D-NAMED": {
+      "profile": "EXT-DISPLAY",
+      "requirements": [
+        "CGML-9.2-1",
+        "CGML-9.2-3"
+      ]
+    },
+    "ext/F-EXT-P": {
+      "profile": "EXT-PLATFORM",
+      "requirements": [
+        "CGML-10.1-2",
+        "CGML-10.1-3"
+      ]
+    },
+    "ext/F-EXT-P-MULTI": {
+      "profile": "EXT-PLATFORM",
+      "requirements": [
+        "CGML-10.3-1",
+        "CGML-10.3-2",
+        "CGML-5.9-4"
+      ]
+    },
+    "field/F-FIELD-actions": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.9-4-2"
+      ]
+    },
+    "field/F-FIELD-propagation": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.8-5"
+      ]
+    },
+    "field/F-FIELD-ros-cycle": {
+      "profile": "CORE",
+      "requirements": []
+    },
+    "core/F-MIN-nokeys": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-5.5-2",
+        "CGML-appendix-B-1"
+      ]
+    },
+    "core/F-MIN-comments": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-5.3-1"
+      ]
+    },
+    "core/F-ESC-ENT": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-5.2-1"
+      ]
+    },
+    "core/F-ESC-RAW": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-5.2-1"
+      ]
+    },
+    "core/F-ELSE": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.3-4",
+        "CGML-6.4-2",
+        "CGML-6.8-6"
+      ]
+    },
+    "core/F-GRD-ESC": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.8-8"
+      ]
+    },
+    "core/F-META": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.9-4-2",
+        "CGML-6.9-4-3",
+        "CGML-6.9-4-4",
+        "CGML-6.9-5"
+      ]
+    },
+    "core/F-MIN-xmlns": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-5.1-3"
+      ]
+    },
+    "geometry/F-GEO-R": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.5-1",
+        "CGML-7.2-1-4",
+        "CGML-7.2-2"
+      ]
+    },
+    "core/F-LABEL": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.8-1",
+        "CGML-6.8-4",
+        "CGML-6.8-5"
+      ]
+    },
+    "standard/F-STD-G1": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-5.1-1",
+        "CGML-5.1-2",
+        "CGML-5.4-1",
+        "CGML-5.4-2",
+        "CGML-5.5-1",
+        "CGML-5.6-1",
+        "CGML-5.6-2",
+        "CGML-6.1-1",
+        "CGML-6.1-2",
+        "CGML-6.9-1",
+        "CGML-6.9-2",
+        "CGML-6.9-3"
+      ]
+    },
+    "standard/F-STD-G2": {
+      "profile": "CORE",
+      "requirements": [
+        "CGML-6.2-3",
+        "CGML-6.3-2",
+        "CGML-6.4-1",
+        "CGML-6.4-2",
+        "CGML-6.5-1",
+        "CGML-6.5-2",
+        "CGML-6.5-8",
+        "CGML-6.8-1",
+        "CGML-6.8-3",
+        "CGML-6.9-4-1",
+        "CGML-6.9-4-2",
+        "CGML-7.1-1",
+        "CGML-7.2-1-1",
+        "CGML-7.2-1-2",
+        "CGML-7.2-1-3",
+        "CGML-7.2-1-4",
+        "CGML-7.2-2"
+      ]
+    },
+    "standard/F-STD-G3": {
+      "profile": "EXT-PLATFORM",
+      "requirements": [
+        "CGML-10.1-1",
+        "CGML-10.3-1",
+        "CGML-6.6-1",
+        "CGML-6.9-4-2",
+        "CGML-7.2-1-6",
+        "CGML-9.2-1"
+      ]
+    },
+    "standard/F-STD-G4": {
+      "profile": "EXT-DISPLAY",
+      "requirements": [
+        "CGML-6.3-5",
+        "CGML-6.5-1",
+        "CGML-6.9-4-1",
+        "CGML-6.9-4-4",
+        "CGML-6.9-4-5",
+        "CGML-7.2-1-4",
+        "CGML-7.2-1-5",
+        "CGML-7.2-1-6",
+        "CGML-7.2-2",
+        "CGML-9.1-1"
+      ]
+    },
+    "negative/X-10.1-2-bad-formal-name": {
+      "reject": "CGML-10.1-2"
+    },
+    "negative/X-10.3-1-duplicate": {
+      "reject": "CGML-10.3-1"
+    },
+    "negative/X-10.3-1-no-type": {
+      "reject": "CGML-10.3-1"
+    },
+    "negative/X-5.4-1-gformat-missing": {
+      "reject": "CGML-5.4-1"
+    },
+    "negative/X-5.4-2-wrong-format": {
+      "reject": "CGML-5.4-2"
+    },
+    "negative/X-5.5-3-data-without-key": {
+      "reject": "CGML-5.5-3"
+    },
+    "negative/X-5.5-4-duplicate-data": {
+      "reject": "CGML-5.5-4"
+    },
+    "negative/X-5.5-5-attr-type": {
+      "reject": "CGML-5.5-5"
+    },
+    "negative/X-5.6-2-no-graphs": {
+      "reject": "CGML-5.6-2"
+    },
+    "negative/X-5.7-4-two-markers": {
+      "reject": "CGML-5.7-4"
+    },
+    "negative/X-5.8-1-empty-endpoint": {
+      "reject": "CGML-5.8-1"
+    },
+    "negative/X-5.9-1-missing-id": {
+      "reject": "CGML-5.9-1"
+    },
+    "negative/X-5.9-2-bad-id-char": {
+      "reject": "CGML-5.9-2"
+    },
+    "negative/X-5.9-4-duplicate-component-node": {
+      "reject": "CGML-5.9-4"
+    },
+    "negative/X-5.9-4-duplicate-id": {
+      "reject": "CGML-5.9-4"
+    },
+    "negative/X-6.1-1-no-marker": {
+      "reject": "CGML-6.1-1"
+    },
+    "negative/X-6.1-2-no-name": {
+      "reject": "CGML-6.1-2"
+    },
+    "negative/X-6.1-6-graph-under-sm": {
+      "reject": "CGML-6.1-6"
+    },
+    "negative/X-6.3-2-dangling-target": {
+      "reject": "CGML-6.3-2"
+    },
+    "negative/X-6.3-4-two-else": {
+      "reject": "CGML-6.3-4"
+    },
+    "negative/X-6.4-1-vertex-not-first": {
+      "reject": "CGML-6.4-1"
+    },
+    "negative/X-6.4-2-bad-vertex": {
+      "reject": "CGML-6.4-2"
+    },
+    "negative/X-6.4-4-1-two-initials": {
+      "reject": "CGML-6.4-4-1"
+    },
+    "negative/X-6.5-5-no-region-marker": {
+      "reject": "CGML-6.5-5"
+    },
+    "negative/X-6.6-1-bad-note": {
+      "reject": "CGML-6.6-1"
+    },
+    "negative/X-6.7-1-bad-pivot": {
+      "reject": "CGML-6.7-1"
+    },
+    "negative/X-6.7-2-dangling-link": {
+      "reject": "CGML-6.7-2"
+    },
+    "negative/X-6.7-3-no-chunk": {
+      "reject": "CGML-6.7-3"
+    },
+    "negative/X-6.7-4-self-loop": {
+      "reject": "CGML-6.7-4"
+    },
+    "negative/X-6.8-1-node-no-slash": {
+      "reject": "CGML-6.8-1"
+    },
+    "negative/X-6.9-1-no-meta": {
+      "reject": "CGML-6.9-1"
+    },
+    "negative/X-6.9-1-two-meta": {
+      "reject": "CGML-6.9-1"
+    },
+    "negative/X-6.9-2-repeated-param": {
+      "reject": "CGML-6.9-2"
+    },
+    "negative/X-6.9-4-5-bad-propagation": {
+      "reject": "CGML-6.9-4-5"
+    },
+    "negative/X-8.1-1-submachine-not-first": {
+      "reject": "CGML-8.1-1"
+    },
+    "negative/X-8.1-2-submachine-subgraph-keys": {
+      "reject": "CGML-8.1-2"
+    },
+    "negative/X-8.4-2-collapsed-no-regions": {
+      "reject": "CGML-8.4-2"
+    },
+    "negative/X-8.5-2-link-targets-link": {
+      "reject": "CGML-8.5-2"
+    },
+    "negative/X-8.5-3-transition-targets-edge": {
+      "reject": "CGML-8.5-3"
+    },
+    "negative/X-9.1-1-3-4-chunk-target-point": {
+      "reject": "CGML-9.1-1-3-4"
+    },
+    "negative/X-9.2-2-bad-color": {
+      "reject": "CGML-9.2-2",
+      "requirements": [
+        "CGML-9.2-3"
+      ]
+    },
+    "negative/X-9.2-4-color-on-graph": {
+      "reject": "CGML-9.2-4"
+    },
+    "negative/X-9.3-2-markup-on-state": {
+      "reject": "CGML-9.3-2"
+    },
+    "negative/X-appendix-A-1-foreign-tag": {
+      "reject": "CGML-appendix-A-1"
+    },
+    "negative/X-appendix-B-1-wrong-for": {
+      "reject": "CGML-appendix-B-1"
+    },
+    "negative/X-6.8-3-1-two-entry": {
+      "reject": "CGML-6.8-3-1"
+    },
+    "negative/X-6.8-4-1-reserved-event": {
+      "reject": "CGML-6.8-4-1"
+    },
+    "negative/X-6.8-5-1-defer-on-transition": {
+      "reject": "CGML-6.8-5-1"
+    },
+    "negative/X-6.8-5-1-defer-with-behaviour": {
+      "reject": "CGML-6.8-5-1"
+    },
+    "negative/X-6.8-5-2-propagate-no-event": {
+      "reject": "CGML-6.8-5-2"
+    },
+    "negative/X-6.7-3-chunk-not-found": {
+      "reject": "CGML-6.7-3"
+    },
+    "negative/X-8.1-1-1-self-reference": {
+      "reject": "CGML-8.1-1-1"
+    },
+    "negative/X-8.1-3-submachine-data": {
+      "reject": "CGML-8.1-3"
+    },
+    "negative/X-8.1-4-point-name-mismatch": {
+      "reject": "CGML-8.1-4"
+    },
+    "negative/X-8.3-4-unnamed-point": {
+      "reject": "CGML-8.3-4"
+    },
+    "negative/X-8.3-5-point-in-second-region": {
+      "reject": "CGML-8.3-5"
+    }
+  },
+  "twins": [
+    [
+      "core/F-MIN",
+      "core/F-MIN-nokeys"
+    ],
+    [
+      "core/F-MIN",
+      "core/F-MIN-comments"
+    ],
+    [
+      "core/F-ESC-RAW",
+      "core/F-ESC-ENT"
+    ],
+    [
+      "core/F-MIN",
+      "core/F-MIN-xmlns"
+    ]
+  ]
+}

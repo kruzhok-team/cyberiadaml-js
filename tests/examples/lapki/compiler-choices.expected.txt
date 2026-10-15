@@ -1,0 +1,60 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "platform": "ArduinoUno"
+  param "platformVersion": "1.0"
+state-machine "Ga":
+  name: "Ga"
+  comment "cCounter1" formal:
+    name: "CGML_COMPONENT Counter1"
+    body: "type/ Counter"
+  comment "cQHsmSerial" formal:
+    name: "CGML_COMPONENT QHsmSerial"
+    body: "type/ QHsmSerial\n\nbaud/ 9600"
+  comment "cTimer1" formal:
+    name: "CGML_COMPONENT Timer1"
+    body: "type/ Timer"
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  state "gnnygmdtipfahdwyczgs":
+    name: "SUB"
+    action entry:
+      do: "Timer1.start(2000);"
+      do: "Counter1.sub(1);"
+    geometry: rect 612.16 528.01 450.00 95.00
+    color: "#FFFFFF"
+  vertex "gquxxfkcnnuxqupybpsl" initial:
+    geometry: point -3.00 47.81
+  state "sfdmmeidqlauhjhyudvj":
+    name: "ADD"
+    action entry:
+      do: "Timer1.start(2000);"
+      do: "Counter1.add(1);"
+    geometry: rect 91.00 166.81 450.00 95.00
+    color: "#FFFFFF"
+  vertex "spjtslyxubbfmnokvavz" choice:
+    geometry: rect 275.28 401.81 0.00 0.00
+  transition "kqvealtjeeutftwpewon": "gquxxfkcnnuxqupybpsl" -> "sfdmmeidqlauhjhyudvj"
+  transition "zdwblhnaiygvwpxxnlqe": "sfdmmeidqlauhjhyudvj" -> "spjtslyxubbfmnokvavz"
+    action event "Timer1.timeout":
+    label-geometry: point 203.76 307.39
+    color: "#FFFFFF"
+  transition "ijyufugqtsnddxbsnsvt": "spjtslyxubbfmnokvavz" -> "gnnygmdtipfahdwyczgs"
+    action event "" guard "Counter1.value >= 5":
+      do: "QHsmSerial::println(\"Больше или равно\");"
+    label-geometry: point 254.56 596.84
+    color: "#FFFFFF"
+  transition "blabla": "spjtslyxubbfmnokvavz" -> "sfdmmeidqlauhjhyudvj"
+    action event "" guard "else":
+      do: "QHsmSerial::println(\"Else\");"
+    label-geometry: point 509.12 337.12
+    color: "#FFFFFF"
+  transition "voonhvxsjkteszdltzfs": "spjtslyxubbfmnokvavz" -> "sfdmmeidqlauhjhyudvj"
+    action event "" guard "Counter1.value <= 5":
+      do: "QHsmSerial::println(\"Меньше или равно\");"
+    label-geometry: point 509.12 337.12
+    color: "#FFFFFF"

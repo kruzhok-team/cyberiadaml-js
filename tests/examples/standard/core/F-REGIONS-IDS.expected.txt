@@ -1,0 +1,33 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+state-machine "G":
+  name: "Region ids"
+  vertex "init" initial:
+  state "n1":
+    name: "Done"
+  comment "nMeta" formal:
+    name: "CGML_META"
+  state "p0":
+    name: "Parallel"
+    region "p0:1":
+      vertex "r1in" entryPoint:
+        name: "In"
+      vertex "r1init" initial:
+      state "r1s":
+        name: "Left"
+    region "p0:2":
+      vertex "r2init" initial:
+      state "r2s":
+        name: "Right"
+  transition "init-p0#1": "init" -> "p0"
+  transition "p0-n1#1": "p0" -> "n1"
+    action event "STOP":
+      do: "halt()"
+  transition "r1in-r1s#1": "r1in" -> "r1s"
+  transition "r1init-r1s#1": "r1init" -> "r1s"
+  transition "r2init-r2s#1": "r2init" -> "r2s"

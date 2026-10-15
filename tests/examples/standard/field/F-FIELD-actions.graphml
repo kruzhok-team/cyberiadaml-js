@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+  <data key="gFormat">Cyberiada-GraphML-1.0</data>
+  <key id="gFormat" for="graphml" attr.name="format" attr.type="string"/>
+  <key id="dName" for="graph" attr.name="name" attr.type="string"/>
+  <key id="dName" for="node" attr.name="name" attr.type="string"/>
+  <key id="dStateMachine" for="graph" attr.name="stateMachine" attr.type="string"/>
+  <key id="dNote" for="node" attr.name="note" attr.type="string"/>
+  <key id="dVertex" for="node" attr.name="vertex" attr.type="string"/>
+  <key id="dData" for="node" attr.name="data" attr.type="string"/>
+  <key id="dData" for="edge" attr.name="data" attr.type="string"/>
+  <graph id="G" edgedefault="directed">
+    <data key="dStateMachine"/>
+    <data key="dName">Actions SM</data>
+    <node id="nMeta">
+      <data key="dNote">formal</data>
+      <data key="dName">CGML_META</data>
+      <data key="dData">standardVersion/ 1.0
+
+name/ actions
+
+</data>
+    </node>
+    <node id="init">
+      <data key="dVertex">initial</data>
+      <data key="dName"></data>
+    </node>
+    <node id="n0">
+      <data key="dName">Worker</data>
+      <data key="dData">entry/
+init();
+setup();
+
+do/
+work();
+
+exit/
+teardown();
+</data>
+    </node>
+    <node id="n1">
+      <data key="dName">Idle</data>
+    </node>
+    <edge id="init-n0" source="init" target="n0"/>
+    <edge id="n0-n1" source="n0" target="n1">
+      <data key="dData">DONE [count &gt; 0]/
+report(count);
+</data>
+    </edge>
+    <edge id="n1-n0" source="n1" target="n0">
+      <data key="dData">RESTART/</data>
+    </edge>
+  </graph>
+</graphml>

@@ -1,0 +1,56 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "author": "Lapki IDE TEAM"
+  param "description": "Включение и выключение лампочки по таймеру"
+  param "lapkiVisual": "true"
+  param "name": "Arduino Blinker"
+  param "platform": "ArduinoUno"
+  param "platformVersion": "1.0"
+state-machine "G":
+  name: "G"
+  geometry: rect 0.00 0.00 450.00 100.00
+  comment "cButton1" formal:
+    name: "CGML_COMPONENT Button1"
+    body: "type/ Button\n\npin/ 3"
+  comment "cLED1" formal:
+    name: "CGML_COMPONENT LED1"
+    body: "type/ LED\n\nname/ Светодиод\n\ndescription/ Встроенный в плату светодиод, чтобы им мигать\n\npin/ 12"
+  comment "commentX" informal:
+    markup: "plain"
+    body: "Включение и выключение лампочки по таймеру!"
+    geometry: rect 640.00 114.00 0.00 0.00
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  comment "ctimer1" formal:
+    name: "CGML_COMPONENT timer1"
+    body: "type/ Timer\n\nname/ Таймер\n\ndescription/ Программный таймер."
+  state "diod1":
+    name: "Включен"
+    action entry:
+      do: "LED1.on();"
+      do: "timer1.start(1000);"
+    geometry: rect 82.00 57.00 450.00 95.00
+    color: "#FFFFFF"
+  state "diod2":
+    name: "Выключен"
+    action entry:
+      do: "LED1.off();"
+      do: "timer1.start(1000);"
+    geometry: rect 81.00 334.00 450.00 95.00
+    color: "#FFFFFF"
+  vertex "init" initial:
+    geometry: point 20.00 30.00
+  transition "edge3": "diod1" -> "diod2"
+    action event "timer1.timeout":
+    label-geometry: point 389.00 193.00
+    color: "#F29727"
+  transition "edge4": "diod2" -> "diod1"
+    action event "timer1.timeout":
+    label-geometry: point 81.50 193.46
+    color: "#F24C3D"
+  transition "init-edge": "init" -> "diod1"

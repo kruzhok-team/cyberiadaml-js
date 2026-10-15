@@ -1,0 +1,83 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "lapkiVisual": "true"
+  param "platform": "tjc-ms1-lmp-a3"
+  param "platformVersion": "1.0"
+state-machine "MS1Lamp1":
+  name: "MS1Lamp1"
+  geometry: rect 0.00 0.00 450.00 100.00
+  comment "cLED1" formal:
+    name: "CGML_COMPONENT LED1"
+    body: "type/ LED\n\npin/ 1"
+  comment "cLED2" formal:
+    name: "CGML_COMPONENT LED2"
+    body: "type/ LED\n\npin/ 2"
+  comment "cLED3" formal:
+    name: "CGML_COMPONENT LED3"
+    body: "type/ LED\n\npin/ 3"
+  comment "cTimer1" formal:
+    name: "CGML_COMPONENT Timer1"
+    body: "type/ Timer"
+  comment "cTimer2" formal:
+    name: "CGML_COMPONENT Timer2"
+    body: "type/ Timer"
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  state "gkymncckchgzqwhfsyfd":
+    name: "Родительское"
+    action entry:
+      do: "LED1.off();"
+      do: "LED2.off();"
+      do: "LED3.off();"
+      do: "Timer2.start(1000);"
+      do: "Timer1.disable();"
+    geometry: rect 114.43 502.50 450.00 100.00
+    region "gkymncckchgzqwhfsyfd::region":
+      state "iwautgzajohiggsbvxvf":
+        name: "Лампочка 1"
+        action entry:
+          do: "LED1.on();"
+        geometry: rect 43.72 289.80 450.00 100.00
+      vertex "mxmbeegeevcftekigiyv" initial:
+        geometry: point 49.00 172.12
+      state "wydsgxxupcepcbtpvffm":
+        name: "Лампочка 3"
+        action entry:
+          do: "LED3.on();"
+        geometry: rect 738.04 223.72 450.00 100.00
+      state "zippnzlkilhmmckanmvv":
+        name: "Лампочка 2"
+        action entry:
+          do: "LED2.on();"
+        geometry: rect 83.00 448.00 450.00 100.00
+  vertex "nvazmnxhujnqwpbbijhx" initial:
+    geometry: point 1.71 184.75
+  state "opffyasscvvpicxlhzet":
+    name: "Начальное"
+    action entry:
+      do: "LED1.on();"
+      do: "LED2.on();"
+      do: "LED3.on();"
+      do: "Timer1.start(2000);"
+    geometry: rect 101.71 204.75 450.00 100.00
+  transition "wclddnqlmqvdfnjcgmmf": "iwautgzajohiggsbvxvf" -> "zippnzlkilhmmckanmvv"
+    action event "Timer2.timeout":
+      do: "LED1.off();"
+    label-geometry: point 621.64 741.08
+  transition "ttvhcicfygmlsphpmfns": "mxmbeegeevcftekigiyv" -> "iwautgzajohiggsbvxvf"
+  transition "mwiltsjxobjyfpumybfi": "nvazmnxhujnqwpbbijhx" -> "opffyasscvvpicxlhzet"
+  transition "otddlgxsbahqvvkbzfnm": "opffyasscvvpicxlhzet" -> "gkymncckchgzqwhfsyfd"
+    action event "Timer1.timeout":
+    label-geometry: point 234.15 394.63
+  transition "szeuvsntoetisftiycji": "wydsgxxupcepcbtpvffm" -> "gkymncckchgzqwhfsyfd"
+    action event "Timer2.timeout":
+    label-geometry: point 1368.03 541.95
+  transition "mbdwdqaioqzlatyspwoc": "zippnzlkilhmmckanmvv" -> "wydsgxxupcepcbtpvffm"
+    action event "Timer2.timeout":
+      do: "LED2.off();"
+    label-geometry: point 718.50 958.50

@@ -1,0 +1,30 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "name": "actions"
+state-machine "G":
+  name: "Actions SM"
+  vertex "init" initial:
+  state "n0":
+    name: "Worker"
+    action entry:
+      do: "init();"
+      do: "setup();"
+    action do:
+      do: "work();"
+    action exit:
+      do: "teardown();"
+  state "n1":
+    name: "Idle"
+  comment "nMeta" formal:
+    name: "CGML_META"
+  transition "init-n0": "init" -> "n0"
+  transition "n0-n1": "n0" -> "n1"
+    action event "DONE" guard "count > 0":
+      do: "report(count);"
+  transition "n1-n0": "n1" -> "n0"
+    action event "RESTART":

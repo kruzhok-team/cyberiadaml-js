@@ -1,0 +1,36 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "lapkiVisual": "true"
+  param "platform": "tjc-ms1-btn-a2"
+  param "platformVersion": "1.0"
+state-machine "G":
+  name: "G"
+  geometry: rect 0.00 0.00 450.00 100.00
+  comment "cButton1" formal:
+    name: "CGML_COMPONENT Button1"
+    body: "type/ Button\n\npin/ 1"
+  comment "cCounter1" formal:
+    name: "CGML_COMPONENT Counter1"
+    body: "type/ Counter"
+  comment "cDataBus1" formal:
+    name: "CGML_COMPONENT DataBus1"
+    body: "type/ DataBus\n\nbaudrate/ 9600"
+  comment "cLED1" formal:
+    name: "CGML_COMPONENT LED1"
+    body: "type/ LED\n\npin/ 1"
+  comment "cTimer1" formal:
+    name: "CGML_COMPONENT Timer1"
+    body: "type/ Timer"
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  state "dkhdpihjzfmzmujlwemm":
+    name: "Состояние"
+    geometry: rect 127.20 178.00 450.00 100.00
+  vertex "magbpbcqxhkuuvbpaxyg" initial:
+    geometry: point -74.80 29.00
+  transition "jmycaipezszehygsqnfo": "magbpbcqxhkuuvbpaxyg" -> "dkhdpihjzfmzmujlwemm"

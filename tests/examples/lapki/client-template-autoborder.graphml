@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+  <data key="gFormat">Cyberiada-GraphML-1.0</data>
+  <key attr.name="name" attr.type="string" for="node" id="dName"></key>
+  <key attr.name="data" attr.type="string" for="node" id="dData"></key>
+  <key attr.name="data" attr.type="string" for="edge" id="dData"></key>
+  <key attr.name="initial" attr.type="string" for="node" id="dInitial"></key>
+  <key for="edge" id="dGeometry"></key>
+  <key for="node" id="dGeometry"></key>
+  <key for="edge" id="dColor"></key>
+  <key for="node" id="dNote"></key>
+  <key for="node" id="dColor"></key>
+  <graph id="G">
+    <data key="dStateMachine"></data>
+    <data key="dGeometry">
+      <rect x="0" y="0" width="450" height="100"></rect>
+    </data>
+    <node id="coreMeta">
+      <data key="dNote">formal</data>
+      <data key="dName">CGML_META</data>
+      <data key="dData">platform/ BearlogaDefend-Autoborder
+
+standardVersion/ 1.0
+
+platformVersion/ 1.0
+
+lapkiVisual/ true
+
+</data>
+    </node>
+    <node id="n0">
+      <data key="dName">Бой</data>
+      <data key="dData">entry/
+
+exit/
+
+</data>
+      <data key="dGeometry">
+        <rect x="-786" y="-492" width="517" height="770"></rect>
+      </data>
+      <graph id="n0">
+        <node id="n0::n1">
+          <data key="dName">Сближение</data>
+          <data key="dData">entry/
+Navigation.MoveToTarget()
+
+exit/
+
+</data>
+          <data key="dGeometry">
+            <rect x="49.29999999999994" y="168.4499999999999" width="413" height="208"></rect>
+          </data>
+        </node>
+        <node id="n0::n2">
+          <data key="dName">Атака</data>
+          <data key="dData">entry/
+Weapon.Activate()
+
+exit/
+
+</data>
+          <data key="dGeometry">
+            <rect x="56.599999999999994" y="443.95000000000016" width="413" height="208"></rect>
+          </data>
+        </node>
+      </graph>
+    </node>
+    <node id="n3">
+      <data key="dName">Скан</data>
+      <data key="dData">entry/
+Scaner.FindRivalByDistance(min)
+
+exit/
+Scaner.Stop()
+
+</data>
+      <data key="dGeometry">
+        <rect x="-1573" y="-738" width="413" height="288"></rect>
+      </data>
+    </node>
+    <node id="ucqaehdydqejwjkobkax">
+      <data key="dVertex">initial</data>
+      <data key="dGeometry">
+        <point x="-1673" y="-838"></point>
+      </data>
+    </node>
+    <edge id="xahmjixxndyajicaidfv" source="n0" target="n3">
+      <data key="dData">TargetAnalyser.Lost/
+
+</data>
+      <data key="dColor">#EBC3D9</data>
+      <data key="dLabelGeometry">
+        <point x="-1178" y="-515"></point>
+      </data>
+    </edge>
+    <edge id="ibjwlpwztesdkheqymbe" source="n0" target="n3">
+      <data key="dData">TargetAnalyser.Destroyed/
+
+</data>
+      <data key="dColor">#4387C4</data>
+      <data key="dLabelGeometry">
+        <point x="-766.55" y="-694.7"></point>
+      </data>
+    </edge>
+    <edge id="jxzqcesbtbzpcqqlfsbl" source="n3" target="n0::n1">
+      <data key="dData">Scaner.TargetAcquired/
+
+</data>
+      <data key="dColor">#5acfde</data>
+      <data key="dLabelGeometry">
+        <point x="-1307.8499999999995" y="-184.30000000000032"></point>
+      </data>
+    </edge>
+    <edge id="xuxnxwkdnkhwtehpqcak" source="n0::n1" target="n0::n2">
+      <data key="dData">Weapon.TargetEnteredRange/
+
+</data>
+      <data key="dColor">#39BC32</data>
+      <data key="dLabelGeometry">
+        <point x="-732.0500000000001" y="-147.59999999999994"></point>
+      </data>
+    </edge>
+    <edge id="qzwxffcdvmfzpncpvsae" source="n0::n2" target="n0::n1">
+      <data key="dData">Weapon.TargetLeftRange/
+
+</data>
+      <data key="dColor">#94DBBD</data>
+      <data key="dLabelGeometry">
+        <point x="-471.0500000000002" y="-148.75000000000006"></point>
+      </data>
+    </edge>
+    <edge id="uwbqqjnbyjovjbsfuhxq" source="ucqaehdydqejwjkobkax" target="n3"></edge>
+  </graph>
+</graphml>

@@ -1,0 +1,21 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: exitFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "author": "Alexey Fedoseev"
+  param "createdAt": "2026-08-24T10:00:00Z"
+  param "myParam": "custom value"
+  param "name": "Metadata sample"
+  param "transitionOrder": "exitFirst"
+  param "version": "2.1"
+state-machine "G":
+  name: "Metadata"
+  vertex "init" initial:
+  state "n0":
+    name: "Idle"
+  comment "nMeta" formal:
+    name: "CGML_META"
+  transition "init-n0#1": "init" -> "n0"

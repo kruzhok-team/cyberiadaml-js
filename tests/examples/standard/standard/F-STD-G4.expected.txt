@@ -1,0 +1,48 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: full
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "eventPropagation": "block"
+  param "geometry": "full"
+  param "name": "test-geometry-1"
+  param "transitionOrder": "actionFirst"
+state-machine "G":
+  name: "SM-0"
+  comment "nMeta" formal:
+    name: "CGML_META"
+  state "node-0":
+    name: "node 0"
+    geometry: rect -5.00 -5.00 1000.00 450.00
+    region "node-0:":
+      geometry: rect 10.00 10.00 980.00 430.00
+      state "node-0-0":
+        name: "node 0-0"
+        geometry: rect 45.00 45.00 600.00 300.00
+        region "node-0-0:":
+          geometry: rect 0.00 10.00 600.00 290.00
+          vertex "node-0-0-0" initial:
+            geometry: point 200.00 70.00
+          state "node-0-0-1":
+            name: "node 0-0-1"
+            geometry: rect 50.00 90.00 300.00 150.00
+          state "node-0-0-2":
+            name: "node 0-0-2"
+            geometry: rect 450.00 90.00 150.00 150.00
+      state "node-0-1":
+        name: "node 0-1"
+        geometry: rect 795.00 145.00 150.00 150.00
+  transition "edge-1": "node-0-0-0" -> "node-0-0-1"
+    source-point: point 0.00 0.00
+    target-point: point 150.00 0.00
+  transition "edge-0": "node-0-0-1" -> "node-0-0-1"
+    polyline: point -25.00 75.00 point -25.00 175.00 point 150.00 175.00
+    source-point: point 0.00 75.00
+    target-point: point 150.00 150.00
+  transition "edge-2": "node-0-0-1" -> "node-0-0-2"
+    action event "LABEL":
+    source-point: point 300.00 105.00
+    target-point: point 0.00 105.00
+    label-geometry: point 375.00 135.00

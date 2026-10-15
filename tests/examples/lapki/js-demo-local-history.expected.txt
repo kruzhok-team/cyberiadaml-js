@@ -1,0 +1,84 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "lapkiVisual": "true"
+  param "platform": "tjc-ms1-btn-a2"
+  param "platformVersion": "1.0"
+state-machine "MS1Button1":
+  name: "MS1Button1"
+  geometry: rect 0.00 0.00 450.00 100.00
+  comment "cButton1" formal:
+    name: "CGML_COMPONENT Button1"
+    body: "type/ Button\n\npin/ 1"
+  comment "cButton2" formal:
+    name: "CGML_COMPONENT Button2"
+    body: "type/ Button\n\npin/ 2"
+  comment "cLED1" formal:
+    name: "CGML_COMPONENT LED1"
+    body: "type/ LED\n\npin/ 1"
+  comment "cLED2" formal:
+    name: "CGML_COMPONENT LED2"
+    body: "type/ LED\n\npin/ 2"
+  comment "cLED3" formal:
+    name: "CGML_COMPONENT LED3"
+    body: "type/ LED\n\npin/ 3"
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  state "hcqcbbmspgipyngbguxv":
+    name: "Меняем 2 и 3"
+    action exit:
+      do: "LED2.off();"
+      do: "LED3.off();"
+    geometry: rect 104.43 574.50 450.00 100.00
+    region "hcqcbbmspgipyngbguxv::region":
+      vertex "deepHistory" deepHistory:
+        name: "Глубокая история"
+        geometry: point 80.00 222.00
+      state "hdajieyhsatjlysilhbe":
+        name: "Горит 3"
+        action entry:
+          do: "LED3.on();"
+        action exit:
+          do: "LED3.off();"
+        geometry: rect 110.00 469.00 450.00 100.00
+      vertex "txeuquippxpuinnvttjo" shallowHistory:
+        name: "Локальная история"
+        geometry: point 80.00 222.00
+      vertex "ydohplvyvlfhexlwwwle" initial:
+        geometry: point 358.84 103.80
+      state "zyplpafjabvnapaghkey":
+        name: "Горит 2"
+        action entry:
+          do: "LED2.on();"
+        action exit:
+          do: "LED2.off();"
+        geometry: rect 448.48 154.72 450.00 100.00
+  vertex "mbyhvnsifhyfqqskdamy" initial:
+    geometry: point 8.71 201.75
+  state "ofqxuuiznezyoahpqlmy":
+    name: "Горит 1"
+    action entry:
+      do: "LED1.on();"
+    action exit:
+      do: "LED1.off();"
+    geometry: rect 108.71 223.75 450.00 100.00
+  transition "gqwhnbkydjxvjbdhfyvt": "hcqcbbmspgipyngbguxv" -> "ofqxuuiznezyoahpqlmy"
+    action event "Button1.clicked":
+    label-geometry: point 584.57 410.63
+  transition "jphipomnlildxwnpefua": "hdajieyhsatjlysilhbe" -> "zyplpafjabvnapaghkey"
+    action event "Button2.clicked":
+    label-geometry: point 640.00 911.00
+  transition "xcnnmlbfzvqfggvigbkd": "mbyhvnsifhyfqqskdamy" -> "ofqxuuiznezyoahpqlmy"
+  transition "fibgyigoupwsglatqcco": "ofqxuuiznezyoahpqlmy" -> "txeuquippxpuinnvttjo"
+    action event "Button1.clicked":
+    label-geometry: point -50.43 517.63
+  transition "wtszxvdsbchwpcstcxat": "txeuquippxpuinnvttjo" -> "zyplpafjabvnapaghkey"
+    label-geometry: point 318.56 775.24
+  transition "kjnmnlaxovjfutctaoum": "ydohplvyvlfhexlwwwle" -> "zyplpafjabvnapaghkey"
+  transition "zcopzhbckfqmslabhsox": "zyplpafjabvnapaghkey" -> "hdajieyhsatjlysilhbe"
+    action event "Button2.clicked":
+    label-geometry: point 374.00 909.50

@@ -1,0 +1,41 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: full
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "geometry": "full"
+state-machine "G":
+  name: "Two states"
+  geometry: rect -100.50 -50.25 400.00 300.00
+  vertex "init" initial:
+    geometry: point -60.50 20.00
+  state "n0":
+    name: "Idle"
+    geometry: rect -20.50 10.25 120.00 60.75
+  state "n1":
+    name: "Working"
+    action entry:
+      do: "prepare()"
+    action event "START" guard "ready":
+      do: "run()"
+    geometry: rect 140.00 10.25 120.00 60.75
+  comment "nMeta" formal:
+    name: "CGML_META"
+    geometry: rect -90.50 -40.00 120.00 40.75
+  transition "init-n0#1": "init" -> "n0"
+  transition "n0-n1#1": "n0" -> "n1"
+    action event "GO" guard "power > 10":
+      do: "start()"
+    polyline: point 60.00 40.50 point 100.25 40.50
+    source-point: point 39.50 40.50
+    target-point: point 140.00 40.50
+    label-geometry: rect 60.00 20.00 48.50 14.00
+  transition "n1-n0#1": "n1" -> "n0"
+    action event "STOP":
+      do: "halt()"
+  transition "n1-n1#1": "n1" -> "n1"
+    action event "RETRY":
+      do: "again()"
+    polyline: point 270.00 30.00 point 270.00 90.00 point 200.00 90.00

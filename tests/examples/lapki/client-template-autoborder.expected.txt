@@ -1,0 +1,63 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "lapkiVisual": "true"
+  param "platform": "BearlogaDefend-Autoborder"
+  param "platformVersion": "1.0"
+state-machine "G":
+  name: "G"
+  geometry: rect 0.00 0.00 450.00 100.00
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  state "n0":
+    name: "Бой"
+    action entry:
+    action exit:
+    geometry: rect -786.00 -492.00 517.00 770.00
+    region "n0::region":
+      state "n0::n1":
+        name: "Сближение"
+        action entry:
+          do: "Navigation.MoveToTarget()"
+        action exit:
+        geometry: rect 49.30 168.45 413.00 208.00
+      state "n0::n2":
+        name: "Атака"
+        action entry:
+          do: "Weapon.Activate()"
+        action exit:
+        geometry: rect 56.60 443.95 413.00 208.00
+  state "n3":
+    name: "Скан"
+    action entry:
+      do: "Scaner.FindRivalByDistance(min)"
+    action exit:
+      do: "Scaner.Stop()"
+    geometry: rect -1573.00 -738.00 413.00 288.00
+  vertex "ucqaehdydqejwjkobkax" initial:
+    geometry: point -1673.00 -838.00
+  transition "ibjwlpwztesdkheqymbe": "n0" -> "n3"
+    action event "TargetAnalyser.Destroyed":
+    label-geometry: point -766.55 -694.70
+    color: "#4387C4"
+  transition "xahmjixxndyajicaidfv": "n0" -> "n3"
+    action event "TargetAnalyser.Lost":
+    label-geometry: point -1178.00 -515.00
+    color: "#EBC3D9"
+  transition "xuxnxwkdnkhwtehpqcak": "n0::n1" -> "n0::n2"
+    action event "Weapon.TargetEnteredRange":
+    label-geometry: point -732.05 -147.60
+    color: "#39BC32"
+  transition "qzwxffcdvmfzpncpvsae": "n0::n2" -> "n0::n1"
+    action event "Weapon.TargetLeftRange":
+    label-geometry: point -471.05 -148.75
+    color: "#94DBBD"
+  transition "jxzqcesbtbzpcqqlfsbl": "n3" -> "n0::n1"
+    action event "Scaner.TargetAcquired":
+    label-geometry: point -1307.85 -184.30
+    color: "#5acfde"
+  transition "uwbqqjnbyjovjbsfuhxq": "ucqaehdydqejwjkobkax" -> "n3"

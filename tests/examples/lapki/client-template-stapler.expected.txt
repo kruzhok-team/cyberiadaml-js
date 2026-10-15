@@ -1,0 +1,68 @@
+cgml-canonical-dump 1
+format: "Cyberiada-GraphML-1.0"
+geometry-mode: none
+transition-order: actionFirst
+event-propagation: block
+meta:
+  param "standardVersion": "1.0"
+  param "lapkiVisual": "true"
+  param "platform": "BearlogaDefend-Stapler"
+  param "platformVersion": "1.0"
+state-machine "G":
+  name: "G"
+  geometry: rect 0.00 0.00 450.00 100.00
+  comment "coreMeta" formal:
+    name: "CGML_META"
+  state "n0":
+    name: "Бой"
+    action entry:
+    action exit:
+    geometry: rect -174.00 89.00 690.00 931.00
+    region "n0::region":
+      state "n0::n1":
+        name: "Сближение"
+        action entry:
+          do: "Navigation.MoveToTarget()"
+        action exit:
+        geometry: rect 95.16 204.83 413.00 208.00
+      state "n0::n2":
+        name: "Атака"
+        action entry:
+          do: "Weapon.Activate()"
+          do: "Navigation.Stop()"
+        action exit:
+        geometry: rect 67.78 544.10 590.00 208.00
+  state "n3":
+    name: "Скан"
+    action entry:
+      do: "Scaner.FindRivalByDistance(min)"
+    action exit:
+      do: "Scaner.Stop()"
+    geometry: rect -1012.00 -250.00 413.00 288.00
+  vertex "uatheliidyykfpfpllph" initial:
+    geometry: point -1112.00 -350.00
+  transition "ipiyttzwnkuhuhlodvfj": "n0" -> "n3"
+    action event "TargetAnalyser.Destroyed":
+    label-geometry: point -308.47 -194.80
+    color: "#081277"
+  transition "ofomvvwijhmsykqxonot": "n0" -> "n3"
+    action event "TargetAnalyser.Lost":
+    label-geometry: point -103.00 -251.00
+    color: "#A3EC14"
+  transition "fjsqpivkwidixhpywgzm": "n0::n1" -> "n0::n2"
+    action event "Weapon.TargetEnteredRange":
+    label-geometry: point -67.08 500.35
+    color: "#6C195E"
+  transition "mslysceuialajvmbxwat": "n0::n2" -> "n0::n1"
+    action event "Weapon.TargetLeftRange":
+    label-geometry: point 193.47 481.80
+    color: "#C709EA"
+  transition "mcstwtqllpkxgcaxbyod": "n3" -> "n0::n1"
+    action event "Scaner.TargetAcquired":
+    label-geometry: point -509.22 271.17
+    color: "#484897"
+  transition "sfdqczcixsbemqhdkyiy": "n3" -> "n0::n2"
+    action event "Scaner.TargetAcquired" guard "Weapon.TargetInRange == 1":
+    label-geometry: point -903.89 361.37
+    color: "#A7ADE3"
+  transition "ijcvtvnwnqhiiksftvps": "uatheliidyykfpfpllph" -> "n3"
