@@ -20,9 +20,10 @@
   },
   "homepage": "https://github.com/kruzhok-team/cyberiadaml-js",
   "author": "",
-  "license": "MIT",
+  "license": "LGPL-3.0-or-later",
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
+    "@types/jest": "^29.5.14",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
     "eslint": "^8.56.0",
@@ -36,7 +37,6 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@types/jest": "^29.5.12",
     "fast-xml-parser": "^4.3.4"
   }
 }
