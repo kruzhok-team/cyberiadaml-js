@@ -184,8 +184,16 @@ tools/                the example snapshot and the contract writer
 
 ## Dependencies
 
-None at run time once the facade replaces the 1.x reader and writer (2.0): the core parses and
-writes XML itself; `fast-xml-parser` goes with the 1.x code.
+None at run time: the core parses and writes XML itself (`fast-xml-parser` went with the 1.x
+code).
+
+## Licences
+
+The library is distributed under the LGPL-3 (`LICENSE`), its documentation under the GFDL 1.3.
+The core is a port of `cgmlval`, which cyberiadaml-compat-tests distributes under the GPL-3; its
+author contributes the port to this library under the LGPL-3. The test examples
+(`tests/examples/`) keep the licences of their sources, named in their README files; they are
+not part of the package.
 
 ## Testing
 
